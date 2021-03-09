@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+>
+<h:head>
+    <title>#{msg.logIn}</title>
+</h:head>
+<h:body>
+    <ui:composition template="../template/commonLayout.xhtml">
+        <ui:define name="content">
+            <div id="container">
+                <h:form>
+                    <h:inputText id="username" pt:placeholder="* #{msg.login}"
+                                 required="true"
+                                 value="#{logInController.username}"
+                                 requiredMessage="#{msg.requiredLogin}"/>
+                    <h:message for="username"/>
+
+                    <h:inputSecret id="password" pt:placeholder="* #{msg.password}"
+                                   required="true"
+                                   value="#{logInController.password}"
+                                   requiredMessage="#{msg.requiredPassword}"/>
+                    <h:message for="password"/>
+
+                    <h:commandButton type="submit" value="#{msg.logIn}"
+                                     action="#{logInController.logIn}"/>
+                </h:form>
+            </div>
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>
+
+
+

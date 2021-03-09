@@ -1,0 +1,67 @@
+/*------Forms style------*/
+#container {
+    background-color: #EFEFEF;
+    padding: 50px;
+    margin: 80px auto;
+    -webkit-box-shadow: 3px 3px 30px 5px rgba(204, 204, 204, 0.9);
+    -moz-box-shadow: 3px 3px 30px 5px rgba(204, 204, 204, 0.9);
+    box-shadow: 3px 3px 30px 5px rgba(204, 204, 204, 0.9);
+}
+
+.formOutput, .formLogoutOutput, input[type=text], input[type=password] {
+    width: 100%;
+    background-color: #efefef;
+    color: #666;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    outline: none;
+    margin-top: 10px;
+}
+
+.formOutput {
+    display: block;
+    background: rgba(54,176,60,.2);
+}
+
+.formLogoutOutput {
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: #36b03c;
+    font-size: 20px;
+    color: white;
+    padding: 15px 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    outline: none;
+}
+
+input.positive_btn[type=submit] {
+    background-color: #36b03c;
+}
+
+input.negative_btn[type=submit] {
+    background-color: #ff005b;
+}
+
+input.positive_btn[type=submit]:hover {
+    background-color: #37b93d;
+}
+
+input.negative_btn[type=submit]:hover {
+    background-color: #f8005b;
+}
+
+/*------Forms style------*/
