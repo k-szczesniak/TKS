@@ -18,7 +18,7 @@
         <param-value>true</param-value>
     </context-param>
 
-    <default-context-path>PAS</default-context-path>
+    <default-context-path>TKS</default-context-path>
 
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>

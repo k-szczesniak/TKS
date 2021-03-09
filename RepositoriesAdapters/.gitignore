@@ -1,6 +1,6 @@
 /target/
 /.idea/
 /nbproject/
-/ApplicationCore.iml
+/RepositoriesAdapters.iml
 nb-configuration.xml
 /*.NavData
