@@ -1,14 +1,14 @@
 package pl.ks.dk.tks.model.babysitters;
 
 
-import com.mycompany.firstapplication.Interfaces.EntityToSign;
 import pl.ks.dk.tks.model.exceptions.BabysitterExceptionEnt;
+import pl.ks.dk.tks.model.interfaces.EntityToSignEnt;
 
 import javax.validation.constraints.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BabysitterEnt implements Cloneable, EntityToSign {
+public class BabysitterEnt implements Cloneable, EntityToSignEnt {
 
     @NotNull
     @Size(min=2, max=20)

@@ -1,14 +1,14 @@
 package pl.ks.dk.tks.model.users;
 
-import com.mycompany.firstapplication.Interfaces.EntityToSign;
 import pl.ks.dk.tks.model.exceptions.UserExceptionEnt;
+import pl.ks.dk.tks.model.interfaces.EntityToSignEnt;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class UserEnt implements Cloneable, EntityToSign {
+public abstract class UserEnt implements Cloneable, EntityToSignEnt {
 
     private boolean isActive = true;
 

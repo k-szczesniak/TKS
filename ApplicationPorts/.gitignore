@@ -1,0 +1,6 @@
+/target/
+/.idea/
+/nbproject/
+/ApplicationPorts.iml
+nb-configuration.xml
+/*.NavData
