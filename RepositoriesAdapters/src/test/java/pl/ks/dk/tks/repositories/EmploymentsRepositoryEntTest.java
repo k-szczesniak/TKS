@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EmploymentsRepositoryTest {
+class EmploymentsRepositoryEntTest {
 
     protected final Logger log = Logger.getLogger(getClass().getName());
 

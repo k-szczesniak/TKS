@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class BabysitterTest {
+class BabysitterEntTest {
 
     protected final Logger log = Logger.getLogger(getClass().getName());
 
