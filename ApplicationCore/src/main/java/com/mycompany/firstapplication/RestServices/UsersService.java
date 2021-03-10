@@ -24,7 +24,7 @@ import java.util.Set;
 public class UsersService {
 
     @Inject
-    private UsersManager usersManager;
+    private com.mycompany.firstapplication.services.UsersService usersService;
 
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -32,7 +32,7 @@ public class UsersService {
     @Path("_self")
     public Response findSelf(@Context SecurityContext securityContext) {
         return Response.status(200)
-                .entity(UserDTOWrapper.wrap(usersManager.findByLogin(securityContext.getUserPrincipal().getName())))
+                .entity(UserDTOWrapper.wrap(usersService.findByLogin(securityContext.getUserPrincipal().getName())))
                 .build();
     }
 
@@ -41,8 +41,8 @@ public class UsersService {
     public Response getClient(@PathParam("uuid") String uuid) {
         try {
             return Response.status(200)
-                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((usersManager.findByKey(uuid))))
-                    .entity(UserDTOWrapper.wrap(usersManager.findByKey(uuid)))
+                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((usersService.findByKey(uuid))))
+                    .entity(UserDTOWrapper.wrap(usersService.findByKey(uuid)))
                     .build();
         } catch (UserException e) {
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class UsersService {
 
     @GET
     public Response getAllUsers() {
-        return Response.status(200).entity(UserDTOWrapper.listWrapper(usersManager.getUsersList()))
+        return Response.status(200).entity(UserDTOWrapper.listWrapper(usersService.getUsersList()))
                 .build();
     }
 
@@ -65,7 +65,7 @@ public class UsersService {
         }
         try {
             validation(admin);
-            BeanUtils.copyProperties(usersManager.findByKey(uuid), admin);
+            BeanUtils.copyProperties(usersService.findByKey(uuid), admin);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -83,7 +83,7 @@ public class UsersService {
         }
         try {
             validation(superUser);
-            BeanUtils.copyProperties(usersManager.findByKey(uuid), superUser);
+            BeanUtils.copyProperties(usersService.findByKey(uuid), superUser);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -101,7 +101,7 @@ public class UsersService {
         }
         try {
             validation(client);
-            BeanUtils.copyProperties(usersManager.findByKey(uuid), client);
+            BeanUtils.copyProperties(usersService.findByKey(uuid), client);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -119,7 +119,7 @@ public class UsersService {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        usersManager.addUser(admin);
+        usersService.addUser(admin);
         return Response.status(201).build();
     }
 
@@ -132,7 +132,7 @@ public class UsersService {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        usersManager.addUser(superUser);
+        usersService.addUser(superUser);
         return Response.status(201).build();
     }
 
@@ -145,7 +145,7 @@ public class UsersService {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        usersManager.addUser(client);
+        usersService.addUser(client);
         return Response.status(201).build();
     }
 

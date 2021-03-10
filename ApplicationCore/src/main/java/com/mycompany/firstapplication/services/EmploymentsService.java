@@ -1,33 +1,33 @@
-package com.mycompany.firstapplication.Employment;
+package com.mycompany.firstapplication.services;
 
 import com.mycompany.firstapplication.Babysitters.Babysitter;
-import com.mycompany.firstapplication.Babysitters.BabysittersManager;
+import com.mycompany.firstapplication.Employment.Employment;
+import com.mycompany.firstapplication.Employment.EmploymentsRepository;
 import com.mycompany.firstapplication.Exceptions.EmploymentException;
 import com.mycompany.firstapplication.Users.Client;
 import com.mycompany.firstapplication.Users.User;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class EmploymentsManager implements Serializable {
+public class EmploymentsService implements Serializable {
 
     @Inject
     private EmploymentsRepository employmentsRepository;
 
     @Inject
-    private BabysittersManager babysittersManager;
+    private BabysittersService babysittersService;
 
-    public EmploymentsManager(EmploymentsRepository employmentsRepository) {
+    public EmploymentsService(EmploymentsRepository employmentsRepository) {
         this.employmentsRepository = employmentsRepository;
     }
 
-    public EmploymentsManager() {
+    public EmploymentsService() {
     }
 
     private List<Employment> currentEmployments;
@@ -52,7 +52,7 @@ public class EmploymentsManager implements Serializable {
     }
 
     public void checkIfBabysitterExists(Babysitter babysitter) {
-        babysittersManager.getBabysittersRepository().findByKey(babysitter.getUuid());
+        babysittersService.getBabysittersRepository().findByKey(babysitter.getUuid());
     }
 
     private void checkIfUserIsActive(Client client) {

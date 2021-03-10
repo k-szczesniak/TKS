@@ -2,11 +2,11 @@ package com.mycompany.firstapplication.Controllers;
 
 import com.mycompany.firstapplication.Babysitters.Babysitter;
 import com.mycompany.firstapplication.Employment.Employment;
-import com.mycompany.firstapplication.Employment.EmploymentsManager;
+import com.mycompany.firstapplication.services.EmploymentsService;
 import com.mycompany.firstapplication.Exceptions.EmploymentException;
 import com.mycompany.firstapplication.Exceptions.RepositoryException;
 import com.mycompany.firstapplication.Users.Client;
-import com.mycompany.firstapplication.Users.UsersManager;
+import com.mycompany.firstapplication.services.UsersService;
 import com.mycompany.firstapplication.utils.IdentityUtils;
 
 import javax.enterprise.context.ConversationScoped;
@@ -27,10 +27,10 @@ import java.util.ResourceBundle;
 public class EmploymentsController extends Conversational implements Serializable {
 
     @Inject
-    private EmploymentsManager employmentsManager;
+    private EmploymentsService employmentsService;
 
     @Inject
-    private UsersManager usersManager;
+    private UsersService usersService;
 
     @Inject
     private IdentityUtils identityUtils;
@@ -45,7 +45,7 @@ public class EmploymentsController extends Conversational implements Serializabl
 
     public String processNewEmployment() {
         if (identityUtils.isInClientRole()) {
-            setCurrentClient((Client) usersManager.getUsersRepository()
+            setCurrentClient((Client) usersService.getUsersRepository()
                     .findUserByLogin(identityUtils.getUserLogin()));
         }
         beginNewConversation();
@@ -55,10 +55,10 @@ public class EmploymentsController extends Conversational implements Serializabl
     public String confirmNewEmployment() {
         int errorNo = 0;
         try {
-            employmentsManager.checkIfBabysitterExists(currentBabysitter);
-            employmentsManager.checkIfBabysitterIsCurrentlyEmployed(currentBabysitter);
+            employmentsService.checkIfBabysitterExists(currentBabysitter);
+            employmentsService.checkIfBabysitterIsCurrentlyEmployed(currentBabysitter);
             errorNo++;
-            employmentsManager.employBabysitter(currentClient, currentBabysitter);
+            employmentsService.employBabysitter(currentClient, currentBabysitter);
         } catch (EmploymentException e) {
             if (errorNo == 0) {
                 FacesContext.getCurrentInstance().addMessage(
@@ -87,21 +87,21 @@ public class EmploymentsController extends Conversational implements Serializabl
     public void valueChangedUser(ValueChangeEvent event) {
         if (!event.getNewValue().toString().equals("0")) {
             String id = event.getNewValue().toString();
-            employmentsManager.setCurrentEmployments(
-                    employmentsManager.getEmploymentsRepository().showSelected(id));
+            employmentsService.setCurrentEmployments(
+                    employmentsService.getEmploymentsRepository().showSelected(id));
         }
     }
 
     public void valueChangedBabysitter(ValueChangeEvent event) {
         if (!event.getNewValue().toString().equals("0")) {
             String id = event.getNewValue().toString();
-            employmentsManager.setCurrentEmployments(
-                    employmentsManager.getEmploymentsRepository().showSelected(id));
+            employmentsService.setCurrentEmployments(
+                    employmentsService.getEmploymentsRepository().showSelected(id));
         }
     }
 
-    public EmploymentsManager getEmploymentsManager() {
-        return employmentsManager;
+    public EmploymentsService getEmploymentsManager() {
+        return employmentsService;
     }
 
     public DateTimeFormatter getFormatter() {
@@ -125,12 +125,12 @@ public class EmploymentsController extends Conversational implements Serializabl
     }
 
     public void setCurrentEmployments(List<Employment> currentEmployments) {
-        employmentsManager.setCurrentEmployments(currentEmployments);
+        employmentsService.setCurrentEmployments(currentEmployments);
     }
 
     public void employmentValidation(FacesContext context, UIComponent component, Object value) {
         try {
-            employmentsManager.checkIfBabysitterMeetsRequirements(currentBabysitter,
+            employmentsService.checkIfBabysitterMeetsRequirements(currentBabysitter,
                     currentClient.getAgeOfTheYoungestChild(),
                     currentClient.getNumberOfChildren());
         } catch (EmploymentException exception) {
@@ -147,7 +147,7 @@ public class EmploymentsController extends Conversational implements Serializabl
 
     public String deleteEmployment(Employment employment) {
         try {
-            employmentsManager.deleteEmployment(employment);
+            employmentsService.deleteEmployment(employment);
         } catch (RepositoryException exception) {
             FacesContext.getCurrentInstance().addMessage(
                     "EmploymentList:errorLabel",
@@ -164,7 +164,7 @@ public class EmploymentsController extends Conversational implements Serializabl
 
     public Employment getActualEmploymentForClientOrNull(Client client) {
         try {
-            return employmentsManager.getActualEmploymentForClient(client);
+            return employmentsService.getActualEmploymentForClient(client);
         } catch (EmploymentException e) {
             return null;
         }
@@ -172,17 +172,17 @@ public class EmploymentsController extends Conversational implements Serializabl
 
     public Employment getActualEmploymentForBabysitterOrNull(Babysitter babysitter) {
         try {
-            return employmentsManager.getActualEmploymentForBabysitter(babysitter);
+            return employmentsService.getActualEmploymentForBabysitter(babysitter);
         } catch (EmploymentException e) {
             return null;
         }
     }
 
     public List<Employment> getCurrentEmployments() {
-        return employmentsManager.getCurrentEmployments();
+        return employmentsService.getCurrentEmployments();
     }
 
     public void refreshCurrent() {
-        employmentsManager.initCurrentPersons();
+        employmentsService.initCurrentPersons();
     }
 }

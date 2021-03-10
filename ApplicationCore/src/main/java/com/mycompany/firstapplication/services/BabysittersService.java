@@ -1,25 +1,25 @@
-package com.mycompany.firstapplication.Babysitters;
+package com.mycompany.firstapplication.services;
 
+import com.mycompany.firstapplication.Babysitters.Babysitter;
+import com.mycompany.firstapplication.Babysitters.BabysittersRepository;
 import com.mycompany.firstapplication.Employment.Employment;
-import com.mycompany.firstapplication.Employment.EmploymentsManager;
 import com.mycompany.firstapplication.Exceptions.BabysitterException;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
-public class BabysittersManager implements Serializable {
+public class BabysittersService implements Serializable {
 
     @Inject
     private BabysittersRepository babysittersRepository;
 
     @Inject
-    private EmploymentsManager employmentsManager;
+    private EmploymentsService employmentsService;
 
     private List<Babysitter> currentBabysitters;
 
@@ -31,7 +31,7 @@ public class BabysittersManager implements Serializable {
         this.currentBabysitters = currentBabysitters;
     }
 
-    public BabysittersManager() {
+    public BabysittersService() {
     }
 
     public List<Babysitter> getBabysittersList() {
@@ -42,7 +42,7 @@ public class BabysittersManager implements Serializable {
         return babysittersRepository;
     }
 
-    public BabysittersManager(BabysittersRepository babysittersRepository) {
+    public BabysittersService(BabysittersRepository babysittersRepository) {
         this.babysittersRepository = babysittersRepository;
     }
 
@@ -57,7 +57,7 @@ public class BabysittersManager implements Serializable {
     }
 
     public void deleteBabysitterFromEmploymentList(Babysitter babysitter) {
-        for (Employment employment : employmentsManager.getAllEmploymentsForBabysitter(babysitter)) {
+        for (Employment employment : employmentsService.getAllEmploymentsForBabysitter(babysitter)) {
             employment.setBabysitter(null);
         }
     }

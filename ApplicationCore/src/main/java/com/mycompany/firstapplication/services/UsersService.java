@@ -1,6 +1,9 @@
-package com.mycompany.firstapplication.Users;
+package com.mycompany.firstapplication.services;
 
 import com.mycompany.firstapplication.Exceptions.UserException;
+import com.mycompany.firstapplication.Users.Client;
+import com.mycompany.firstapplication.Users.User;
+import com.mycompany.firstapplication.Users.UsersRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -9,19 +12,19 @@ import java.io.Serializable;
 import java.util.List;
 
 @ApplicationScoped
-public class UsersManager implements Serializable {
+public class UsersService implements Serializable {
 
     @Inject
     private UsersRepository usersRepository;
 
-    public UsersManager() {
+    public UsersService() {
     }
 
     public UsersRepository getUsersRepository() {
         return usersRepository;
     }
 
-    public UsersManager(UsersRepository usersRepository) {
+    public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
 

@@ -2,6 +2,7 @@ package com.mycompany.firstapplication.Controllers;
 
 import com.mycompany.firstapplication.Exceptions.UserException;
 import com.mycompany.firstapplication.Users.*;
+import com.mycompany.firstapplication.services.UsersService;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.annotation.PostConstruct;
@@ -23,7 +24,7 @@ import java.util.ResourceBundle;
 public class UsersController extends Conversational implements Serializable {
 
     @Inject
-    private UsersManager usersManager;
+    private UsersService usersService;
 
     private final Client newClient = new Client();
     private final SuperUser newSuperUser = new SuperUser();
@@ -37,8 +38,8 @@ public class UsersController extends Conversational implements Serializable {
     private User copyOfUser;
     private User originalUser;
 
-    public UsersManager getUsersManager() {
-        return usersManager;
+    public UsersService getUsersManager() {
+        return usersService;
     }
 
     public String modifyUser(User user) {
@@ -85,7 +86,7 @@ public class UsersController extends Conversational implements Serializable {
         String login = (String) value;
         if (!login.matches("\\w{2,}"))
             throw new ValidatorException(new FacesMessage(resourceBundle.getString("validatorMessageLogin")));
-        if (!usersManager.getUsersRepository().isLoginUnique(login, originalUser)) {
+        if (!usersService.getUsersRepository().isLoginUnique(login, originalUser)) {
             throw new ValidatorException(new FacesMessage(resourceBundle.getString("validatorMessageLoginUsed")));
         }
     }
@@ -102,13 +103,13 @@ public class UsersController extends Conversational implements Serializable {
         try {
             switch (typeOfUser) {
                 case ADMIN:
-                    usersManager.addUser(newAdmin);
+                    usersService.addUser(newAdmin);
                     break;
                 case SUPERUSER:
-                    usersManager.addUser(newSuperUser);
+                    usersService.addUser(newSuperUser);
                     break;
                 case CLIENT:
-                    usersManager.addUser(newClient);
+                    usersService.addUser(newClient);
                     break;
             }
             return backToMain();
@@ -168,7 +169,7 @@ public class UsersController extends Conversational implements Serializable {
 
     @PostConstruct
     public void initCurrentPersons() {
-        currentUsers = usersManager.getUsersRepository().getUsersList();
+        currentUsers = usersService.getUsersRepository().getUsersList();
     }
 
     public User getCopyOfUser() {

@@ -31,7 +31,7 @@
                                     onchange="submit()">
                                 <f:selectItem itemLabel="#{msg.idlabel}" itemValue="0"/>
                                 <f:selectItems
-                                        value="#{employmentsController.employmentsManager.allUsersWithEmploymentArray}"
+                                        value="#{employmentsController.employmentsService.allUsersWithEmploymentArray}"
                                         var="item"
                                         itemLabel="#{item.uuid}" itemValue="#{item.uuid}"/>
                             </h:selectOneMenu>
@@ -45,7 +45,7 @@
                                         onchange="submit()">
                                     <f:selectItem itemLabel="#{msg.idlabel}" itemValue="0"/>
                                     <f:selectItems
-                                            value="#{employmentsController.employmentsManager.allBabysittersConnectedToEmploymentArray}"
+                                            value="#{employmentsController.employmentsService.allBabysittersConnectedToEmploymentArray}"
                                             var="item"
                                             itemLabel="#{item.uuid}" itemValue="#{item.uuid}"/>
                                 </h:selectOneMenu>
@@ -70,7 +70,7 @@
                             <h:message for="delete"/>
 
                             <h:commandButton id="endEmplyment" value="#{msg.endOfEmployment}"
-                                             action="#{employmentsController.employmentsManager.endEmployment(employment)}"
+                                             action="#{employmentsController.employmentsService.endEmployment(employment)}"
                                              rendered="#{employment.endOfEmployment == null}"
                                              class="positive_btn"/>
                             <h:message for="endEmplyment"/>

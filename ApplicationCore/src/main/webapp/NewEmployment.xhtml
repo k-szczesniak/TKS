@@ -23,7 +23,7 @@
                                 value="#{employmentsController.currentClient}" required="true"
                                 size="1">
                             <f:converter binding="#{userToIdConverter}"/>
-                            <f:selectItems value="#{usersController.usersManager.clientList}"
+                            <f:selectItems value="#{usersController.usersService.clientList}"
                                            var="client"
                                            itemValue="${client}" itemDisabled="#{!client.active}"
                                            itemLabel="[#{client.uuid}] #{client.name} #{client.surname}"/>

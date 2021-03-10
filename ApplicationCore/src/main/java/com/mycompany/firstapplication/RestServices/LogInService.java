@@ -3,7 +3,7 @@ package com.mycompany.firstapplication.RestServices;
 import com.mycompany.firstapplication.Security.JWTAuthenticationMechanism;
 import com.mycompany.firstapplication.Security.JWTGeneratorVerifier;
 import com.mycompany.firstapplication.Security.LoginData;
-import com.mycompany.firstapplication.Users.UsersManager;
+import com.mycompany.firstapplication.services.UsersService;
 import com.nimbusds.jwt.SignedJWT;
 
 import javax.inject.Inject;
@@ -11,7 +11,6 @@ import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.Password;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
-import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -30,7 +29,7 @@ public class LogInService {
     IdentityStoreHandler identityStoreHandler;
 
     @Inject
-    private UsersManager usersManager;
+    private UsersService usersService;
 
     @POST
     public Response logIn(LoginData loginData) {
@@ -53,7 +52,7 @@ public class LogInService {
         String tokenToUpdate = authHeader.substring(JWTAuthenticationMechanism.BEARER.length());
         try {
             String login = SignedJWT.parse(tokenToUpdate).getJWTClaimsSet().getSubject();
-            if (usersManager.checkIfActive(login)) {
+            if (usersService.checkIfActive(login)) {
                 return Response.status(202)
                         .type("application/jwt")
                         .entity(JWTGeneratorVerifier.updateJWTString(tokenToUpdate))

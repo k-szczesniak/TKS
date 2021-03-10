@@ -1,12 +1,11 @@
 package com.mycompany.firstapplication.RestServices;
 
 import com.mycompany.firstapplication.Babysitters.Babysitter;
-import com.mycompany.firstapplication.Babysitters.BabysittersManager;
+import com.mycompany.firstapplication.services.BabysittersService;
 import com.mycompany.firstapplication.Babysitters.TeachingSitter;
 import com.mycompany.firstapplication.Babysitters.TidingSitter;
 import com.mycompany.firstapplication.Exceptions.RepositoryException;
 import com.mycompany.firstapplication.Filters.EntitySignatureValidatorFilterBinding;
-import com.mycompany.firstapplication.Interfaces.EntityToSign;
 import com.mycompany.firstapplication.utils.EntityIdentitySignerVerifier;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -26,7 +25,7 @@ import java.util.Set;
 public class ResourcesService {
 
     @Inject
-    private BabysittersManager babysittersManager;
+    private BabysittersService babysittersService;
 
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -35,8 +34,8 @@ public class ResourcesService {
     public Response getBabysitter(@PathParam("uuid") String uuid) {
         try {
             return Response.status(200)
-                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((babysittersManager.findByKey(uuid))))
-                    .entity(babysittersManager.findByKey(uuid)).build();
+                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((babysittersService.findByKey(uuid))))
+                    .entity(babysittersService.findByKey(uuid)).build();
         } catch (RepositoryException e) {
             e.printStackTrace();
             return Response.status(400).build();
@@ -45,7 +44,7 @@ public class ResourcesService {
 
     @GET
     public Response getAllBabysitters() {
-        return Response.status(200).entity(babysittersManager.getBabysittersList()).build();
+        return Response.status(200).entity(babysittersService.getBabysittersList()).build();
     }
 
     @PUT
@@ -58,7 +57,7 @@ public class ResourcesService {
         }
         try {
             validation(babysitter);
-            BeanUtils.copyProperties(babysittersManager.findByKey(uuid), babysitter);
+            BeanUtils.copyProperties(babysittersService.findByKey(uuid), babysitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -76,7 +75,7 @@ public class ResourcesService {
         }
         try {
             validation(teachingSitter);
-            BeanUtils.copyProperties(babysittersManager.findByKey(uuid), teachingSitter);
+            BeanUtils.copyProperties(babysittersService.findByKey(uuid), teachingSitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -94,7 +93,7 @@ public class ResourcesService {
         }
         try {
             validation(tidingSitter);
-            BeanUtils.copyProperties(babysittersManager.findByKey(uuid), tidingSitter);
+            BeanUtils.copyProperties(babysittersService.findByKey(uuid), tidingSitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -111,7 +110,7 @@ public class ResourcesService {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysittersManager.addBabysitter(babysitter);
+        babysittersService.addBabysitter(babysitter);
         return Response.status(201).build();
     }
 
@@ -124,7 +123,7 @@ public class ResourcesService {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysittersManager.addBabysitter(teachingSitter);
+        babysittersService.addBabysitter(teachingSitter);
         return Response.status(201).build();
     }
 
@@ -137,14 +136,14 @@ public class ResourcesService {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysittersManager.addBabysitter(tidingSitter);
+        babysittersService.addBabysitter(tidingSitter);
         return Response.status(201).build();
     }
 
     @DELETE
     @Path("{uuid}")
     public Response deleteBabysitter(@PathParam("uuid") String uuid) {
-        babysittersManager.deleteBabysitter(babysittersManager.findByKey(uuid));
+        babysittersService.deleteBabysitter(babysittersService.findByKey(uuid));
         return Response.status(204).build();
     }
 

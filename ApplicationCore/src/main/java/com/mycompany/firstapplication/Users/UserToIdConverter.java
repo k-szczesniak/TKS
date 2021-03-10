@@ -1,5 +1,7 @@
 package com.mycompany.firstapplication.Users;
 
+import com.mycompany.firstapplication.services.UsersService;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -11,11 +13,11 @@ import java.io.Serializable;
 public class UserToIdConverter implements Converter<Client>, Serializable {
 
     @Inject
-    private UsersManager usersManager;
+    private UsersService usersService;
 
     @Override
     public Client getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
-        return (Client) usersManager.getUsersRepository().findUserByUuid(s);
+        return (Client) usersService.getUsersRepository().findUserByUuid(s);
     }
 
     @Override

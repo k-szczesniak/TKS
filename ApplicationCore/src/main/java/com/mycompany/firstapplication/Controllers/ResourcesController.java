@@ -3,6 +3,7 @@ package com.mycompany.firstapplication.Controllers;
 import com.mycompany.firstapplication.Babysitters.*;
 import com.mycompany.firstapplication.Exceptions.BabysitterException;
 import com.mycompany.firstapplication.Exceptions.RepositoryException;
+import com.mycompany.firstapplication.services.BabysittersService;
 import org.apache.commons.beanutils.BeanUtils;
 
 import javax.enterprise.context.ConversationScoped;
@@ -21,7 +22,7 @@ import java.util.ResourceBundle;
 public class ResourcesController extends Conversational implements Serializable {
 
     @Inject
-    private BabysittersManager babysittersManager;
+    private BabysittersService babysittersService;
 
     private final Babysitter newBabysitter = new Babysitter();
     private final TeachingSitter newTeachingSitter = new TeachingSitter();
@@ -36,8 +37,8 @@ public class ResourcesController extends Conversational implements Serializable 
             "bundles/messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
 
 
-    public BabysittersManager getBabysittersManager() {
-        return babysittersManager;
+    public BabysittersService getBabysittersManager() {
+        return babysittersService;
     }
 
     public String modifyBabysitter(Babysitter babysitter) {
@@ -54,7 +55,7 @@ public class ResourcesController extends Conversational implements Serializable 
     public void valueChanged(ValueChangeEvent event) {
         if (!event.getNewValue().toString().equals("0")) {
             String id = event.getNewValue().toString();
-            babysittersManager.setCurrentBabysitters(babysittersManager.getBabysittersRepository().showSelectedBabysitter(id));
+            babysittersService.setCurrentBabysitters(babysittersService.getBabysittersRepository().showSelectedBabysitter(id));
             setType();
         }
     }
@@ -107,13 +108,13 @@ public class ResourcesController extends Conversational implements Serializable 
     public String confirmNewBabysitter(TypeOfBabysitter typeOfBabysitter) {
         switch (typeOfBabysitter) {
             case NORMAL:
-                babysittersManager.addBabysitter(newBabysitter);
+                babysittersService.addBabysitter(newBabysitter);
                 break;
             case TEACHING:
-                babysittersManager.addBabysitter(newTeachingSitter);
+                babysittersService.addBabysitter(newTeachingSitter);
                 break;
             case TIDING:
-                babysittersManager.addBabysitter(newTidingSitter);
+                babysittersService.addBabysitter(newTidingSitter);
                 break;
         }
         return backToMain();
@@ -129,8 +130,8 @@ public class ResourcesController extends Conversational implements Serializable 
 
     public String deleteBabysitter(Babysitter babysitter) {
         try {
-            babysittersManager.deleteBabysitter(babysitter);
-            babysittersManager.deleteBabysitterFromEmploymentList(babysitter);
+            babysittersService.deleteBabysitter(babysitter);
+            babysittersService.deleteBabysitterFromEmploymentList(babysitter);
             return "BabysitterList";
         } catch (BabysitterException exception) {
             FacesContext.getCurrentInstance().addMessage("BabysitterList:errorLabel", new FacesMessage(resourceBundle.getString("babysitterOccupied")));
@@ -158,11 +159,11 @@ public class ResourcesController extends Conversational implements Serializable 
     }
 
     public List<Babysitter> getCurrentBabysitters() {
-        return babysittersManager.getCurrentBabysitters();
+        return babysittersService.getCurrentBabysitters();
     }
 
     public void refreshCurrent() {
-        babysittersManager.initCurrentPersons();
+        babysittersService.initCurrentPersons();
     }
 
 }

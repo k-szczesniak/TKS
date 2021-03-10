@@ -44,7 +44,7 @@
                                         >
                                     <f:selectItem itemLabel="#{msg.idlabel}" itemValue="0"/>
                                     <f:selectItems
-                                            value="#{resourcesController.babysittersManager.allBabysittersArray}"
+                                            value="#{resourcesController.babysittersService.allBabysittersArray}"
                                             var="item"
                                             itemLabel="#{item.uuid}" itemValue="#{item.uuid}"/>
                                 </h:selectOneMenu>

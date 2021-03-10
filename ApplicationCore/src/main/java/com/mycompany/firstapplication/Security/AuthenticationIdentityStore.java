@@ -1,7 +1,7 @@
 package com.mycompany.firstapplication.Security;
 
 import com.mycompany.firstapplication.Users.User;
-import com.mycompany.firstapplication.Users.UsersManager;
+import com.mycompany.firstapplication.services.UsersService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,14 +16,14 @@ import java.util.HashSet;
 public class AuthenticationIdentityStore implements IdentityStore {
 
     @Inject
-    UsersManager usersManager;
+    UsersService usersService;
 
     @Override
     public CredentialValidationResult validate(Credential credential) {
         if (credential instanceof UsernamePasswordCredential) {
             UsernamePasswordCredential usernamePasswordCredential =
                     (UsernamePasswordCredential) credential;
-            User user = usersManager
+            User user = usersService
                     .findByLoginPasswordActive(usernamePasswordCredential.getCaller(),
                             usernamePasswordCredential.getPasswordAsString());
             if (user != null) {
