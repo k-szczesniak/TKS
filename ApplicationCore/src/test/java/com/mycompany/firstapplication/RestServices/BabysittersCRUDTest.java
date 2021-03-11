@@ -1,6 +1,6 @@
 //package com.mycompany.firstapplication.RestServices;
 //
-//import com.mycompany.firstapplication.Babysitters.Babysitter;
+//import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 //import com.mycompany.firstapplication.Security.JWTGeneratorVerifier;
 //import com.mycompany.firstapplication.utils.EntityIdentitySignerVerifier;
 //import io.restassured.RestAssured;

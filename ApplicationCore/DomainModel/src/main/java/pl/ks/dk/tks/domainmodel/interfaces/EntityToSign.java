@@ -1,4 +1,4 @@
-package com.mycompany.firstapplication.Interfaces;
+package pl.ks.dk.tks.domainmodel.interfaces;
 
 import java.util.Map;
 

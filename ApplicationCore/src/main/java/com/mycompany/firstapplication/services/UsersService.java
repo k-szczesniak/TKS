@@ -7,7 +7,6 @@ import com.mycompany.firstapplication.Users.UsersRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.security.enterprise.credential.Password;
 import java.io.Serializable;
 import java.util.List;
 

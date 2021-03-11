@@ -1,4 +1,4 @@
-package com.mycompany.firstapplication.Employment;
+package pl.ks.dk.tks.domainmodel.employments;
 
 import com.mycompany.firstapplication.Babysitters.Babysitter;
 import com.mycompany.firstapplication.Exceptions.EmploymentException;
@@ -37,7 +37,7 @@ public class Employment {
 
     public double employmentDurationInHours() {
         if (isEnded()) {
-            long differenceInSeconds = SECONDS.between(beginningOfEmployment, endOfEmployment);
+            long differenceInSeconds = ChronoUnit.SECONDS.between(beginningOfEmployment, endOfEmployment);
             return Math.ceil(differenceInSeconds / 3600.0);
         }
         throw new EmploymentException("Employment has not been ended");

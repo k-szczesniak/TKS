@@ -1,7 +1,7 @@
 //package com.mycompany.firstapplication.RestServices;
 //
 //import com.mycompany.firstapplication.Security.JWTGeneratorVerifier;
-//import com.mycompany.firstapplication.Users.Admin;
+//import pl.ks.dk.tks.domainmodel.users.Admin;
 //import com.mycompany.firstapplication.utils.EntityIdentitySignerVerifier;
 //import io.restassured.RestAssured;
 //import io.restassured.http.Header;

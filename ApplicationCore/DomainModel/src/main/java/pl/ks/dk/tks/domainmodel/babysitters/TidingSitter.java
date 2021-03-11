@@ -1,4 +1,4 @@
-package com.mycompany.firstapplication.Babysitters;
+package pl.ks.dk.tks.domainmodel.babysitters;
 
 import com.mycompany.firstapplication.Exceptions.BabysitterException;
 import org.apache.commons.lang3.builder.ToStringBuilder;

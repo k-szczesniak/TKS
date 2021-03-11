@@ -1,4 +1,4 @@
-package com.mycompany.firstapplication.Users;
+package pl.ks.dk.tks.domainmodel.users;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;

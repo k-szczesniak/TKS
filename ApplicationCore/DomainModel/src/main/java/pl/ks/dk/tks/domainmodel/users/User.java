@@ -1,8 +1,7 @@
-package com.mycompany.firstapplication.Users;
+package pl.ks.dk.tks.domainmodel.users;
 
 import com.mycompany.firstapplication.Exceptions.UserException;
 import com.mycompany.firstapplication.Interfaces.EntityToSign;
-import com.nimbusds.jose.shaded.json.JSONObject;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
