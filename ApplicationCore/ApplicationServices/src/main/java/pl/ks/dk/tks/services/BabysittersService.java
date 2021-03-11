@@ -1,9 +1,6 @@
-package com.mycompany.firstapplication.services;
+package pl.ks.dk.tks.services;
 
-import com.mycompany.firstapplication.Babysitters.Babysitter;
-import com.mycompany.firstapplication.Babysitters.BabysittersRepository;
-import com.mycompany.firstapplication.Employment.Employment;
-import com.mycompany.firstapplication.Exceptions.BabysitterException;
+import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

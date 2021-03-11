@@ -1,12 +1,11 @@
 package pl.ks.dk.tks.domainmodel.employments;
 
-import com.mycompany.firstapplication.Babysitters.Babysitter;
-import com.mycompany.firstapplication.Exceptions.EmploymentException;
-import com.mycompany.firstapplication.Users.Client;
+import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
+import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
+import pl.ks.dk.tks.domainmodel.users.Client;
 
 import java.time.LocalDateTime;
-
-import static java.time.temporal.ChronoUnit.SECONDS;
+import java.time.temporal.ChronoUnit;
 
 public class Employment {
 

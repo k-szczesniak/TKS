@@ -1,7 +1,7 @@
 package pl.ks.dk.tks.domainmodel.users;
 
-import com.mycompany.firstapplication.Exceptions.UserException;
-import com.mycompany.firstapplication.Interfaces.EntityToSign;
+import pl.ks.dk.tks.domainmodel.exceptions.UserException;
+import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

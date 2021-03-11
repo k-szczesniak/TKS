@@ -1,7 +1,8 @@
 package pl.ks.dk.tks.domainmodel.babysitters;
 
-import com.mycompany.firstapplication.Exceptions.BabysitterException;
-import com.mycompany.firstapplication.Interfaces.EntityToSign;
+
+import pl.ks.dk.tks.domainmodel.exceptions.BabysitterException;
+import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
 
 import javax.validation.constraints.*;
 import java.util.HashMap;

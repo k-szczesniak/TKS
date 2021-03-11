@@ -1,9 +1,8 @@
-package com.mycompany.firstapplication.services;
+package pl.ks.dk.tks.services;
 
-import com.mycompany.firstapplication.Exceptions.UserException;
-import com.mycompany.firstapplication.Users.Client;
-import com.mycompany.firstapplication.Users.User;
-import com.mycompany.firstapplication.Users.UsersRepository;
+import pl.ks.dk.tks.domainmodel.exceptions.UserException;
+import pl.ks.dk.tks.domainmodel.users.Client;
+import pl.ks.dk.tks.domainmodel.users.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

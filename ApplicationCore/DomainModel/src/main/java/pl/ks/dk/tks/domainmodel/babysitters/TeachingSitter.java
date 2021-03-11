@@ -1,8 +1,7 @@
 package pl.ks.dk.tks.domainmodel.babysitters;
 
-import com.mycompany.firstapplication.Exceptions.BabysitterException;
-import com.mycompany.firstapplication.Interfaces.EntityToSign;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import pl.ks.dk.tks.domainmodel.exceptions.BabysitterException;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
