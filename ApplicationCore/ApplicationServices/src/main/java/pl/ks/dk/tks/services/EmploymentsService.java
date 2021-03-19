@@ -136,16 +136,16 @@ public class EmploymentsService implements Serializable {
         return allEmploymentsForBabysitterList;
     }
 
-    public Employment getActualEmploymentForClient(Client client) {
-        List<Employment> allEmploymentsList = employmentsRepository.getElements();
-
-        for (Employment employment : allEmploymentsList) {
-            if (employment.getClient() == client && employment.getEndOfEmployment() == null) {
-                return employment;
-            }
-        }
-        throw new EmploymentException("Client does not have any actual employment");
-    }
+//    public Employment getActualEmploymentForClient(Client client) {
+//        List<Employment> allEmploymentsList = employmentsRepository.getElements();
+//
+//        for (Employment employment : allEmploymentsList) {
+//            if (employment.getClient() == client && employment.getEndOfEmployment() == null) {
+//                return employment;
+//            }
+//        }
+//        throw new EmploymentException("Client does not have any actual employment");
+//    }
 
     public List<Employment> getActualEmploymentsForClient(Client client) {
         List<Employment> actualEmploymentList = new ArrayList<>();
