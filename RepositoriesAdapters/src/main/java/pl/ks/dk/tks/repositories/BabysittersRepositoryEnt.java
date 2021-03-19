@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
 import pl.ks.dk.tks.model.babysitters.TeachingSitterEnt;
 import pl.ks.dk.tks.model.babysitters.TidingSitterEnt;
-import pl.ks.dk.tks.model.exceptions.RepositoryExceptionEnt;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

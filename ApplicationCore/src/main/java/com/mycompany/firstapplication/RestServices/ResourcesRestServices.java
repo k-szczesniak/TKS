@@ -22,7 +22,7 @@ import java.util.Set;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/resources")
-public class ResourcesService {
+public class ResourcesRestServices {
 
     @Inject
     private BabysittersService babysittersService;

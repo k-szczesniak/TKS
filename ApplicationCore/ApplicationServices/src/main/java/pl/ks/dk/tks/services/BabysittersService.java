@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: OCZYSCIC REPO I SERWISY Z ZBEDNYCH METOD
+
 @ApplicationScoped
 public class BabysittersService implements Serializable {
 

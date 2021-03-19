@@ -139,49 +139,4 @@
         </user-data-constraint>
     </security-constraint>
 
-<!--MVC    -->
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>AdminPages</web-resource-name>
-            <url-pattern>/NewUser.xhtml</url-pattern>
-            <url-pattern>/NewUserConfirm.xhtml</url-pattern>
-            <url-pattern>/ModifyUser.xhtml</url-pattern>
-            <url-pattern>/ModifyUserConfirm.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>Admin</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>AdminAndSuperUserPages</web-resource-name>
-            <url-pattern>/NewBabysitter.xhtml</url-pattern>
-            <url-pattern>/NewBabysitterConfirm.xhtml</url-pattern>
-            <url-pattern>/ModifyBabysitter.xhtml</url-pattern>
-            <url-pattern>/ModifyBabysitterConfirm.xhtml</url-pattern>
-            <url-pattern>/ClientList.xhtml</url-pattern>
-            <url-pattern>/EmploymentList.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>Admin</role-name>
-            <role-name>SuperUser</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>LoggedInUserPages</web-resource-name>
-            <url-pattern>/BabysitterList.xhtml</url-pattern>
-            <url-pattern>/NewEmployment.xhtml</url-pattern>
-            <url-pattern>/NewEmploymentConfirm.xhtml</url-pattern>
-            <url-pattern>/auth/LogoutPage.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>Admin</role-name>
-            <role-name>SuperUser</role-name>
-            <role-name>Client</role-name>
-        </auth-constraint>
-    </security-constraint>
 </web-app>

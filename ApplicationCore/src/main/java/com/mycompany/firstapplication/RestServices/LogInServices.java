@@ -23,13 +23,13 @@ import java.text.ParseException;
 @Consumes(MediaType.APPLICATION_JSON)
 
 @Path("/auth")
-public class LogInService {
+public class LogInServices {
 
     @Inject
     IdentityStoreHandler identityStoreHandler;
 
     @Inject
-    private UsersService usersService;
+    private UsersRestServices usersRestServices;
 
     @POST
     public Response logIn(LoginData loginData) {
@@ -52,7 +52,7 @@ public class LogInService {
         String tokenToUpdate = authHeader.substring(JWTAuthenticationMechanism.BEARER.length());
         try {
             String login = SignedJWT.parse(tokenToUpdate).getJWTClaimsSet().getSubject();
-            if (usersService.checkIfActive(login)) {
+            if (usersRestServices.checkIfActive(login)) {
                 return Response.status(202)
                         .type("application/jwt")
                         .entity(JWTGeneratorVerifier.updateJWTString(tokenToUpdate))

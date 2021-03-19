@@ -21,7 +21,7 @@ import java.util.Set;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/users")
-public class UsersService {
+public class UsersRestServices {
 
     @Inject
     private com.mycompany.firstapplication.services.UsersService usersService;

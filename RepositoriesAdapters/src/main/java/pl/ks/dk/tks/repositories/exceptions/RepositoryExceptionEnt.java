@@ -1,4 +1,4 @@
-package pl.ks.dk.tks.model.exceptions;
+package pl.ks.dk.tks.repositories.exceptions;
 
 public class RepositoryExceptionEnt extends IllegalArgumentException {
     public RepositoryExceptionEnt(String s) {

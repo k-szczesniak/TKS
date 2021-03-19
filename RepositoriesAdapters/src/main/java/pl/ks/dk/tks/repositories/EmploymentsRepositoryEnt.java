@@ -4,7 +4,7 @@ package pl.ks.dk.tks.repositories;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.ks.dk.tks.model.employments.EmploymentEnt;
-import pl.ks.dk.tks.model.exceptions.RepositoryExceptionEnt;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
 
 import javax.annotation.PostConstruct;

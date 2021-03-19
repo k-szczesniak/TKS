@@ -1,7 +1,7 @@
 package pl.ks.dk.tks.repositories;
 
 
-import pl.ks.dk.tks.model.exceptions.RepositoryExceptionEnt;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import java.util.ArrayList;
 import java.util.List;

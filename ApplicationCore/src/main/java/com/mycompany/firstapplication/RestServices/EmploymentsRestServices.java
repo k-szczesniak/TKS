@@ -20,10 +20,10 @@ import javax.ws.rs.core.SecurityContext;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/employment")
-public class EmploymentServices {
+public class EmploymentsRestServices {
 
     @Inject
-    private UsersService usersService;
+    private UsersRestServices usersRestServices;
 
     @Inject
     private BabysittersService babysitterManager;
@@ -35,7 +35,7 @@ public class EmploymentServices {
     public Response getAllEmployments(@Context SecurityContext securityContext) {
         return Response.status(200)
                 .entity(employmentsService.getActualEmploymentsForClient((Client)
-                        usersService.findByLogin(securityContext.getUserPrincipal().getName())))
+                        usersRestServices.findByLogin(securityContext.getUserPrincipal().getName())))
                 .build();
     }
 
@@ -45,7 +45,7 @@ public class EmploymentServices {
                            @PathParam("uuid") String uuid) {
         try {
             Client client =
-                    (Client) usersService.findByLogin(securityContext.getUserPrincipal().getName());
+                    (Client) usersRestServices.findByLogin(securityContext.getUserPrincipal().getName());
             Babysitter babysitter = babysitterManager.findByKey(uuid);
             employmentsService.employBabysitter(client, babysitter);
         } catch (UserException | RepositoryException | EmploymentException e) {
