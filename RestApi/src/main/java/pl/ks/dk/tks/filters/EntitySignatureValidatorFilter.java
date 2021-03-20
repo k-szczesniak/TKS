@@ -1,6 +1,7 @@
 package pl.ks.dk.tks.filters;
 
-import com.mycompany.firstapplication.utils.EntityIdentitySignerVerifier;
+
+import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;

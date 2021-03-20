@@ -1,15 +1,20 @@
 package pl.ks.dk.tks.restservices;
 
-import com.mycompany.firstapplication.Exceptions.UserException;
-import com.mycompany.firstapplication.Filters.EntitySignatureValidatorFilterBinding;
-import com.mycompany.firstapplication.Users.*;
-import com.mycompany.firstapplication.utils.EntityIdentitySignerVerifier;
 import org.apache.commons.beanutils.BeanUtils;
+import pl.ks.dk.tks.domainmodel.exceptions.UserException;
+import pl.ks.dk.tks.domainmodel.users.Admin;
+import pl.ks.dk.tks.domainmodel.users.Client;
+import pl.ks.dk.tks.domainmodel.users.SuperUser;
+import pl.ks.dk.tks.dto.UserDTOWrapper;
+import pl.ks.dk.tks.filters.EntitySignatureValidatorFilterBinding;
+import pl.ks.dk.tks.userinterface.UserUseCase;
+import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,8 +27,10 @@ import java.util.Set;
 @Path("/users")
 public class UsersRestServices {
 
+    //TODO: W DOMAIN MODEL NIE POWINNO BYC PAYLOAD
+
     @Inject
-    private com.mycompany.firstapplication.services.UsersService usersService;
+    private UserUseCase userUseCase;
 
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -31,7 +38,7 @@ public class UsersRestServices {
     @Path("_self")
     public Response findSelf(@Context SecurityContext securityContext) {
         return Response.status(200)
-                .entity(UserDTOWrapper.wrap(usersService.findByLogin(securityContext.getUserPrincipal().getName())))
+                .entity(UserDTOWrapper.wrap(userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName())))
                 .build();
     }
 
@@ -40,8 +47,8 @@ public class UsersRestServices {
     public Response getClient(@PathParam("uuid") String uuid) {
         try {
             return Response.status(200)
-                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((usersService.findByKey(uuid))))
-                    .entity(UserDTOWrapper.wrap(usersService.findByKey(uuid)))
+                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((userUseCase.getUserByKey(uuid))))
+                    .entity(UserDTOWrapper.wrap(userUseCase.getUserByKey(uuid)))
                     .build();
         } catch (UserException e) {
             e.printStackTrace();
@@ -51,7 +58,7 @@ public class UsersRestServices {
 
     @GET
     public Response getAllUsers() {
-        return Response.status(200).entity(UserDTOWrapper.listWrapper(usersService.getUsersList()))
+        return Response.status(200).entity(UserDTOWrapper.listWrapper(userUseCase.getAllUsers()))
                 .build();
     }
 
@@ -64,7 +71,7 @@ public class UsersRestServices {
         }
         try {
             validation(admin);
-            BeanUtils.copyProperties(usersService.findByKey(uuid), admin);
+            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), admin);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -82,7 +89,7 @@ public class UsersRestServices {
         }
         try {
             validation(superUser);
-            BeanUtils.copyProperties(usersService.findByKey(uuid), superUser);
+            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), superUser);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -100,7 +107,7 @@ public class UsersRestServices {
         }
         try {
             validation(client);
-            BeanUtils.copyProperties(usersService.findByKey(uuid), client);
+            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), client);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -118,7 +125,7 @@ public class UsersRestServices {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        usersService.addUser(admin);
+        userUseCase.addUser(admin);
         return Response.status(201).build();
     }
 
@@ -131,7 +138,7 @@ public class UsersRestServices {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        usersService.addUser(superUser);
+        userUseCase.addUser(superUser);
         return Response.status(201).build();
     }
 
@@ -144,7 +151,7 @@ public class UsersRestServices {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        usersService.addUser(client);
+        userUseCase.addUser(client);
         return Response.status(201).build();
     }
 

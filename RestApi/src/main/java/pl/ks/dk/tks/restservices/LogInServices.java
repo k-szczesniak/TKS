@@ -1,9 +1,10 @@
 package pl.ks.dk.tks.restservices;
 
-import com.mycompany.firstapplication.Security.JWTAuthenticationMechanism;
-import com.mycompany.firstapplication.Security.JWTGeneratorVerifier;
-import com.mycompany.firstapplication.Security.LoginData;
 import com.nimbusds.jwt.SignedJWT;
+import pl.ks.dk.tks.security.JWTAuthenticationMechanism;
+import pl.ks.dk.tks.security.JWTGeneratorVerifier;
+import pl.ks.dk.tks.security.LoginData;
+import pl.ks.dk.tks.userinterface.UserUseCase;
 
 import javax.inject.Inject;
 import javax.security.enterprise.credential.Credential;
@@ -12,6 +13,7 @@ import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,7 +29,7 @@ public class LogInServices {
     IdentityStoreHandler identityStoreHandler;
 
     @Inject
-    private UsersRestServices usersRestServices;
+    private UserUseCase userUseCase;
 
     @POST
     public Response logIn(LoginData loginData) {
@@ -50,7 +52,7 @@ public class LogInServices {
         String tokenToUpdate = authHeader.substring(JWTAuthenticationMechanism.BEARER.length());
         try {
             String login = SignedJWT.parse(tokenToUpdate).getJWTClaimsSet().getSubject();
-            if (usersRestServices.checkIfActive(login)) {
+            if (userUseCase.checkIfUserIsActive(login)) {
                 return Response.status(202)
                         .type("application/jwt")
                         .entity(JWTGeneratorVerifier.updateJWTString(tokenToUpdate))

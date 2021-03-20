@@ -11,6 +11,12 @@ import java.util.List;
 
 @ApplicationScoped
 public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
+
+    //TODO:convertery dorobic
+
+    @Inject
+    private EmploymentsRepositoryEnt employmentsRepositoryEnt;
+
     @Override
     public void addEmployment(Client client, Babysitter babysitter) {
 

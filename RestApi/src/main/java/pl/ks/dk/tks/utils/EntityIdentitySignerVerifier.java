@@ -1,9 +1,10 @@
 package pl.ks.dk.tks.utils;
 
-import com.mycompany.firstapplication.Interfaces.EntityToSign;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.shaded.json.JSONObject;
+import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
 
 import java.text.ParseException;
 

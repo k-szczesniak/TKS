@@ -33,7 +33,7 @@ public class EmploymentsRestServices {
     public Response getAllEmployments(@Context SecurityContext securityContext) {
         return Response.status(200)
                 .entity(employmentUseCase.getActualEmploymentsForClient((Client)
-                        userUseCase.findByLogin(securityContext.getUserPrincipal().getName())))
+                        userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName())))
                 .build();
     }
 
@@ -42,9 +42,9 @@ public class EmploymentsRestServices {
     public Response employ(@Context SecurityContext securityContext, @PathParam("uuid") String uuid) {
         try {
             Client client =
-                    (Client) userUseCase.findByLogin(securityContext.getUserPrincipal().getName());
-            Babysitter babysitter = babysitterUseCase.findByKey(uuid);
-            employmentUseCase.employBabysitter(client, babysitter);
+                    (Client) userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName());
+            Babysitter babysitter = babysitterUseCase.getBabysitterByKey(uuid);
+            employmentUseCase.employ(client, babysitter);
         } catch (UserException | EmploymentException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -52,5 +52,5 @@ public class EmploymentsRestServices {
         return Response.status(201).build();
     }
 
-    //TODO: ZASTANOWIC SIE NAD WYJATKAMI - SERVICE EXCEPTION
+    //TODO: ZASTANOWIC SIE NAD WYJATKAMI - SERVICE EXCEPTION?
 }

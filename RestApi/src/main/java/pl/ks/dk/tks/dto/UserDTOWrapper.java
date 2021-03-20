@@ -1,6 +1,10 @@
 package pl.ks.dk.tks.dto;
 
 import org.apache.commons.beanutils.BeanUtils;
+import pl.ks.dk.tks.domainmodel.users.Admin;
+import pl.ks.dk.tks.domainmodel.users.Client;
+import pl.ks.dk.tks.domainmodel.users.SuperUser;
+import pl.ks.dk.tks.domainmodel.users.User;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

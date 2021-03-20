@@ -2,6 +2,9 @@ package pl.ks.dk.tks.restservices;
 
 import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
+import pl.ks.dk.tks.domainmodel.babysitters.TeachingSitter;
+import pl.ks.dk.tks.domainmodel.babysitters.TidingSitter;
+import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
 import pl.ks.dk.tks.filters.EntitySignatureValidatorFilterBinding;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
 import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
@@ -34,10 +37,11 @@ public class ResourcesRestServices {
     @Path("{uuid}")
     public Response getBabysitter(@PathParam("uuid") String uuid) {
         try {
+            EntityToSign entityToSign = babysitterUseCase.getBabysitterByKey(uuid);
             return Response.status(200)
-                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((babysitterUseCase.findByKey(uuid))))
-                    .entity(babysitterUseCase.findByKey(uuid)).build();
-        } catch (RepositoryException e) {
+                    .header("ETag", EntityIdentitySignerVerifier.calculateETag(entityToSign))
+                    .entity(entityToSign).build();
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(400).build();
         }
@@ -45,7 +49,7 @@ public class ResourcesRestServices {
 
     @GET
     public Response getAllBabysitters() {
-        return Response.status(200).entity(babysitterUseCase.getBabysittersList()).build();
+        return Response.status(200).entity(babysitterUseCase.getAllBabysitters()).build();
     }
 
     @PUT
@@ -58,7 +62,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(babysitter);
-            BeanUtils.copyProperties(babysitterUseCase.findByKey(uuid), babysitter);
+            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid), babysitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -76,7 +80,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(teachingSitter);
-            BeanUtils.copyProperties(babysitterUseCase.findByKey(uuid), teachingSitter);
+            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid), teachingSitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -94,7 +98,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(tidingSitter);
-            BeanUtils.copyProperties(babysitterUseCase.findByKey(uuid), tidingSitter);
+            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid), tidingSitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -144,7 +148,7 @@ public class ResourcesRestServices {
     @DELETE
     @Path("{uuid}")
     public Response deleteBabysitter(@PathParam("uuid") String uuid) {
-        babysitterUseCase.deleteBabysitter(babysitterUseCase.findByKey(uuid));
+        babysitterUseCase.deleteBabysitter(babysitterUseCase.getBabysitterByKey(uuid));
         return Response.status(204).build();
     }
 
