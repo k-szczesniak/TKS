@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
 
+//TODO: USYSTEMATYZOWAC NAZWY PAKIETOW I KLAS
+
 @ApplicationScoped
 public class UsersService implements Serializable {
 
