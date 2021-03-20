@@ -9,7 +9,6 @@ import pl.ks.dk.tks.model.users.UserEnt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -19,18 +18,6 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
 
     public List<UserEnt> getUsersList() {
         return getElements();
-    }
-
-    public List<ClientEnt> getClientList() {
-        List<ClientEnt> clientList = new ArrayList<>();
-        List<UserEnt> elements = getUsersList();
-
-        for (UserEnt element : elements) {
-            if (element instanceof ClientEnt) {
-                clientList.add((ClientEnt) element);
-            }
-        }
-        return clientList;
     }
 
     @Override
@@ -43,32 +30,13 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
         }
     }
 
-    public boolean isLoginUnique(String login) {
+    private boolean isLoginUnique(String login) {
         for (UserEnt user : getElements()) {
             if (user.getLogin().equals(login)) {
                 return false;
             }
         }
         return true;
-    }
-
-    public boolean isLoginUnique(String login, UserEnt user1) {
-        for (UserEnt user : getElements()) {
-            if (user.getLogin().equals(login) && user != user1) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public List<UserEnt> showSelectedUser(String key, boolean checkById) {
-        List<UserEnt> temporaryUsersList = new ArrayList<>();
-        if (checkById) {
-            temporaryUsersList.add(findUserByUuid(key));
-        } else {
-            temporaryUsersList.add(findUserByLogin(key));
-        }
-        return temporaryUsersList;
     }
 
     public UserEnt findUserByUuid(String uuid) {
@@ -103,4 +71,36 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
                 new ClientEnt("jKwiatkowska", "Janina", "Kwiatkowska", "kwiatkowska", "Client", 2, 5));
         addElement(new ClientEnt("aWiadro", "Agata", "Wiadro", "wiadro", "Client", 1, 13));
     }
+
+
+//    public boolean isLoginUnique(String login, UserEnt user1) {
+//        for (UserEnt user : getElements()) {
+//            if (user.getLogin().equals(login) && user != user1) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+
+//    public List<ClientEnt> getClientList() {
+//        List<ClientEnt> clientList = new ArrayList<>();
+//        List<UserEnt> elements = getUsersList();
+//
+//        for (UserEnt element : elements) {
+//            if (element instanceof ClientEnt) {
+//                clientList.add((ClientEnt) element);
+//            }
+//        }
+//        return clientList;
+//    }
+
+//    public List<UserEnt> showSelectedUser(String key, boolean checkById) {
+//        List<UserEnt> temporaryUsersList = new ArrayList<>();
+//        if (checkById) {
+//            temporaryUsersList.add(findUserByUuid(key));
+//        } else {
+//            temporaryUsersList.add(findUserByLogin(key));
+//        }
+//        return temporaryUsersList;
+//    }
 }

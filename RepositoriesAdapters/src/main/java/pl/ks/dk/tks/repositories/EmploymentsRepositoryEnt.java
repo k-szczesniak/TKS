@@ -4,14 +4,11 @@ package pl.ks.dk.tks.repositories;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.ks.dk.tks.model.employments.EmploymentEnt;
-import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 @ApplicationScoped
 public class EmploymentsRepositoryEnt extends RepositoryEnt<EmploymentEnt> {
@@ -29,33 +26,16 @@ public class EmploymentsRepositoryEnt extends RepositoryEnt<EmploymentEnt> {
         super.addElement(element);
     }
 
-    public EmploymentEnt findByKey(String uuid) {
-        List<EmploymentEnt> employmentList = getElements();
-
-        for (EmploymentEnt employment : employmentList) {
-            if (employment.getUuid().equals(uuid)) {
-                return employment;
-            }
-        }
-        throw new RepositoryExceptionEnt("Element not found");
-    }
-
-    public List<EmploymentEnt> showSelected(String id) {
-        List<EmploymentEnt> temporaryEmploymentList = new ArrayList<>();
-        for (EmploymentEnt employment : getElements()) {
-            if (employment.getBabysitter() != null) {
-                if (employment.getClient().getUuid().equals(id) || employment.getBabysitter().getUuid().equals(id)) {
-                    temporaryEmploymentList.add(employment);
-                    break;
-                }
-            } else {
-                if (employment.getClient().getUuid().equals(id)) {
-                    temporaryEmploymentList.add(employment);
-                    break;
-                }
-            }
-        }
-        return temporaryEmploymentList;
+    @PostConstruct
+    public void initEmploymentList() {
+        babysittersRepositoryEnt.getBabysittersList().get(1).setEmployed(true);
+        babysittersRepositoryEnt.getBabysittersList().get(2).setEmployed(true);
+        addElement(new EmploymentEnt(
+                babysittersRepositoryEnt.getBabysittersList().get(1),
+                (ClientEnt) usersRepositoryEnt.getElements().get(2)));
+        addElement(new EmploymentEnt(
+                babysittersRepositoryEnt.getBabysittersList().get(2),
+                (ClientEnt) usersRepositoryEnt.getElements().get(3)));
     }
 
     public String toString() {
@@ -70,15 +50,33 @@ public class EmploymentsRepositoryEnt extends RepositoryEnt<EmploymentEnt> {
         return stringBuilder.toString();
     }
 
-    @PostConstruct
-    public void initEmploymentList() {
-        babysittersRepositoryEnt.getBabysittersList().get(1).setEmployed(true);
-        babysittersRepositoryEnt.getBabysittersList().get(2).setEmployed(true);
-        addElement(new EmploymentEnt(
-                babysittersRepositoryEnt.getBabysittersList().get(1),
-                (ClientEnt) usersRepositoryEnt.getElements().get(2)));
-        addElement(new EmploymentEnt(
-                babysittersRepositoryEnt.getBabysittersList().get(2),
-                (ClientEnt) usersRepositoryEnt.getElements().get(3)));
-    }
+
+//    public EmploymentEnt findByKey(String uuid) {
+//        List<EmploymentEnt> employmentList = getElements();
+//
+//        for (EmploymentEnt employment : employmentList) {
+//            if (employment.getUuid().equals(uuid)) {
+//                return employment;
+//            }
+//        }
+//        throw new RepositoryExceptionEnt("Element not found");
+//    }
+//
+//    public List<EmploymentEnt> showSelected(String id) {
+//        List<EmploymentEnt> temporaryEmploymentList = new ArrayList<>();
+//        for (EmploymentEnt employment : getElements()) {
+//            if (employment.getBabysitter() != null) {
+//                if (employment.getClient().getUuid().equals(id) || employment.getBabysitter().getUuid().equals(id)) {
+//                    temporaryEmploymentList.add(employment);
+//                    break;
+//                }
+//            } else {
+//                if (employment.getClient().getUuid().equals(id)) {
+//                    temporaryEmploymentList.add(employment);
+//                    break;
+//                }
+//            }
+//        }
+//        return temporaryEmploymentList;
+//    }
 }

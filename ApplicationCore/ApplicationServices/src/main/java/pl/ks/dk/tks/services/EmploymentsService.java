@@ -41,7 +41,6 @@ public class EmploymentsService implements EmploymentUseCase {
         }
     }
 
-    //public
     private void checkIfBabysitterMeetsRequirements(Babysitter babysitter, int minAge,
                                                     int numberOfChildren) {
         if (babysitter.getMinChildAge() > minAge) {
@@ -52,7 +51,6 @@ public class EmploymentsService implements EmploymentUseCase {
         }
     }
 
-    //public
     private void checkIfBabysitterIsCurrentlyEmployed(Babysitter babysitter) {
         if (babysitter.isEmployed()) {
             throw new EmploymentException("Babysitter already employed");

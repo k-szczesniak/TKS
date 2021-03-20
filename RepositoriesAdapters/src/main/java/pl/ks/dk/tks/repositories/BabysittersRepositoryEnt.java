@@ -10,7 +10,6 @@ import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,6 +20,11 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
     @Override public void addElement(BabysitterEnt element) {
         element.setUuid(RandomStringUtils.randomNumeric(SHORT_ID_LENGTH));
         super.addElement(element);
+    }
+
+    @Override
+    public void deleteElement(BabysitterEnt babysitter) {
+        super.deleteElement(babysitter);
     }
 
     public List<BabysitterEnt> getBabysittersList() {
@@ -38,6 +42,17 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
         throw new RepositoryExceptionEnt("Element not found");
     }
 
+    @PostConstruct
+    private void initBabysittersList() {
+        addElement(new BabysitterEnt("Anna", "Kwiatkowska", 123, 12, 4));
+        addElement(new BabysitterEnt("Kinga", "Rusin", 50, 4, 4));
+        addElement(new BabysitterEnt("Joanna", "Krupa", 40, 7, 2));
+        addElement(new TidingSitterEnt("Renia", "Sprzątająca", 60, 1, 2, 40));
+        addElement(new TeachingSitterEnt("Jola", "Ucząca", 100, 4, 1, 3));
+        addElement(new TeachingSitterEnt("Sylwia", "Taczka", 75, 4, 6, 10));
+        addElement(new TeachingSitterEnt("Bożena", "Jajko", 120, 1, 25, 25));
+    }
+
     public String toString() {
         ToStringBuilder stringBuilder = new ToStringBuilder(this);
         stringBuilder.append(System.getProperty("line.separator"));
@@ -50,25 +65,9 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
         return stringBuilder.toString();
     }
 
-    public List<BabysitterEnt> showSelectedBabysitter(String id) {
-        List<BabysitterEnt> temporaryBabysittersList = new ArrayList<>();
-        temporaryBabysittersList.add(findByKey(id));
-        return temporaryBabysittersList;
-    }
-
-    @Override
-    public void deleteElement(BabysitterEnt babysitter) {
-        super.deleteElement(babysitter);
-    }
-
-    @PostConstruct
-    private void initBabysittersList() {
-        addElement(new BabysitterEnt("Anna", "Kwiatkowska", 123, 12, 4));
-        addElement(new BabysitterEnt("Kinga", "Rusin", 50, 4, 4));
-        addElement(new BabysitterEnt("Joanna", "Krupa", 40, 7, 2));
-        addElement(new TidingSitterEnt("Renia", "Sprzątająca", 60, 1, 2, 40));
-        addElement(new TeachingSitterEnt("Jola", "Ucząca", 100, 4, 1, 3));
-        addElement(new TeachingSitterEnt("Sylwia", "Taczka", 75, 4, 6, 10));
-        addElement(new TeachingSitterEnt("Bożena", "Jajko", 120, 1, 25, 25));
-    }
+    //    public List<BabysitterEnt> showSelectedBabysitter(String id) {
+//        List<BabysitterEnt> temporaryBabysittersList = new ArrayList<>();
+//        temporaryBabysittersList.add(findByKey(id));
+//        return temporaryBabysittersList;
+//    }
 }
