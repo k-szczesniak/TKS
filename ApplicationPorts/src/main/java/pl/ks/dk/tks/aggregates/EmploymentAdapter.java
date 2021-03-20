@@ -4,6 +4,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.employments.Employment;
 import pl.ks.dk.tks.domainmodel.users.Client;
+import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.employments.AddEmploymentPort;
 import pl.ks.dk.tks.infrastructure.employments.GetEmploymentPort;
 import pl.ks.dk.tks.model.employments.EmploymentEnt;
@@ -26,13 +27,13 @@ public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
     private EmploymentsRepositoryEnt employmentsRepositoryEnt;
 
     @Override
-    public void addEmployment(Client client, Babysitter babysitter) {
+    public void addEmployment(Client client, Babysitter babysitter) throws AdapterException {
         babysitter.setEmployed(true);
         Employment employment = new Employment(babysitter, client);
         try {
             employmentsRepositoryEnt.addElement(convertEmploymentToEmploymentEnt(employment));
-        } catch (RepositoryExceptionEnt e) {
-            e.printStackTrace();
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
     }
 
@@ -55,7 +56,7 @@ public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
         try {
             BeanUtils.copyProperties(employmentEnt, employment);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AdapterException("Convert Employment to EmploymentEnt error", e);
         }
         return employmentEnt;
     }
@@ -65,7 +66,7 @@ public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
         try {
             BeanUtils.copyProperties(employment, employmentEnt);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AdapterException("Convert EmploymentEnt to Employment error", e);
         }
         return employment;
     }

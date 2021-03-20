@@ -4,6 +4,7 @@ import pl.ks.dk.tks.domainmodel.users.Admin;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.domainmodel.users.SuperUser;
 import pl.ks.dk.tks.domainmodel.users.User;
+import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.users.AddUserPort;
 import pl.ks.dk.tks.infrastructure.users.GetUserPort;
 import pl.ks.dk.tks.model.users.AdminEnt;
@@ -27,30 +28,34 @@ public class UserAdapter implements AddUserPort, GetUserPort {
     private UsersRepositoryEnt usersRepositoryEnt;
 
     @Override
-    public void addUser(User user) {
+    public void addUser(User user) throws AdapterException {
         try {
             usersRepositoryEnt.addElement(convertUserToUserEnt(user));
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
-            repositoryExceptionEnt.printStackTrace();
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
     }
 
     @Override
-    public User getUserByLogin(String login) {
+    public User getUserByLogin(String login) throws AdapterException {
+        User user = null;
         try {
-            return convertUserEntToUser(usersRepositoryEnt.findUserByLogin(login));
+            user = convertUserEntToUser(usersRepositoryEnt.findUserByLogin(login));
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
-            repositoryExceptionEnt.printStackTrace();
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
+        return user;
     }
 
     @Override
-    public User getUserByKey(String key) {
+    public User getUserByKey(String key) throws AdapterException {
+        User user = null;
         try {
-            return convertUserEntToUser(usersRepositoryEnt.findUserByUuid(key));
+            user = convertUserEntToUser(usersRepositoryEnt.findUserByUuid(key));
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
-            repositoryExceptionEnt.printStackTrace();
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
+        return user;
     }
 
     @Override
@@ -88,20 +93,22 @@ public class UserAdapter implements AddUserPort, GetUserPort {
         }
     }
 
-    private static UserEnt copyUserToUserEnt(UserEnt userEnt, User user) {
+    //TODO: zastanowić się czy throws zostawić, czy łąpać w converterach ?
+    private static UserEnt copyUserToUserEnt(UserEnt userEnt, User user) throws AdapterException {
         try {
             BeanUtils.copyProperties(userEnt, user);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AdapterException("Convert User to UserEnt error", e);
         }
         return userEnt;
     }
 
-    private static User copyUserEntToUser(User user, UserEnt userEnt) {
+    //TODO: zastanowić się czy throws zostawić, czy łąpać w converterach ?
+    private static User copyUserEntToUser(User user, UserEnt userEnt) throws AdapterException {
         try {
             BeanUtils.copyProperties(user, userEnt);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AdapterException("Convert UserEnt to User error", e);
         }
         return user;
     }

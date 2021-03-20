@@ -5,6 +5,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.babysitters.TeachingSitter;
 import pl.ks.dk.tks.domainmodel.babysitters.TidingSitter;
+import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.babysitters.AddBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.DeleteBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.GetBabysitterPort;
@@ -28,30 +29,32 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
     private BabysittersRepositoryEnt babysittersRepositoryEnt;
 
     @Override
-    public void addBabysitter(Babysitter babysitter) {
+    public void addBabysitter(Babysitter babysitter) throws AdapterException {
         try {
             babysittersRepositoryEnt.addElement(convertBabysitterToBabysitterEnt(babysitter));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
     }
 
     @Override
-    public void deleteBabysitter(Babysitter babysitter) {
+    public void deleteBabysitter(Babysitter babysitter) throws AdapterException{
         try {
             babysittersRepositoryEnt.deleteElement(convertBabysitterToBabysitterEnt(babysitter));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
     }
 
     @Override
-    public Babysitter getBabysitter(String uuid) {
+    public Babysitter getBabysitter(String uuid) throws AdapterException{
+        Babysitter babysitter = null;
         try {
-            return convertBabysitterEntToBabysitter(babysittersRepositoryEnt.findByKey(uuid));
+            babysitter = convertBabysitterEntToBabysitter(babysittersRepositoryEnt.findByKey(uuid));
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
-            repositoryExceptionEnt.printStackTrace();
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
+        return babysitter;
     }
 
     @Override
@@ -89,20 +92,20 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
         }
     }
 
-    private static BabysitterEnt copyBabysitterToBabysitterEnt(BabysitterEnt babysitterEnt, Babysitter babysitter) {
+    private static BabysitterEnt copyBabysitterToBabysitterEnt(BabysitterEnt babysitterEnt, Babysitter babysitter) throws AdapterException {
         try {
             BeanUtils.copyProperties(babysitterEnt, babysitter);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AdapterException("Convert Babysitter to BabysitterEnt error", e);
         }
         return babysitterEnt;
     }
 
-    private static Babysitter copyBabysitterEntToBabysitter(Babysitter babysitter, BabysitterEnt babysitterEnt) {
+    private static Babysitter copyBabysitterEntToBabysitter(Babysitter babysitter, BabysitterEnt babysitterEnt) throws AdapterException {
         try {
             BeanUtils.copyProperties(babysitter, babysitterEnt);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new AdapterException("Convert Babysitter to BabysitterEnt error", e);
         }
         return babysitter;
     }
