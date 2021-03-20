@@ -12,6 +12,7 @@ import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
 import pl.ks.dk.tks.model.babysitters.TeachingSitterEnt;
 import pl.ks.dk.tks.model.babysitters.TidingSitterEnt;
 import pl.ks.dk.tks.repositories.BabysittersRepositoryEnt;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.lang.reflect.InvocationTargetException;
@@ -28,17 +29,29 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
 
     @Override
     public void addBabysitter(Babysitter babysitter) {
-        babysittersRepositoryEnt.addElement(convertBabysitterToBabysitterEnt(babysitter));
+        try {
+            babysittersRepositoryEnt.addElement(convertBabysitterToBabysitterEnt(babysitter));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void deleteBabysitter(Babysitter babysitter) {
-        babysittersRepositoryEnt.deleteElement(convertBabysitterToBabysitterEnt(babysitter));
+        try {
+            babysittersRepositoryEnt.deleteElement(convertBabysitterToBabysitterEnt(babysitter));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Babysitter getBabysitter(String uuid) {
-        return convertBabysitterEntToBabysitter(babysittersRepositoryEnt.findByKey(uuid));
+        try {
+            return convertBabysitterEntToBabysitter(babysittersRepositoryEnt.findByKey(uuid));
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            repositoryExceptionEnt.printStackTrace();
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import pl.ks.dk.tks.model.users.AdminEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
 import pl.ks.dk.tks.model.users.SuperUserEnt;
 import pl.ks.dk.tks.model.users.UserEnt;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -21,12 +22,12 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
     }
 
     @Override
-    public void addElement(UserEnt user) {
+    public void addElement(UserEnt user) throws RepositoryExceptionEnt {
         if (isLoginUnique(user.getLogin())) {
             user.setUuid(RandomStringUtils.randomNumeric(SHORT_ID_LENGTH));
             super.addElement(user);
         } else {
-            throw new UserExceptionEnt("Login is not unique");
+            throw new RepositoryExceptionEnt("Login is not unique");
         }
     }
 
@@ -39,22 +40,22 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
         return true;
     }
 
-    public UserEnt findUserByUuid(String uuid) {
+    public UserEnt findUserByUuid(String uuid) throws RepositoryExceptionEnt {
         for (UserEnt user : getElements()) {
             if (user.getUuid().equals(uuid)) {
                 return user;
             }
         }
-        throw new UserExceptionEnt("Element not found");
+        throw new RepositoryExceptionEnt("User not found");
     }
 
-    public UserEnt findUserByLogin(String login) {
+    public UserEnt findUserByLogin(String login) throws RepositoryExceptionEnt {
         for (UserEnt user : getElements()) {
             if (user.getLogin().equals(login)) {
                 return user;
             }
         }
-        throw new UserExceptionEnt("Element not found");
+        throw new RepositoryExceptionEnt("User not found");
     }
 
     public void changeActiveForUser(UserEnt user) {

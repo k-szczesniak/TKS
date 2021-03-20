@@ -7,6 +7,7 @@ import pl.ks.dk.tks.domainmodel.users.Client;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+//TODO: MOZNA SPROBOWAC NA SAM KONIEC PRZENIESC METODY Z EMPLOYMENT DO MANAGERA
 public class Employment {
 
     private String uniqueID;
@@ -15,9 +16,7 @@ public class Employment {
     private LocalDateTime beginningOfEmployment;
     private LocalDateTime endOfEmployment;
 
-
     public Employment() {
-
     }
 
     public Employment(Babysitter babysitter, Client client) {

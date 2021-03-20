@@ -3,5 +3,6 @@
 /nbproject/
 /TKSProject.iml
 nb-configuration.xml
+*.iml
 *.iws
 *.ipr

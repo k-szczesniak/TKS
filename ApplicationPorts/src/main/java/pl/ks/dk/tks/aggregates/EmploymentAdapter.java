@@ -8,6 +8,7 @@ import pl.ks.dk.tks.infrastructure.employments.AddEmploymentPort;
 import pl.ks.dk.tks.infrastructure.employments.GetEmploymentPort;
 import pl.ks.dk.tks.model.employments.EmploymentEnt;
 import pl.ks.dk.tks.repositories.EmploymentsRepositoryEnt;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,7 +29,11 @@ public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
     public void addEmployment(Client client, Babysitter babysitter) {
         babysitter.setEmployed(true);
         Employment employment = new Employment(babysitter, client);
-        employmentsRepositoryEnt.addElement(convertEmploymentToEmploymentEnt(employment));
+        try {
+            employmentsRepositoryEnt.addElement(convertEmploymentToEmploymentEnt(employment));
+        } catch (RepositoryExceptionEnt e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

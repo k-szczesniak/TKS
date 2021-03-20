@@ -25,9 +25,4 @@ public class Admin extends User {
     public void setRole(String role) {
         this.role = role;
     }
-
-    @Override
-    public Map<String, String> takePayload() {
-        return super.takePayload();
-    }
 }

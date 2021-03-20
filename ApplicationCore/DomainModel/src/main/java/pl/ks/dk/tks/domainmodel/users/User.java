@@ -1,14 +1,10 @@
 package pl.ks.dk.tks.domainmodel.users;
 
-import pl.ks.dk.tks.domainmodel.exceptions.UserException;
-import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.HashMap;
-import java.util.Map;
 
-public abstract class User implements Cloneable, EntityToSign {
+public abstract class User {
 
     private boolean isActive = true;
 
@@ -34,9 +30,6 @@ public abstract class User implements Cloneable, EntityToSign {
     }
 
     public User(String login, String name, String surname, String password) {
-        if (login.isEmpty() || name.isEmpty() || surname.isEmpty() || password.isEmpty()) {
-            throw new UserException("Empty login, name, surname or password");
-        }
         this.login = login;
         this.name = name;
         this.surname = surname;
@@ -105,16 +98,5 @@ public abstract class User implements Cloneable, EntityToSign {
 
     public String getRole() {
         return "Client";
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    public Map<String, String> takePayload() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uuid", getUuid());
-        return map;
     }
 }

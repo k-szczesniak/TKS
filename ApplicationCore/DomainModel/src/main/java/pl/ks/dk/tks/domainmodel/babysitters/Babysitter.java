@@ -1,14 +1,9 @@
 package pl.ks.dk.tks.domainmodel.babysitters;
 
-
-import pl.ks.dk.tks.domainmodel.exceptions.BabysitterException;
-import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
-
 import javax.validation.constraints.*;
-import java.util.HashMap;
-import java.util.Map;
 
-public class Babysitter implements Cloneable, EntityToSign {
+//TODO: CLONEABLE, BEAN VALIDATION USUNAC
+public class Babysitter {
 
     @NotNull
     @Size(min=2, max=20)
@@ -41,11 +36,6 @@ public class Babysitter implements Cloneable, EntityToSign {
     public Babysitter() {
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
     public Babysitter(String name, String surname, Integer basePriceForHour, Integer minChildAge,
                       int maxNumberOfChildrenInTheFamily) {
         this.name = name;
@@ -53,9 +43,6 @@ public class Babysitter implements Cloneable, EntityToSign {
         this.basePriceForHour = basePriceForHour;
         this.minChildAge = minChildAge;
         this.maxNumberOfChildrenInTheFamily = maxNumberOfChildrenInTheFamily;
-        if (basePriceForHour <= 0 || minChildAge < 0 || maxNumberOfChildrenInTheFamily <= 0) {
-            throw new BabysitterException("Invalid argument");
-        }
     }
 
     public double priceForHour() {
@@ -133,13 +120,5 @@ public class Babysitter implements Cloneable, EntityToSign {
                 "\nbasePrice: " + basePriceForHour +
                 "\nminChildAge: " + minChildAge +
                 "\nmaxNumberOfChildrenInTheFamily: " + minChildAge;
-    }
-
-    @Override
-    public Map<String, String> takePayload() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uuid", getUuid());
-        map.put("employed", String.valueOf(isEmployed()));
-        return map;
     }
 }

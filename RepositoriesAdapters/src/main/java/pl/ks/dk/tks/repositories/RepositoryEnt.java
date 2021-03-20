@@ -19,7 +19,7 @@ public abstract class RepositoryEnt<T> {
         return false;
     }
 
-    public void addElement(T element) {
+    public void addElement(T element) throws RepositoryExceptionEnt {
         if (!checkIfTheElementIsPresent(element)) {
             elements.add(element);
         } else {
@@ -27,7 +27,7 @@ public abstract class RepositoryEnt<T> {
         }
     }
 
-    public void deleteElement(T element) {
+    public void deleteElement(T element) throws RepositoryExceptionEnt {
         for (T item : elements) {
             if (item == element) {
                 elements.remove(element);

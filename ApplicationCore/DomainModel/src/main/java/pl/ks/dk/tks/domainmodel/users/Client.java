@@ -4,7 +4,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.Map;
 
 public class Client extends User {
 
@@ -55,10 +54,5 @@ public class Client extends User {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    @Override
-    public Map<String, String> takePayload() {
-        return super.takePayload();
     }
 }

@@ -10,12 +10,13 @@ import pl.ks.dk.tks.model.users.UserEnt;
 public class UserAdapterTest {
     @Test
     void convertUserToUserEntTest() {
-        User user = new Client("sysiapysia", "Sylwia", "Grzeszczak", "ksKrzys", "Client", 3, 4);
-        User admin = new Admin("sysiapysia", "Sylwia", "Grzeszczak", "ksKrzys", "Admin");
-        User superUser = new SuperUser("sysiapysia", "Sylwia", "Grzeszczak", "ksKrzys", "SuperUser");
+        User user = new Client("jKowalski", "Jan", "Kowalski", "kowalski", "Client", 3, 4);
+        User admin = new Admin("jKowalski", "Jan", "Kowalski", "kowalski", "Admin");
+        User superUser = new SuperUser("jKowalski", "Jan", "Kowalski", "kowalski", "SuperUser");
+
         UserEnt userEnt = UserAdapter.convertUserToUserEnt(user);
         UserEnt userEnt1 = UserAdapter.convertUserToUserEnt(admin);
         UserEnt userEnt2 = UserAdapter.convertUserToUserEnt(superUser);
-        System.out.println("dupa");
+        int i = 5;
     }
 }

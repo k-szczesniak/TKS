@@ -31,7 +31,7 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
         return getElements();
     }
 
-    public BabysitterEnt findByKey(String uuid) {
+    public BabysitterEnt findByKey(String uuid) throws RepositoryExceptionEnt {
         List<BabysitterEnt> babysitterList = getElements();
 
         for (BabysitterEnt babysitter : babysitterList) {
@@ -39,7 +39,7 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
                 return babysitter;
             }
         }
-        throw new RepositoryExceptionEnt("Element not found");
+        throw new RepositoryExceptionEnt("Babysitter not found");
     }
 
     @PostConstruct

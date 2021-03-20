@@ -6,7 +6,6 @@ import pl.ks.dk.tks.domainmodel.exceptions.BabysitterException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 public class TeachingSitter extends Babysitter {
 

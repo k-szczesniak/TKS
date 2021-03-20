@@ -12,6 +12,7 @@ import pl.ks.dk.tks.model.users.SuperUserEnt;
 import pl.ks.dk.tks.model.users.UserEnt;
 import pl.ks.dk.tks.repositories.UsersRepositoryEnt;
 import org.apache.commons.beanutils.BeanUtils;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,17 +28,29 @@ public class UserAdapter implements AddUserPort, GetUserPort {
 
     @Override
     public void addUser(User user) {
-        usersRepositoryEnt.addElement(convertUserToUserEnt(user));
+        try {
+            usersRepositoryEnt.addElement(convertUserToUserEnt(user));
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            repositoryExceptionEnt.printStackTrace();
+        }
     }
 
     @Override
     public User getUserByLogin(String login) {
-        return convertUserEntToUser(usersRepositoryEnt.findUserByLogin(login));
+        try {
+            return convertUserEntToUser(usersRepositoryEnt.findUserByLogin(login));
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            repositoryExceptionEnt.printStackTrace();
+        }
     }
 
     @Override
     public User getUserByKey(String key) {
-        return convertUserEntToUser(usersRepositoryEnt.findUserByUuid(key));
+        try {
+            return convertUserEntToUser(usersRepositoryEnt.findUserByUuid(key));
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            repositoryExceptionEnt.printStackTrace();
+        }
     }
 
     @Override
