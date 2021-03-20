@@ -4,6 +4,7 @@ import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.exceptions.BabysitterException;
 import pl.ks.dk.tks.infrastructure.babysitters.AddBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.DeleteBabysitterPort;
+import pl.ks.dk.tks.infrastructure.babysitters.GetBabysitterPort;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -22,6 +23,8 @@ public class BabysittersService implements BabysitterUseCase {
     @Inject
     private AddBabysitterPort addBabysitterPort;
 
+    @Inject
+    private GetBabysitterPort getBabysitterPort;
 
     @Override
     public Babysitter getBabysitterByKey(String uuid) {

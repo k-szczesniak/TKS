@@ -21,28 +21,31 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPort, GetBabysitterPort {
 
+    //TODO:PRZEMYSLEC CZY ADAPTERY POWINNY IMPLEMENTOWAC JAKIS INTERFEJS ŻEBY WYMUSIC CONVERTERY
+
     @Inject
     private BabysittersRepositoryEnt babysittersRepositoryEnt;
 
     @Override
     public void addBabysitter(Babysitter babysitter) {
-        //converter domain -> ent
-        //bre.addElement(babysitter);
+        babysittersRepositoryEnt.addElement(convertBabysitterToBabysitterEnt(babysitter));
     }
 
     @Override
     public void deleteBabysitter(Babysitter babysitter) {
-
+        babysittersRepositoryEnt.deleteElement(convertBabysitterToBabysitterEnt(babysitter));
     }
 
     @Override
     public Babysitter getBabysitter(String uuid) {
-        return null;
+        return convertBabysitterEntToBabysitter(babysittersRepositoryEnt.findByKey(uuid));
     }
 
     @Override
     public List<Babysitter> getAllBabysitters() {
-        return null;
+        return babysittersRepositoryEnt.getBabysittersList().stream()
+                .map(BabysitterAdapter::convertBabysitterEntToBabysitter)
+                .collect(Collectors.toList());
     }
 
     public static BabysitterEnt convertBabysitterToBabysitterEnt(Babysitter babysitter) {
