@@ -1,14 +1,15 @@
 package pl.ks.dk.tks.restservices;
 
-import com.mycompany.firstapplication.Babysitters.Babysitter;
-import com.mycompany.firstapplication.Exceptions.EmploymentException;
-import com.mycompany.firstapplication.Exceptions.RepositoryException;
-import com.mycompany.firstapplication.Exceptions.UserException;
-import com.mycompany.firstapplication.Users.Client;
-import com.mycompany.firstapplication.services.BabysittersService;
-import com.mycompany.firstapplication.services.EmploymentsService;
+import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
+import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
+import pl.ks.dk.tks.domainmodel.exceptions.UserException;
+import pl.ks.dk.tks.domainmodel.users.Client;
+import pl.ks.dk.tks.userinterface.BabysitterUseCase;
+import pl.ks.dk.tks.userinterface.EmploymentUseCase;
+import pl.ks.dk.tks.userinterface.UserUseCase;
 
 import javax.inject.Inject;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,36 +19,38 @@ import javax.ws.rs.core.SecurityContext;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/employment")
 public class EmploymentsRestServices {
-    @Inject
-    private UsersRestServices usersRestServices;
 
     @Inject
-    private BabysittersService babysitterManager;
+    private BabysitterUseCase babysitterUseCase;
 
     @Inject
-    private EmploymentsService employmentsService;
+    private UserUseCase userUseCase;
+
+    @Inject
+    private EmploymentUseCase employmentUseCase;
 
     @GET
     public Response getAllEmployments(@Context SecurityContext securityContext) {
         return Response.status(200)
-                .entity(employmentsService.getActualEmploymentsForClient((Client)
-                        usersRestServices.findByLogin(securityContext.getUserPrincipal().getName())))
+                .entity(employmentUseCase.getActualEmploymentsForClient((Client)
+                        userUseCase.findByLogin(securityContext.getUserPrincipal().getName())))
                 .build();
     }
 
     @POST
     @Path("{uuid}")
-    public Response employ(@Context SecurityContext securityContext,
-                           @PathParam("uuid") String uuid) {
+    public Response employ(@Context SecurityContext securityContext, @PathParam("uuid") String uuid) {
         try {
             Client client =
-                    (Client) usersRestServices.findByLogin(securityContext.getUserPrincipal().getName());
-            Babysitter babysitter = babysitterManager.findByKey(uuid);
-            employmentsService.employBabysitter(client, babysitter);
-        } catch (UserException | RepositoryException | EmploymentException e) {
+                    (Client) userUseCase.findByLogin(securityContext.getUserPrincipal().getName());
+            Babysitter babysitter = babysitterUseCase.findByKey(uuid);
+            employmentUseCase.employBabysitter(client, babysitter);
+        } catch (UserException | EmploymentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
         return Response.status(201).build();
     }
+
+    //TODO: ZASTANOWIC SIE NAD WYJATKAMI - SERVICE EXCEPTION
 }

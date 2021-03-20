@@ -1,19 +1,16 @@
 package pl.ks.dk.tks.restservices;
 
-import com.mycompany.firstapplication.Babysitters.Babysitter;
-import com.mycompany.firstapplication.Babysitters.TeachingSitter;
-import com.mycompany.firstapplication.Babysitters.TidingSitter;
-import com.mycompany.firstapplication.Exceptions.RepositoryException;
-import com.mycompany.firstapplication.Filters.EntitySignatureValidatorFilterBinding;
-import com.mycompany.firstapplication.services.BabysittersService;
-import com.mycompany.firstapplication.utils.EntityIdentitySignerVerifier;
 import org.apache.commons.beanutils.BeanUtils;
+import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
+import pl.ks.dk.tks.filters.EntitySignatureValidatorFilterBinding;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
+import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.InvocationTargetException;
@@ -24,26 +21,22 @@ import java.util.Set;
 @Path("/resources")
 public class ResourcesRestServices {
 
-    //od
-    @Inject
-    private BabysitterUseCase babysitterUseCase;
-    //do
+    //TODO: PRZEROBIC PRZYJMOWANE NA DTO
+    //TODO: WYJATKI OGARNAC
+    //TODO: PRZENIESC POWTARZAJACY SIE KOD
 
     @Inject
-    private BabysittersService babysittersService;
+    private BabysitterUseCase babysitterUseCase;
 
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @GET
     @Path("{uuid}")
     public Response getBabysitter(@PathParam("uuid") String uuid) {
-        //od
-        babysitterUseCase.addBabysitter(xxx)
-        //do
         try {
             return Response.status(200)
-                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((babysittersService.findByKey(uuid))))
-                    .entity(babysittersService.findByKey(uuid)).build();
+                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((babysitterUseCase.findByKey(uuid))))
+                    .entity(babysitterUseCase.findByKey(uuid)).build();
         } catch (RepositoryException e) {
             e.printStackTrace();
             return Response.status(400).build();
@@ -52,7 +45,7 @@ public class ResourcesRestServices {
 
     @GET
     public Response getAllBabysitters() {
-        return Response.status(200).entity(babysittersService.getBabysittersList()).build();
+        return Response.status(200).entity(babysitterUseCase.getBabysittersList()).build();
     }
 
     @PUT
@@ -65,7 +58,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(babysitter);
-            BeanUtils.copyProperties(babysittersService.findByKey(uuid), babysitter);
+            BeanUtils.copyProperties(babysitterUseCase.findByKey(uuid), babysitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -83,7 +76,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(teachingSitter);
-            BeanUtils.copyProperties(babysittersService.findByKey(uuid), teachingSitter);
+            BeanUtils.copyProperties(babysitterUseCase.findByKey(uuid), teachingSitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -101,7 +94,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(tidingSitter);
-            BeanUtils.copyProperties(babysittersService.findByKey(uuid), tidingSitter);
+            BeanUtils.copyProperties(babysitterUseCase.findByKey(uuid), tidingSitter);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -118,7 +111,7 @@ public class ResourcesRestServices {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysittersService.addBabysitter(babysitter);
+        babysitterUseCase.addBabysitter(babysitter);
         return Response.status(201).build();
     }
 
@@ -131,7 +124,7 @@ public class ResourcesRestServices {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysittersService.addBabysitter(teachingSitter);
+        babysitterUseCase.addBabysitter(teachingSitter);
         return Response.status(201).build();
     }
 
@@ -144,14 +137,14 @@ public class ResourcesRestServices {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysittersService.addBabysitter(tidingSitter);
+        babysitterUseCase.addBabysitter(tidingSitter);
         return Response.status(201).build();
     }
 
     @DELETE
     @Path("{uuid}")
     public Response deleteBabysitter(@PathParam("uuid") String uuid) {
-        babysittersService.deleteBabysitter(babysittersService.findByKey(uuid));
+        babysitterUseCase.deleteBabysitter(babysitterUseCase.findByKey(uuid));
         return Response.status(204).build();
     }
 
