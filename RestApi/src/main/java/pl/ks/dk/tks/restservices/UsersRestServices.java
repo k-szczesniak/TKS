@@ -1,10 +1,11 @@
 package pl.ks.dk.tks.restservices;
 
 import org.apache.commons.beanutils.BeanUtils;
-import pl.ks.dk.tks.domainmodel.users.Admin;
-import pl.ks.dk.tks.domainmodel.users.Client;
-import pl.ks.dk.tks.domainmodel.users.SuperUser;
-import pl.ks.dk.tks.dto.UserDTOWrapper;
+import pl.ks.dk.tks.converters.UserDTOConverter;
+import pl.ks.dk.tks.dtomodel.interfaces.EntityToSignDTO;
+import pl.ks.dk.tks.dtomodel.users.AdminDTO;
+import pl.ks.dk.tks.dtomodel.users.ClientDTO;
+import pl.ks.dk.tks.dtomodel.users.SuperUserDTO;
 import pl.ks.dk.tks.filters.EntitySignatureValidatorFilterBinding;
 import pl.ks.dk.tks.userinterface.UserUseCase;
 import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
@@ -26,7 +27,7 @@ import java.util.Set;
 @Path("/users")
 public class UsersRestServices {
 
-    //TODO: W DOMAIN MODEL NIE POWINNO BYC PAYLOAD
+    //TODO: W DOMAIN MODEL NIE POWINNO BYC PAYLOAD, CHYBA?
 
     @Inject
     private UserUseCase userUseCase;
@@ -37,7 +38,8 @@ public class UsersRestServices {
     @Path("_self")
     public Response findSelf(@Context SecurityContext securityContext) {
         return Response.status(200)
-                .entity(UserDTOWrapper.wrap(userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName())))
+                .entity(UserDTOConverter
+                        .convertUserToUserDTO(userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName())))
                 .build();
     }
 
@@ -45,9 +47,10 @@ public class UsersRestServices {
     @Path("{uuid}")
     public Response getClient(@PathParam("uuid") String uuid) {
         try {
+            EntityToSignDTO entityToSign = UserDTOConverter.convertUserToUserDTO(userUseCase.getUserByKey(uuid));
             return Response.status(200)
-                    .header("ETag", EntityIdentitySignerVerifier.calculateETag((userUseCase.getUserByKey(uuid))))
-                    .entity(UserDTOWrapper.wrap(userUseCase.getUserByKey(uuid)))
+                    .header("ETag", EntityIdentitySignerVerifier.calculateETag(entityToSign))
+                    .entity(entityToSign)
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,20 +60,22 @@ public class UsersRestServices {
 
     @GET
     public Response getAllUsers() {
-        return Response.status(200).entity(UserDTOWrapper.listWrapper(userUseCase.getAllUsers()))
+        return Response.status(200)
+                .entity(UserDTOConverter.convertUserListToUserDTOList(userUseCase.getAllUsers()))
                 .build();
     }
 
     @PUT
     @Path("/admin/{uuid}")
     @EntitySignatureValidatorFilterBinding
-    public Response updateAdmin(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header, Admin admin) {
-        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, admin)) {
+    public Response updateAdmin(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
+                                AdminDTO adminDTO) {
+        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, adminDTO)) {
             return Response.status(406).build();
         }
         try {
-            validation(admin);
-            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), admin);
+            validation(adminDTO);
+            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), UserDTOConverter.convertUserDTOToUser(adminDTO));
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -82,13 +87,14 @@ public class UsersRestServices {
     @Path("/superUser/{uuid}")
     @EntitySignatureValidatorFilterBinding
     public Response updateSuperUser(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
-                                    SuperUser superUser) {
-        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, superUser)) {
+                                    SuperUserDTO superUserDTO) {
+        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, superUserDTO)) {
             return Response.status(406).build();
         }
         try {
-            validation(superUser);
-            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), superUser);
+            validation(superUserDTO);
+            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid),
+                    UserDTOConverter.convertUserDTOToUser(superUserDTO));
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -100,13 +106,13 @@ public class UsersRestServices {
     @Path("/client/{uuid}")
     @EntitySignatureValidatorFilterBinding
     public Response updateClient(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
-                                 Client client) {
-        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, client)) {
+                                 ClientDTO clientDTO) {
+        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, clientDTO)) {
             return Response.status(406).build();
         }
         try {
-            validation(client);
-            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), client);
+            validation(clientDTO);
+            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), UserDTOConverter.convertUserDTOToUser(clientDTO));
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -117,40 +123,40 @@ public class UsersRestServices {
 
     @POST
     @Path("/admin")
-    public Response createAdmin(Admin admin) {
+    public Response createAdmin(AdminDTO adminDTO) {
         try {
-            validation(admin);
+            validation(adminDTO);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        userUseCase.addUser(admin);
+        userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(adminDTO));
         return Response.status(201).build();
     }
 
     @POST
     @Path("/superUser")
-    public Response createSuperUser(SuperUser superUser) {
+    public Response createSuperUser(SuperUserDTO superUserDTO) {
         try {
-            validation(superUser);
+            validation(superUserDTO);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        userUseCase.addUser(superUser);
+        userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(superUserDTO));
         return Response.status(201).build();
     }
 
     @POST
     @Path("/client")
-    public Response createClient(Client client) {
+    public Response createClient(ClientDTO clientDTO) {
         try {
-            validation(client);
+            validation(clientDTO);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        userUseCase.addUser(client);
+        userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(clientDTO));
         return Response.status(201).build();
     }
 

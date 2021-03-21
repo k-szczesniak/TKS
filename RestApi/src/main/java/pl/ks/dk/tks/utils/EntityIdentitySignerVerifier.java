@@ -4,7 +4,7 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jose.shaded.json.JSONObject;
-import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
+import pl.ks.dk.tks.dtomodel.interfaces.EntityToSignDTO;
 
 import java.text.ParseException;
 
@@ -25,7 +25,7 @@ public class EntityIdentitySignerVerifier {
         }
     }
 
-    public static boolean verifyEntityIntegrity(String tagValue, EntityToSign entity) {
+    public static boolean verifyEntityIntegrity(String tagValue, EntityToSignDTO entity) {
         try {
             String tagValueFromHeader = JWSObject.parse(tagValue).getPayload().toString()
                     .replaceAll("\"", "")
@@ -39,7 +39,7 @@ public class EntityIdentitySignerVerifier {
         }
     }
 
-    public static String calculateETag(EntityToSign entity) {
+    public static String calculateETag(EntityToSignDTO entity) {
         try {
             JWSSigner signer = new MACSigner(SECRET);
             String jsonObject = new JSONObject(entity.takePayload()).toString();

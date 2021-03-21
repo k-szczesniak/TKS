@@ -1,10 +1,11 @@
 package pl.ks.dk.tks.restservices;
 
 import org.apache.commons.beanutils.BeanUtils;
-import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
-import pl.ks.dk.tks.domainmodel.babysitters.TeachingSitter;
-import pl.ks.dk.tks.domainmodel.babysitters.TidingSitter;
-import pl.ks.dk.tks.domainmodel.interfaces.EntityToSign;
+import pl.ks.dk.tks.converters.BabysitterDTOConverter;
+import pl.ks.dk.tks.dtomodel.babysitters.BabysitterDTO;
+import pl.ks.dk.tks.dtomodel.babysitters.TeachingSitterDTO;
+import pl.ks.dk.tks.dtomodel.babysitters.TidingSitterDTO;
+import pl.ks.dk.tks.dtomodel.interfaces.EntityToSignDTO;
 import pl.ks.dk.tks.filters.EntitySignatureValidatorFilterBinding;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
 import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
@@ -24,7 +25,7 @@ import java.util.Set;
 @Path("/resources")
 public class ResourcesRestServices {
 
-    //TODO: PRZEROBIC PRZYJMOWANE NA DTO
+    //TODO: Ogarnąć DTO MODEL CZY JEST GIT?
     //TODO: WYJATKI OGARNAC
     //TODO: PRZENIESC POWTARZAJACY SIE KOD
 
@@ -37,10 +38,12 @@ public class ResourcesRestServices {
     @Path("{uuid}")
     public Response getBabysitter(@PathParam("uuid") String uuid) {
         try {
-            EntityToSign entityToSign = babysitterUseCase.getBabysitterByKey(uuid);
+            EntityToSignDTO entityToSign =
+                    BabysitterDTOConverter.convertBabysitterToBabysitterDTO(babysitterUseCase.getBabysitterByKey(uuid));
             return Response.status(200)
                     .header("ETag", EntityIdentitySignerVerifier.calculateETag(entityToSign))
-                    .entity(entityToSign).build();
+                    .entity(entityToSign)
+                    .build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(400).build();
@@ -49,20 +52,24 @@ public class ResourcesRestServices {
 
     @GET
     public Response getAllBabysitters() {
-        return Response.status(200).entity(babysitterUseCase.getAllBabysitters()).build();
+        return Response.status(200)
+                .entity(BabysitterDTOConverter
+                        .convertBabysitterListToBabysitterDTOList(babysitterUseCase.getAllBabysitters()))
+                .build();
     }
 
     @PUT
     @Path("/standard/{uuid}")
     @EntitySignatureValidatorFilterBinding
     public Response updateBabysitter(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
-                                     Babysitter babysitter) {
-        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, babysitter)) {
+                                     BabysitterDTO babysitterDTO) {
+        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, babysitterDTO)) {
             return Response.status(406).build();
         }
         try {
-            validation(babysitter);
-            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid), babysitter);
+            validation(babysitterDTO);
+            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
+                    BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -74,13 +81,14 @@ public class ResourcesRestServices {
     @Path("/teaching/{uuid}")
     @EntitySignatureValidatorFilterBinding
     public Response updateTeachingSitter(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
-                                         TeachingSitter teachingSitter) {
-        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, teachingSitter)) {
+                                         TeachingSitterDTO teachingSitterDTO) {
+        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, teachingSitterDTO)) {
             return Response.status(406).build();
         }
         try {
-            validation(teachingSitter);
-            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid), teachingSitter);
+            validation(teachingSitterDTO);
+            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
+                    BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -92,13 +100,14 @@ public class ResourcesRestServices {
     @Path("/tiding/{uuid}")
     @EntitySignatureValidatorFilterBinding
     public Response updateTidingSitter(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
-                                       TidingSitter tidingSitter) {
-        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, tidingSitter)) {
+                                       TidingSitterDTO tidingSitterDTO) {
+        if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, tidingSitterDTO)) {
             return Response.status(406).build();
         }
         try {
-            validation(tidingSitter);
-            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid), tidingSitter);
+            validation(tidingSitterDTO);
+            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
+                    BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -108,40 +117,40 @@ public class ResourcesRestServices {
 
     @POST
     @Path("/standard")
-    public Response createBabysitter(Babysitter babysitter) {
+    public Response createBabysitter(BabysitterDTO babysitterDTO) {
         try {
-            validation(babysitter);
+            validation(babysitterDTO);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysitterUseCase.addBabysitter(babysitter);
+        babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
         return Response.status(201).build();
     }
 
     @POST
     @Path("/teaching")
-    public Response createTeachingSitter(TeachingSitter teachingSitter) {
+    public Response createTeachingSitter(TeachingSitterDTO teachingSitterDTO) {
         try {
-            validation(teachingSitter);
+            validation(teachingSitterDTO);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysitterUseCase.addBabysitter(teachingSitter);
+        babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
         return Response.status(201).build();
     }
 
     @POST
     @Path("/tiding")
-    public Response createTidingSitter(TidingSitter tidingSitter) {
+    public Response createTidingSitter(TidingSitterDTO tidingSitterDTO) {
         try {
-            validation(tidingSitter);
+            validation(tidingSitterDTO);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysitterUseCase.addBabysitter(tidingSitter);
+        babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
         return Response.status(201).build();
     }
 
