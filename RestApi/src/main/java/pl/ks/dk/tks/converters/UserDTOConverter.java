@@ -9,6 +9,7 @@ import pl.ks.dk.tks.dtomodel.users.AdminDTO;
 import pl.ks.dk.tks.dtomodel.users.ClientDTO;
 import pl.ks.dk.tks.dtomodel.users.SuperUserDTO;
 import pl.ks.dk.tks.dtomodel.users.UserDTO;
+import pl.ks.dk.tks.exceptions.DTOConverterException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -30,12 +31,11 @@ public class UserDTOConverter {
         }
     }
 
-    //TODO: EXCEPTIONS
-    private static User copyUserDTOToUser(User user, UserDTO userDTO) {
+    private static User copyUserDTOToUser(User user, UserDTO userDTO) throws DTOConverterException {
         try {
             BeanUtils.copyProperties(user, userDTO);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalArgumentException("Convert UserDTO to User error", e);
+            throw new DTOConverterException("Convert UserDTO to User error", e);
         }
         return user;
     }
@@ -54,12 +54,11 @@ public class UserDTOConverter {
         }
     }
 
-    //TODO: EXCEPTIONS
-    private static UserDTO copyUserToUserDTO(UserDTO userDTO, User user) {
+    private static UserDTO copyUserToUserDTO(UserDTO userDTO, User user) throws DTOConverterException {
         try {
             BeanUtils.copyProperties(userDTO, user);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalArgumentException("Convert User to UserEnt error", e);
+            throw new DTOConverterException("Convert User to UserDTO error", e);
         }
         return userDTO;
     }

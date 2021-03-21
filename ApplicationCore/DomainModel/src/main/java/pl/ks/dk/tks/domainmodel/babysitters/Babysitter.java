@@ -2,7 +2,7 @@ package pl.ks.dk.tks.domainmodel.babysitters;
 
 import javax.validation.constraints.*;
 
-//TODO: CLONEABLE, BEAN VALIDATION USUNAC
+//TODO: NA KONIEC: ZASTANOWIC SIE NAD CLONEABLE, BEAN VALIDATION - USUNAC?
 public class Babysitter {
 
     @NotNull

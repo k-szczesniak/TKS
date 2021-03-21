@@ -19,15 +19,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/users")
 public class UsersRestServices {
-
-    //TODO: W DOMAIN MODEL NIE POWINNO BYC PAYLOAD, CHYBA?
 
     @Inject
     private UserUseCase userUseCase;
@@ -37,10 +34,16 @@ public class UsersRestServices {
     @GET
     @Path("_self")
     public Response findSelf(@Context SecurityContext securityContext) {
-        return Response.status(200)
-                .entity(UserDTOConverter
-                        .convertUserToUserDTO(userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName())))
-                .build();
+        try {
+            return Response.status(200)
+                    .entity(UserDTOConverter
+                            .convertUserToUserDTO(
+                                    userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName())))
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(400).build();
+        }
     }
 
     @GET
@@ -60,9 +63,14 @@ public class UsersRestServices {
 
     @GET
     public Response getAllUsers() {
-        return Response.status(200)
-                .entity(UserDTOConverter.convertUserListToUserDTOList(userUseCase.getAllUsers()))
-                .build();
+        try {
+            return Response.status(200)
+                    .entity(UserDTOConverter.convertUserListToUserDTOList(userUseCase.getAllUsers()))
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(400).build();
+        }
     }
 
     @PUT
@@ -76,7 +84,7 @@ public class UsersRestServices {
         try {
             validation(adminDTO);
             BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), UserDTOConverter.convertUserDTOToUser(adminDTO));
-        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
@@ -95,7 +103,7 @@ public class UsersRestServices {
             validation(superUserDTO);
             BeanUtils.copyProperties(userUseCase.getUserByKey(uuid),
                     UserDTOConverter.convertUserDTOToUser(superUserDTO));
-        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
@@ -113,7 +121,7 @@ public class UsersRestServices {
         try {
             validation(clientDTO);
             BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), UserDTOConverter.convertUserDTOToUser(clientDTO));
-        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
@@ -126,11 +134,11 @@ public class UsersRestServices {
     public Response createAdmin(AdminDTO adminDTO) {
         try {
             validation(adminDTO);
+            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(adminDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(adminDTO));
         return Response.status(201).build();
     }
 
@@ -139,11 +147,11 @@ public class UsersRestServices {
     public Response createSuperUser(SuperUserDTO superUserDTO) {
         try {
             validation(superUserDTO);
+            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(superUserDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(superUserDTO));
         return Response.status(201).build();
     }
 
@@ -152,11 +160,11 @@ public class UsersRestServices {
     public Response createClient(ClientDTO clientDTO) {
         try {
             validation(clientDTO);
+            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(clientDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(clientDTO));
         return Response.status(201).build();
     }
 

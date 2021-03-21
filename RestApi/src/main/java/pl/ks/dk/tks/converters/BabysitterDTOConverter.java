@@ -7,6 +7,7 @@ import pl.ks.dk.tks.domainmodel.babysitters.TidingSitter;
 import pl.ks.dk.tks.dtomodel.babysitters.BabysitterDTO;
 import pl.ks.dk.tks.dtomodel.babysitters.TeachingSitterDTO;
 import pl.ks.dk.tks.dtomodel.babysitters.TidingSitterDTO;
+import pl.ks.dk.tks.exceptions.DTOConverterException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -28,12 +29,12 @@ public class BabysitterDTOConverter {
         }
     }
 
-    //TODO: EXCEPTIONY
-    private static Babysitter copyBabysitterDTOToBabysitter(Babysitter babysitter, BabysitterDTO babysitterDTO) {
+    private static Babysitter copyBabysitterDTOToBabysitter(Babysitter babysitter, BabysitterDTO babysitterDTO)
+            throws DTOConverterException {
         try {
             BeanUtils.copyProperties(babysitter, babysitterDTO);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalArgumentException("Convert BabysitterDTO to Babysitter error", e);
+            throw new DTOConverterException("Convert BabysitterDTO to Babysitter error", e);
         }
         return babysitter;
     }
@@ -52,12 +53,12 @@ public class BabysitterDTOConverter {
         }
     }
 
-    //TODO: EXCEPTIONY
-    private static BabysitterDTO copyBabysitterToBabysitterDTO(BabysitterDTO babysitterDTO, Babysitter babysitter) {
+    private static BabysitterDTO copyBabysitterToBabysitterDTO(BabysitterDTO babysitterDTO, Babysitter babysitter)
+            throws DTOConverterException {
         try {
             BeanUtils.copyProperties(babysitterDTO, babysitter);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new IllegalArgumentException("Convert Babysitter to BabysitterDTO error", e);
+            throw new DTOConverterException("Convert Babysitter to BabysitterDTO error", e);
         }
         return babysitterDTO;
     }

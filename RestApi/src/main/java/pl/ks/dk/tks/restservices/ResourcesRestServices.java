@@ -17,17 +17,12 @@ import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/resources")
 public class ResourcesRestServices {
-
-    //TODO: Ogarnąć DTO MODEL CZY JEST GIT?
-    //TODO: WYJATKI OGARNAC
-    //TODO: PRZENIESC POWTARZAJACY SIE KOD
 
     @Inject
     private BabysitterUseCase babysitterUseCase;
@@ -52,10 +47,15 @@ public class ResourcesRestServices {
 
     @GET
     public Response getAllBabysitters() {
-        return Response.status(200)
-                .entity(BabysitterDTOConverter
-                        .convertBabysitterListToBabysitterDTOList(babysitterUseCase.getAllBabysitters()))
-                .build();
+        try {
+            return Response.status(200)
+                    .entity(BabysitterDTOConverter
+                            .convertBabysitterListToBabysitterDTOList(babysitterUseCase.getAllBabysitters()))
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(400).build();
+        }
     }
 
     @PUT
@@ -70,7 +70,7 @@ public class ResourcesRestServices {
             validation(babysitterDTO);
             BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
                     BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
-        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
@@ -89,7 +89,7 @@ public class ResourcesRestServices {
             validation(teachingSitterDTO);
             BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
                     BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
-        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
@@ -108,7 +108,7 @@ public class ResourcesRestServices {
             validation(tidingSitterDTO);
             BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
                     BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
-        } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
@@ -120,11 +120,11 @@ public class ResourcesRestServices {
     public Response createBabysitter(BabysitterDTO babysitterDTO) {
         try {
             validation(babysitterDTO);
+            babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
         return Response.status(201).build();
     }
 
@@ -133,11 +133,11 @@ public class ResourcesRestServices {
     public Response createTeachingSitter(TeachingSitterDTO teachingSitterDTO) {
         try {
             validation(teachingSitterDTO);
+            babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
         return Response.status(201).build();
     }
 
@@ -146,18 +146,23 @@ public class ResourcesRestServices {
     public Response createTidingSitter(TidingSitterDTO tidingSitterDTO) {
         try {
             validation(tidingSitterDTO);
+            babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }
-        babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
         return Response.status(201).build();
     }
 
     @DELETE
     @Path("{uuid}")
     public Response deleteBabysitter(@PathParam("uuid") String uuid) {
-        babysitterUseCase.deleteBabysitter(babysitterUseCase.getBabysitterByKey(uuid));
+        try {
+            babysitterUseCase.deleteBabysitter(babysitterUseCase.getBabysitterByKey(uuid));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.status(400).build();
+        }
         return Response.status(204).build();
     }
 

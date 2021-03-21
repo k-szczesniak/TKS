@@ -4,7 +4,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-//TODO: SPRAWDZIC CZY DA SIE WYRZUCIC
+//TODO: NA KONIEC: SPRAWDZIC CZY DA SIE WYRZUCIC
 
 /**
  * @author

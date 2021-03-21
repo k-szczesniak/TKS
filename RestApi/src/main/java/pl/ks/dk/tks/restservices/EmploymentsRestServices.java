@@ -48,6 +48,4 @@ public class EmploymentsRestServices {
         }
         return Response.status(201).build();
     }
-
-    //TODO: ZASTANOWIC SIE NAD WYJATKAMI - SERVICE EXCEPTION?
 }

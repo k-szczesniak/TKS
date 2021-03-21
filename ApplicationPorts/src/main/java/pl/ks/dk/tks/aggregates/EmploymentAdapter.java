@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
 
-    //TODO:printStackTrace na jakiś wyjątek
-
     @Inject
     private EmploymentsRepositoryEnt employmentsRepositoryEnt;
 

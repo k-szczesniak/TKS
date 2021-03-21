@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPort, GetBabysitterPort {
 
-    //TODO:PRZEMYSLEC CZY ADAPTERY POWINNY IMPLEMENTOWAC JAKIS INTERFEJS ŻEBY WYMUSIC CONVERTERY
-
     @Inject
     private BabysittersRepositoryEnt babysittersRepositoryEnt;
 

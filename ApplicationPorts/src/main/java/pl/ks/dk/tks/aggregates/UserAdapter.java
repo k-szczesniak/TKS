@@ -1,5 +1,6 @@
 package pl.ks.dk.tks.aggregates;
 
+import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.domainmodel.users.Admin;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.domainmodel.users.SuperUser;
@@ -12,7 +13,6 @@ import pl.ks.dk.tks.model.users.ClientEnt;
 import pl.ks.dk.tks.model.users.SuperUserEnt;
 import pl.ks.dk.tks.model.users.UserEnt;
 import pl.ks.dk.tks.repositories.UsersRepositoryEnt;
-import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -93,7 +93,6 @@ public class UserAdapter implements AddUserPort, GetUserPort {
         }
     }
 
-    //TODO: zastanowić się czy throws zostawić, czy łąpać w converterach ?
     private static UserEnt copyUserToUserEnt(UserEnt userEnt, User user) throws AdapterException {
         try {
             BeanUtils.copyProperties(userEnt, user);
@@ -103,7 +102,6 @@ public class UserAdapter implements AddUserPort, GetUserPort {
         return userEnt;
     }
 
-    //TODO: zastanowić się czy throws zostawić, czy łąpać w converterach ?
     private static User copyUserEntToUser(User user, UserEnt userEnt) throws AdapterException {
         try {
             BeanUtils.copyProperties(user, userEnt);

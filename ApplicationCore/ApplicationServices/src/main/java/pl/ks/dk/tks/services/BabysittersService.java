@@ -12,8 +12,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
-//TODO: OCZYSCIC REPO I SERWISY Z ZBEDNYCH METOD
-//TODO: CZY POSTCONSTRUCT POTRZEBNY
+//TODO: NA KONIEC: OCZYSCIC REPO I SERWISY Z ZBEDNYCH METOD
+//TODO: NA KONIEC: CZY POSTCONSTRUCT POTRZEBNY
 
 @ApplicationScoped
 public class BabysittersService implements BabysitterUseCase {
