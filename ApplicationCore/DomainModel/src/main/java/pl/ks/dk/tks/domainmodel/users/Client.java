@@ -1,10 +1,17 @@
 package pl.ks.dk.tks.domainmodel.users;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class Client extends User {
 
     @NotNull
@@ -21,9 +28,6 @@ public class Client extends User {
     @Pattern(regexp = "Client")
     private String role;
 
-    public Client() {
-    }
-
     public Client(String login, String name, String surname, String password, String role, int numberOfChildren,
                   int ageOfTheYoungestChild) {
         super(login, name, surname, password);
@@ -32,27 +36,4 @@ public class Client extends User {
         this.ageOfTheYoungestChild = ageOfTheYoungestChild;
     }
 
-    public void setNumberOfChildren(Integer numberOfChildren) {
-        this.numberOfChildren = numberOfChildren;
-    }
-
-    public void setAgeOfTheYoungestChild(Integer ageOfTheYoungestChild) {
-        this.ageOfTheYoungestChild = ageOfTheYoungestChild;
-    }
-
-    public Integer getNumberOfChildren() {
-        return numberOfChildren;
-    }
-
-    public Integer getAgeOfTheYoungestChild() {
-        return ageOfTheYoungestChild;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }

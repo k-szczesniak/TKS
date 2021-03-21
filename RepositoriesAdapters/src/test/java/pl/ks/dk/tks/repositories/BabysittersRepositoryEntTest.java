@@ -25,7 +25,7 @@ class BabysittersRepositoryEntTest {
         assertEquals(babysittersRepository.getElements().size(),
                 babysittersRepository.getNumberOfElements());
 
-        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20, 3, 4, 13);
+        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20.0, 3, 4, 13);
         babysittersRepository.addElement(babysitter);
 
         assertEquals(1, babysittersRepository.getElements().size());
@@ -37,7 +37,7 @@ class BabysittersRepositoryEntTest {
     void checkIfTheElementIsPresent() {
         BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();
 
-        BabysitterEnt babysitter = new TidingSitterEnt("Ola", "Nowak", 20, 3, 4, 560);
+        BabysitterEnt babysitter = new TidingSitterEnt("Ola", "Nowak", 20.0, 3, 4, 560);
         babysittersRepository.addElement(babysitter);
 
         assertTrue(babysittersRepository.checkIfTheElementIsPresent(babysitter));
@@ -49,7 +49,7 @@ class BabysittersRepositoryEntTest {
 
         assertEquals(0, babysittersRepository.getNumberOfElements());
 
-        BabysitterEnt babysitter = new BabysitterEnt("Ola", "Nowak", 20, 3, 4);
+        BabysitterEnt babysitter = new BabysitterEnt("Ola", "Nowak", 20.0, 3, 4);
         babysittersRepository.addElement(babysitter);
 
         assertEquals(1, babysittersRepository.getNumberOfElements());
@@ -59,7 +59,7 @@ class BabysittersRepositoryEntTest {
     void deleteElement() {
         BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();
 
-        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20, 3, 4, 13);
+        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20.0, 3, 4, 13);
         babysittersRepository.addElement(babysitter);
 
         assertEquals(1, babysittersRepository.getNumberOfElements());
@@ -73,7 +73,7 @@ class BabysittersRepositoryEntTest {
     void getElements() {
         BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();
 
-        BabysitterEnt babysitter = new BabysitterEnt("Ola", "Nowak", 20, 3, 4);
+        BabysitterEnt babysitter = new BabysitterEnt("Ola", "Nowak", 20.0, 3, 4);
         babysittersRepository.addElement(babysitter);
 
         List<BabysitterEnt> babysitterList = new ArrayList<>();
@@ -86,13 +86,13 @@ class BabysittersRepositoryEntTest {
     void testToString() {
         BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();
 
-        BabysitterEnt babysitter1 = new BabysitterEnt("Ola", "Nowak", 20, 3, 4);
+        BabysitterEnt babysitter1 = new BabysitterEnt("Ola", "Nowak", 20.0, 3, 4);
         babysittersRepository.addElement(babysitter1);
 
-        BabysitterEnt babysitter2 = new TeachingSitterEnt("Anna", "Kowalska", 15, 5, 2, 5);
+        BabysitterEnt babysitter2 = new TeachingSitterEnt("Anna", "Kowalska", 15.0, 5, 2, 5);
         babysittersRepository.addElement(babysitter2);
 
-        BabysitterEnt babysitter3 = new TidingSitterEnt("Kasia", "Parkowska", 11, 10, 2, 560);
+        BabysitterEnt babysitter3 = new TidingSitterEnt("Kasia", "Parkowska", 11.0, 10, 2, 560);
         babysittersRepository.addElement(babysitter3);
 
         log.config(babysittersRepository.toString());
@@ -102,7 +102,7 @@ class BabysittersRepositoryEntTest {
     void tryingToAddAddedElement() {
         BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();
 
-        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20, 3, 4, 13);
+        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20.0, 3, 4, 13);
         babysittersRepository.addElement(babysitter);
 
         assertThrows(RepositoryExceptionEnt.class, () -> babysittersRepository.addElement(babysitter));
@@ -112,7 +112,7 @@ class BabysittersRepositoryEntTest {
     void tryingToDeleteDeletedElement() {
         BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();
 
-        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20, 3, 4, 13);
+        BabysitterEnt babysitter = new TeachingSitterEnt("Ola", "Nowak", 20.0, 3, 4, 13);
         babysittersRepository.addElement(babysitter);
         babysittersRepository.deleteElement(babysitter);
 

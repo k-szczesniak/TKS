@@ -1,5 +1,8 @@
 package pl.ks.dk.tks.dtomodel.employments;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.ks.dk.tks.dtomodel.exceptions.EmploymentExceptionDTO;
 import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
@@ -7,18 +10,15 @@ import pl.ks.dk.tks.model.users.ClientEnt;
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
-
+@Getter
+@Setter
+@NoArgsConstructor
 public class EmploymentDTO {
     private String uniqueID;
     private BabysitterEnt babysitter;
     private ClientEnt client;
     private LocalDateTime beginningOfEmployment;
     private LocalDateTime endOfEmployment;
-
-
-    public EmploymentDTO() {
-
-    }
 
     public EmploymentDTO(BabysitterEnt babysitter, ClientEnt client) {
         this.babysitter = babysitter;
@@ -44,7 +44,7 @@ public class EmploymentDTO {
 
     public double employmentCost() {
         if (isEnded()) {
-            return employmentDurationInHours() * babysitter.priceForHour();
+            return employmentDurationInHours() * babysitter.getBasePriceForHour();
         }
         throw new EmploymentExceptionDTO("Employment has not been ended");
     }
@@ -57,36 +57,5 @@ public class EmploymentDTO {
                 "\nbeginningOfEmployment: " + beginningOfEmployment +
                 "\nendOfEmployment: " + endOfEmployment;
     }
-
-    public void setEndOfEmployment(LocalDateTime endOfEmployment) {
-        this.endOfEmployment = endOfEmployment;
-    }
-
-    public LocalDateTime getEndOfEmployment() {
-        return endOfEmployment;
-    }
-
-    public BabysitterEnt getBabysitter() {
-        return babysitter;
-    }
-
-    public ClientEnt getClient() {
-        return client;
-    }
-
-    public String getUuid() {
-        return uniqueID;
-    }
-
-    public void setUniqueID(String uniqueID) {
-        this.uniqueID = uniqueID;
-    }
-
-    public void setBabysitter(BabysitterEnt babysitter) {
-        this.babysitter = babysitter;
-    }
-
-    public LocalDateTime getBeginningOfEmployment() {
-        return beginningOfEmployment;
-    }
 }
+//TODO: DTO model nie zwraca hasła

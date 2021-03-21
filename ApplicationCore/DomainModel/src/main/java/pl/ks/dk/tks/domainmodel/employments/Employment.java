@@ -1,5 +1,8 @@
 package pl.ks.dk.tks.domainmodel.employments;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
 import pl.ks.dk.tks.domainmodel.users.Client;
@@ -8,6 +11,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 //TODO: NA KONIEC: PRZENIESC METODY Z EMPLOYMENT DO MANAGERA
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class Employment {
 
     private String uniqueID;
@@ -15,9 +22,6 @@ public class Employment {
     private Client client;
     private LocalDateTime beginningOfEmployment;
     private LocalDateTime endOfEmployment;
-
-    public Employment() {
-    }
 
     public Employment(Babysitter babysitter, Client client) {
         this.babysitter = babysitter;
@@ -43,7 +47,7 @@ public class Employment {
 
     public double employmentCost() {
         if (isEnded()) {
-            return employmentDurationInHours() * babysitter.priceForHour();
+            return employmentDurationInHours() * babysitter.getBasePriceForHour();
         }
         throw new EmploymentException("Employment has not been ended");
     }
@@ -55,37 +59,5 @@ public class Employment {
                 "\nuser: " + client.getLogin() +
                 "\nbeginningOfEmployment: " + beginningOfEmployment +
                 "\nendOfEmployment: " + endOfEmployment;
-    }
-
-    public void setEndOfEmployment(LocalDateTime endOfEmployment) {
-        this.endOfEmployment = endOfEmployment;
-    }
-
-    public LocalDateTime getEndOfEmployment() {
-        return endOfEmployment;
-    }
-
-    public Babysitter getBabysitter() {
-        return babysitter;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public String getUuid() {
-        return uniqueID;
-    }
-
-    public void setUniqueID(String uniqueID) {
-        this.uniqueID = uniqueID;
-    }
-
-    public void setBabysitter(Babysitter babysitter) {
-        this.babysitter = babysitter;
-    }
-
-    public LocalDateTime getBeginningOfEmployment() {
-        return beginningOfEmployment;
     }
 }

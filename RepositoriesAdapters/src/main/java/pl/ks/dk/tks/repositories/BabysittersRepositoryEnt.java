@@ -44,13 +44,13 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
 
     @PostConstruct
     private void initBabysittersList() {
-        addElement(new BabysitterEnt("Anna", "Kwiatkowska", 123, 12, 4));
-        addElement(new BabysitterEnt("Kinga", "Rusin", 50, 4, 4));
-        addElement(new BabysitterEnt("Joanna", "Krupa", 40, 7, 2));
-        addElement(new TidingSitterEnt("Renia", "Sprzątająca", 60, 1, 2, 40));
-        addElement(new TeachingSitterEnt("Jola", "Ucząca", 100, 4, 1, 3));
-        addElement(new TeachingSitterEnt("Sylwia", "Taczka", 75, 4, 6, 10));
-        addElement(new TeachingSitterEnt("Bożena", "Jajko", 120, 1, 25, 25));
+        addElement(new BabysitterEnt("Anna", "Kwiatkowska", 123.0, 12, 4));
+        addElement(new BabysitterEnt("Kinga", "Rusin", 50.0, 4, 4));
+        addElement(new BabysitterEnt("Joanna", "Krupa", 40.0, 7, 2));
+        addElement(new TidingSitterEnt("Renia", "Sprzątająca", 60.0, 1, 2, 40));
+        addElement(new TeachingSitterEnt("Jola", "Ucząca", 100.0, 4, 1, 3));
+        addElement(new TeachingSitterEnt("Sylwia", "Taczka", 75.0, 4, 6, 10));
+        addElement(new TeachingSitterEnt("Bożena", "Jajko", 120.0, 1, 25, 25));
     }
 
     public String toString() {

@@ -1,12 +1,18 @@
 package pl.ks.dk.tks.dtomodel.babysitters;
 
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.ks.dk.tks.dtomodel.interfaces.EntityToSignDTO;
 
 import javax.validation.constraints.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class BabysitterDTO implements Cloneable, EntityToSignDTO {
 
     @NotNull
@@ -18,9 +24,9 @@ public class BabysitterDTO implements Cloneable, EntityToSignDTO {
     private String surname;
 
     @NotNull
-    @Min(0)
-    @Max(1000)
-    private Integer basePriceForHour;
+    @DecimalMin("0.00")
+    @DecimalMax("1000.00")
+    private Double basePriceForHour;
 
     @NotNull
     @Min(0)
@@ -35,91 +41,20 @@ public class BabysitterDTO implements Cloneable, EntityToSignDTO {
     @AssertFalse
     private boolean employed;
 
-    private String uniqueID;
-
-    public BabysitterDTO() {
-    }
+    private String uuid;
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
-    public BabysitterDTO(String name, String surname, Integer basePriceForHour, Integer minChildAge,
+    public BabysitterDTO(String name, String surname, Double basePriceForHour, Integer minChildAge,
                          int maxNumberOfChildrenInTheFamily) {
         this.name = name;
         this.surname = surname;
         this.basePriceForHour = basePriceForHour;
         this.minChildAge = minChildAge;
         this.maxNumberOfChildrenInTheFamily = maxNumberOfChildrenInTheFamily;
-    }
-
-    public double priceForHour() {
-        return basePriceForHour;
-    }
-
-    public Integer getYearsOfExperienceInTeaching() {
-        return null;
-    }
-
-    public Double getValueOfCleaningEquipment() {
-        return null;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public void setBasePriceForHour(Integer basePriceForHour) {
-        this.basePriceForHour = basePriceForHour;
-    }
-
-    public void setMinChildAge(Integer minChildAge) {
-        this.minChildAge = minChildAge;
-    }
-
-    public void setMaxNumberOfChildrenInTheFamily(Integer maxNumberOfChildrenInTheFamily) {
-        this.maxNumberOfChildrenInTheFamily = maxNumberOfChildrenInTheFamily;
-    }
-
-    public boolean isEmployed() {
-        return employed;
-    }
-
-    public void setEmployed(boolean employed) {
-        this.employed = employed;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public Integer getBasePriceForHour() {
-        return basePriceForHour;
-    }
-
-    public Integer getMinChildAge() {
-        return minChildAge;
-    }
-
-    public Integer getMaxNumberOfChildrenInTheFamily() {
-        return maxNumberOfChildrenInTheFamily;
-    }
-
-    public String getUuid() {
-        return uniqueID;
-    }
-
-    public void setUuid(String uniqueID) {
-        this.uniqueID = uniqueID;
     }
 
     @Override

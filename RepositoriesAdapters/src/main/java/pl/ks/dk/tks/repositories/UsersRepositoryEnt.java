@@ -1,7 +1,6 @@
 package pl.ks.dk.tks.repositories;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import pl.ks.dk.tks.model.exceptions.UserExceptionEnt;
 import pl.ks.dk.tks.model.users.AdminEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
 import pl.ks.dk.tks.model.users.SuperUserEnt;

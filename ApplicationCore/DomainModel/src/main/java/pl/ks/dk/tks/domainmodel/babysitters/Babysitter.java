@@ -1,8 +1,15 @@
 package pl.ks.dk.tks.domainmodel.babysitters;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.validation.constraints.*;
 
 //TODO: NA KONIEC: ZASTANOWIC SIE NAD CLONEABLE, BEAN VALIDATION - USUNAC?
+@Getter
+@Setter
+@NoArgsConstructor
 public class Babysitter {
 
     @NotNull
@@ -14,9 +21,9 @@ public class Babysitter {
     private String surname;
 
     @NotNull
-    @Min(0)
-    @Max(1000)
-    private Integer basePriceForHour;
+    @DecimalMin("0.00")
+    @DecimalMax("1000.00")
+    private Double basePriceForHour;
 
     @NotNull
     @Min(0)
@@ -33,84 +40,13 @@ public class Babysitter {
 
     private String uniqueID;
 
-    public Babysitter() {
-    }
-
-    public Babysitter(String name, String surname, Integer basePriceForHour, Integer minChildAge,
+    public Babysitter(String name, String surname, Double basePriceForHour, Integer minChildAge,
                       int maxNumberOfChildrenInTheFamily) {
         this.name = name;
         this.surname = surname;
         this.basePriceForHour = basePriceForHour;
         this.minChildAge = minChildAge;
         this.maxNumberOfChildrenInTheFamily = maxNumberOfChildrenInTheFamily;
-    }
-
-    public double priceForHour() {
-        return basePriceForHour;
-    }
-
-    public Integer getYearsOfExperienceInTeaching() {
-        return null;
-    }
-
-    public Double getValueOfCleaningEquipment() {
-        return null;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public void setBasePriceForHour(Integer basePriceForHour) {
-        this.basePriceForHour = basePriceForHour;
-    }
-
-    public void setMinChildAge(Integer minChildAge) {
-        this.minChildAge = minChildAge;
-    }
-
-    public void setMaxNumberOfChildrenInTheFamily(Integer maxNumberOfChildrenInTheFamily) {
-        this.maxNumberOfChildrenInTheFamily = maxNumberOfChildrenInTheFamily;
-    }
-
-    public boolean isEmployed() {
-        return employed;
-    }
-
-    public void setEmployed(boolean employed) {
-        this.employed = employed;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public Integer getBasePriceForHour() {
-        return basePriceForHour;
-    }
-
-    public Integer getMinChildAge() {
-        return minChildAge;
-    }
-
-    public Integer getMaxNumberOfChildrenInTheFamily() {
-        return maxNumberOfChildrenInTheFamily;
-    }
-
-    public String getUuid() {
-        return uniqueID;
-    }
-
-    public void setUuid(String uniqueID) {
-        this.uniqueID = uniqueID;
     }
 
     @Override

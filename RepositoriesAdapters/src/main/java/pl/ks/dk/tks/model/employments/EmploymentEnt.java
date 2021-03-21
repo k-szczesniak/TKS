@@ -46,7 +46,7 @@ public class EmploymentEnt {
 
     public double employmentCost() {
         if (isEnded()) {
-            return employmentDurationInHours() * babysitter.priceForHour();
+            return employmentDurationInHours() * babysitter.getBasePriceForHour();
         }
         throw new EmploymentExceptionEnt("Employment has not been ended");
     }

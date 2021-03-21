@@ -17,7 +17,7 @@ class EmploymentEntTest {
 
     @Test
     void endEmployment() {
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -32,7 +32,7 @@ class EmploymentEntTest {
 
     @Test
     void isEnded() {
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -47,7 +47,7 @@ class EmploymentEntTest {
 
     @Test
     void employmentDurationInHours() {
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -60,7 +60,7 @@ class EmploymentEntTest {
 
     @Test
     void employmentDurationInHours_NotEndedEmployment() {
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -71,7 +71,7 @@ class EmploymentEntTest {
 
     @Test
     void employmentCost_Case1() {
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 15, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 15.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -88,7 +88,7 @@ class EmploymentEntTest {
 
     @Test
     void employmentCost_Case2() {
-        BabysitterEnt babysitter = new TeachingSitterEnt("Anna", "Kowalska", 10, 4, 5, 10);
+        BabysitterEnt babysitter = new TeachingSitterEnt("Anna", "Kowalska", 10.0, 4, 5, 10);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -105,7 +105,7 @@ class EmploymentEntTest {
 
     @Test
     void employmentCost_Case3() {
-        BabysitterEnt babysitter = new TidingSitterEnt("Anna", "Kowalska", 20, 4, 5, 500);
+        BabysitterEnt babysitter = new TidingSitterEnt("Anna", "Kowalska", 20.0, 4, 5, 500);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -123,7 +123,7 @@ class EmploymentEntTest {
     @Test
     void testToString() {
 
-        BabysitterEnt babysitter = new TidingSitterEnt("Anna", "Kowalska", 20, 4, 5, 500);
+        BabysitterEnt babysitter = new TidingSitterEnt("Anna", "Kowalska", 20.0, 4, 5, 500);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 

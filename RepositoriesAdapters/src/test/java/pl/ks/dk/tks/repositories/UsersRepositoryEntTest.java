@@ -1,9 +1,9 @@
 package pl.ks.dk.tks.repositories;
 
 import org.junit.jupiter.api.Test;
-import pl.ks.dk.tks.model.exceptions.UserExceptionEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
 import pl.ks.dk.tks.model.users.UserEnt;
+import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ class UsersRepositoryEntTest {
         assertEquals(1, usersRepository.getNumberOfElements());
 
         //non-unique login
-        assertThrows(UserExceptionEnt.class, () -> usersRepository.addElement(client));
+        assertThrows(RepositoryExceptionEnt.class, () -> usersRepository.addElement(client));
 
         //find by uuid
         assertEquals(client, usersRepository.findUserByUuid(client.getUuid()));

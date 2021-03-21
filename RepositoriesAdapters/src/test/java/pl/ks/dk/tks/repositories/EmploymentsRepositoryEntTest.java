@@ -24,7 +24,7 @@ class EmploymentsRepositoryEntTest {
         assertEquals(employmentsRepository.getElements().size(),
                 employmentsRepository.getNumberOfElements());
 
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -41,7 +41,7 @@ class EmploymentsRepositoryEntTest {
     void checkIfTheElementIsPresent() {
         EmploymentsRepositoryEnt employmentsRepository = new EmploymentsRepositoryEnt();
 
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -58,7 +58,7 @@ class EmploymentsRepositoryEntTest {
 
         assertEquals(0, employmentsRepository.getNumberOfElements());
 
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -73,7 +73,7 @@ class EmploymentsRepositoryEntTest {
     void deleteElement() {
         EmploymentsRepositoryEnt employmentsRepository = new EmploymentsRepositoryEnt();
 
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -92,7 +92,7 @@ class EmploymentsRepositoryEntTest {
     void getElements() {
         EmploymentsRepositoryEnt employmentsRepository = new EmploymentsRepositoryEnt();
 
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
@@ -110,7 +110,7 @@ class EmploymentsRepositoryEntTest {
     void testToString() {
         EmploymentsRepositoryEnt employmentsRepository = new EmploymentsRepositoryEnt();
 
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20, 4, 5);
+        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
 
         ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
 
