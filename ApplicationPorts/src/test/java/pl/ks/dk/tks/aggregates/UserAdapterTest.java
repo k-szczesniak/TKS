@@ -7,6 +7,8 @@ import pl.ks.dk.tks.domainmodel.users.SuperUser;
 import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.model.users.UserEnt;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class UserAdapterTest {
     @Test
     void convertUserToUserEntTest() {
@@ -17,6 +19,13 @@ public class UserAdapterTest {
         UserEnt userEnt = UserAdapter.convertUserToUserEnt(user);
         UserEnt userEnt1 = UserAdapter.convertUserToUserEnt(admin);
         UserEnt userEnt2 = UserAdapter.convertUserToUserEnt(superUser);
+
+        assertEquals(userEnt.getName(), user.getName());
+        assertEquals(userEnt1.getName(), admin.getName());
+        assertEquals(userEnt2.getName(), superUser.getName());
+
         int i = 5;
+
+
     }
 }
