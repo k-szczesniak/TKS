@@ -17,7 +17,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.ParseException;
 
 @Produces(MediaType.TEXT_PLAIN)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -58,7 +57,7 @@ public class LogInServices {
                         .entity(JWTGeneratorVerifier.updateJWTString(tokenToUpdate))
                         .build();
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(401).build();
         }

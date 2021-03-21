@@ -1,7 +1,6 @@
 package pl.ks.dk.tks.restservices;
 
 import org.apache.commons.beanutils.BeanUtils;
-import pl.ks.dk.tks.domainmodel.exceptions.UserException;
 import pl.ks.dk.tks.domainmodel.users.Admin;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.domainmodel.users.SuperUser;
@@ -50,7 +49,7 @@ public class UsersRestServices {
                     .header("ETag", EntityIdentitySignerVerifier.calculateETag((userUseCase.getUserByKey(uuid))))
                     .entity(UserDTOWrapper.wrap(userUseCase.getUserByKey(uuid)))
                     .build();
-        } catch (UserException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(400).build();
         }

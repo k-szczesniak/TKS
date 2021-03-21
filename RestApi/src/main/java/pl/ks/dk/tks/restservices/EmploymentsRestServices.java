@@ -1,8 +1,6 @@
 package pl.ks.dk.tks.restservices;
 
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
-import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
-import pl.ks.dk.tks.domainmodel.exceptions.UserException;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
 import pl.ks.dk.tks.userinterface.EmploymentUseCase;
@@ -45,7 +43,7 @@ public class EmploymentsRestServices {
                     (Client) userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName());
             Babysitter babysitter = babysitterUseCase.getBabysitterByKey(uuid);
             employmentUseCase.employ(client, babysitter);
-        } catch (UserException | EmploymentException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
         }

@@ -4,8 +4,10 @@ import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.employments.Employment;
 import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
 import pl.ks.dk.tks.domainmodel.users.Client;
+import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.employments.AddEmploymentPort;
 import pl.ks.dk.tks.infrastructure.employments.GetEmploymentPort;
+import pl.ks.dk.tks.services.exceptions.ServiceException;
 import pl.ks.dk.tks.userinterface.EmploymentUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,12 +29,16 @@ public class EmploymentsService implements EmploymentUseCase {
     }
 
     @Override
-    public void employ(Client client, Babysitter babysitter) {
-        checkIfUserIsActive(client);
-        checkIfBabysitterMeetsRequirements(babysitter, client.getAgeOfTheYoungestChild(), client.getNumberOfChildren());
-        checkIfBabysitterIsCurrentlyEmployed(babysitter);
+    public void employ(Client client, Babysitter babysitter) throws ServiceException {
 
-        addEmploymentPort.addEmployment(client, babysitter);
+        try {
+            checkIfUserIsActive(client);
+            checkIfBabysitterMeetsRequirements(babysitter, client.getAgeOfTheYoungestChild(), client.getNumberOfChildren());
+            checkIfBabysitterIsCurrentlyEmployed(babysitter);
+            addEmploymentPort.addEmployment(client, babysitter);
+        } catch (AdapterException | EmploymentException exception) {
+            throw new ServiceException(exception.getMessage(), exception);
+        }
     }
 
     private void checkIfUserIsActive(Client client) {

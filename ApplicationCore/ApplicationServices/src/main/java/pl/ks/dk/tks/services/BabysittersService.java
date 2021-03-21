@@ -1,10 +1,11 @@
 package pl.ks.dk.tks.services;
 
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
-import pl.ks.dk.tks.domainmodel.exceptions.BabysitterException;
+import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.babysitters.AddBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.DeleteBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.GetBabysitterPort;
+import pl.ks.dk.tks.services.exceptions.ServiceException;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,8 +28,14 @@ public class BabysittersService implements BabysitterUseCase {
     private GetBabysitterPort getBabysitterPort;
 
     @Override
-    public Babysitter getBabysitterByKey(String uuid) {
-        return getBabysitterPort.getBabysitter(uuid);
+    public Babysitter getBabysitterByKey(String uuid) throws ServiceException {
+        Babysitter babysitter = null;
+        try {
+            babysitter = getBabysitterPort.getBabysitter(uuid);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
+        return babysitter;
     }
 
     @Override
@@ -37,15 +44,24 @@ public class BabysittersService implements BabysitterUseCase {
     }
 
     @Override
-    public void addBabysitter(Babysitter babysitter) {
-        addBabysitterPort.addBabysitter(babysitter);
+    public void addBabysitter(Babysitter babysitter) throws ServiceException {
+        try {
+            addBabysitterPort.addBabysitter(babysitter);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
     }
 
+    //TODO: poprawić te rzucanie wyjątków
     @Override
-    public void deleteBabysitter(Babysitter babysitter) {
+    public void deleteBabysitter(Babysitter babysitter) throws ServiceException {
         if (!babysitter.isEmployed()) {
-            deleteBabysitterPort.deleteBabysitter(babysitter);
-        } else throw new BabysitterException("An employed babysitter cannot be removed");
+            try {
+                deleteBabysitterPort.deleteBabysitter(babysitter);
+            } catch (AdapterException adapterException) {
+                throw new ServiceException(adapterException.getMessage(), adapterException);
+            }
+        } else throw new ServiceException("An employed babysitter cannot be removed");
     }
 
 

@@ -1,7 +1,6 @@
 package pl.ks.dk.tks.domainmodel.babysitters;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import pl.ks.dk.tks.domainmodel.exceptions.BabysitterException;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -22,9 +21,6 @@ public class TidingSitter extends Babysitter {
                         Integer maxNumberOfChildrenInTheFamily, double valueOfCleaningEquipment) {
         super(name, surname, basePriceForHour, minChildAge, maxNumberOfChildrenInTheFamily);
         this.valueOfCleaningEquipment = valueOfCleaningEquipment;
-        if (valueOfCleaningEquipment < 0) {
-            throw new BabysitterException("Invalid argument");
-        }
     }
 
     @Override

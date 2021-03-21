@@ -1,8 +1,10 @@
 package pl.ks.dk.tks.services;
 
 import pl.ks.dk.tks.domainmodel.users.User;
+import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.users.AddUserPort;
 import pl.ks.dk.tks.infrastructure.users.GetUserPort;
+import pl.ks.dk.tks.services.exceptions.ServiceException;
 import pl.ks.dk.tks.userinterface.UserUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -21,13 +23,25 @@ public class UsersService implements UserUseCase {
     private GetUserPort getUserPort;
 
     @Override
-    public User getUserByLogin(String login) {
-        return getUserPort.getUserByLogin(login);
+    public User getUserByLogin(String login) throws ServiceException {
+        User user = null;
+        try {
+            user = getUserPort.getUserByLogin(login);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
+        return user;
     }
 
     @Override
-    public User getUserByKey(String uuid) {
-        return getUserPort.getUserByKey(uuid);
+    public User getUserByKey(String uuid) throws ServiceException {
+        User user = null;
+        try {
+            user = getUserPort.getUserByKey(uuid);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
+        return user;
     }
 
     @Override
@@ -36,17 +50,21 @@ public class UsersService implements UserUseCase {
     }
 
     @Override
-    public void addUser(User user) {
-        addUserPort.addUser(user);
+    public void addUser(User user) throws ServiceException {
+        try {
+            addUserPort.addUser(user);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
     }
 
     @Override
     public boolean checkIfUserIsActive(String login) {
-        return getUserPort.getUserByLogin(login).isActive();
+        return getUserByLogin(login).isActive();
     }
 
     @Override
-    public User getUserByLoginAndPassword(String login, String password) {
+    public User getUserByLoginAndPassword(String login, String password) throws ServiceException {
         User user = null;
         try {
             User tmpUser = getUserByLogin(login);
@@ -54,7 +72,7 @@ public class UsersService implements UserUseCase {
                 user = tmpUser;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ServiceException(e.getMessage(), e);
         }
         return user;
     }
