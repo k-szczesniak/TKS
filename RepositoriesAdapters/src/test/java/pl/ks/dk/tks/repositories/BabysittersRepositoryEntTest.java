@@ -105,4 +105,30 @@ class BabysittersRepositoryEntTest {
 
         assertThrows(RepositoryExceptionEnt.class, () -> babysittersRepository.deleteElement(babysitter));
     }
+
+    @Test
+    void updateElementTest() {
+        BabysittersRepositoryEnt babysittersRepositoryEnt = new BabysittersRepositoryEnt();
+        BabysitterEnt babysitter = new BabysitterEnt("Ola", "Nowak", 20.0, 3, 4);
+
+        babysittersRepositoryEnt.addElement(babysitter);
+        assertEquals("Ola", babysittersRepositoryEnt.getElements().get(0).getName());
+
+        BabysitterEnt updatedBabysitter = new BabysitterEnt("Ewa", "Nowak", 20.0, 3, 4);
+        babysittersRepositoryEnt.updateElement(updatedBabysitter, babysittersRepositoryEnt.getElements().get(0).getUuid());
+        assertEquals("Ewa", babysittersRepositoryEnt.getElements().get(0).getName());
+
+    }
+
+    @Test
+    void findByKeyTest() {
+        BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();
+        BabysitterEnt babysitter = new TidingSitterEnt("Ola", "Nowak", 20.0, 3, 4, 560);
+        babysittersRepository.addElement(babysitter);
+
+        assertEquals(babysitter, babysittersRepository.findByKey(babysitter.getUuid()));
+        assertThrows(RepositoryExceptionEnt.class, () -> babysittersRepository.findByKey("zleUuid"));
+    }
+
+
 }
