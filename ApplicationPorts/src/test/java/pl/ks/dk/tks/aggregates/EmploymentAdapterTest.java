@@ -8,25 +8,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.employments.Employment;
-import pl.ks.dk.tks.domainmodel.users.Admin;
 import pl.ks.dk.tks.domainmodel.users.Client;
-import pl.ks.dk.tks.domainmodel.users.SuperUser;
-import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
 import pl.ks.dk.tks.model.employments.EmploymentEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
-import pl.ks.dk.tks.model.users.UserEnt;
 import pl.ks.dk.tks.repositories.EmploymentsRepositoryEnt;
-import pl.ks.dk.tks.repositories.UsersRepositoryEnt;
 import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class EmploymentAdapterTest {
