@@ -67,10 +67,6 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
         throw new RepositoryExceptionEnt("User not found");
     }
 
-    public void changeActiveForUser(UserEnt user) {
-        findUserByUuid(user.getUuid()).changeActive();
-    }
-
     @PostConstruct
     private void initUsersList() {
         addElement(new AdminEnt("aAdamski", "Adam", "Adamski", "adamski", "Admin"));

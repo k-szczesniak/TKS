@@ -16,6 +16,9 @@ class EmploymentsRepositoryEntTest {
 
     protected final Logger log = Logger.getLogger(getClass().getName());
 
+    //test podwojnego dodania
+    //test podwojnego usunięcia
+
     @Test
     void getNumberOfElements() {
         EmploymentsRepositoryEnt employmentsRepository = new EmploymentsRepositoryEnt();
@@ -104,20 +107,5 @@ class EmploymentsRepositoryEntTest {
         employmentList.add(employment);
 
         assertEquals(employmentList, employmentsRepository.getElements());
-    }
-
-    @Test
-    void testToString() {
-        EmploymentsRepositoryEnt employmentsRepository = new EmploymentsRepositoryEnt();
-
-        BabysitterEnt babysitter = new BabysitterEnt("Anna", "Kowalska", 20.0, 4, 5);
-
-        ClientEnt client = new ClientEnt("Login", "Szymon", "Dubowski", "dubowski", "Client", 5, 10);
-
-        EmploymentEnt employment = new EmploymentEnt(babysitter, client);
-
-        employmentsRepository.addElement(employment);
-
-        log.config(employmentsRepository.toString());
     }
 }

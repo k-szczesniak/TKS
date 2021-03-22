@@ -2,7 +2,6 @@ package pl.ks.dk.tks.repositories;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
 import pl.ks.dk.tks.model.babysitters.TeachingSitterEnt;
 import pl.ks.dk.tks.model.babysitters.TidingSitterEnt;
@@ -60,17 +59,5 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
         addElement(new TeachingSitterEnt("Jola", "Ucząca", 100.0, 4, 1, 3));
         addElement(new TeachingSitterEnt("Sylwia", "Taczka", 75.0, 4, 6, 10));
         addElement(new TeachingSitterEnt("Bożena", "Jajko", 120.0, 1, 25, 25));
-    }
-
-    public String toString() {
-        ToStringBuilder stringBuilder = new ToStringBuilder(this);
-        stringBuilder.append(System.getProperty("line.separator"));
-
-        for (BabysitterEnt babysitter : getElements()) {
-            stringBuilder.append("babysitter", babysitter.toString());
-            stringBuilder.append(System.getProperty("line.separator"));
-        }
-
-        return stringBuilder.toString();
     }
 }
