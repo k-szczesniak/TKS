@@ -3,24 +3,25 @@ package pl.ks.dk.tks.dtomodel.employments;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.ks.dk.tks.dtomodel.babysitters.BabysitterDTO;
 import pl.ks.dk.tks.dtomodel.exceptions.EmploymentExceptionDTO;
-import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
-import pl.ks.dk.tks.model.users.ClientEnt;
+import pl.ks.dk.tks.dtomodel.users.ClientDTO;
 
 import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class EmploymentDTO {
-    private String uniqueID;
-    private BabysitterEnt babysitter;
-    private ClientEnt client;
+    private String uuid;
+    private BabysitterDTO babysitter;
+    private ClientDTO client;
     private LocalDateTime beginningOfEmployment;
     private LocalDateTime endOfEmployment;
 
-    public EmploymentDTO(BabysitterEnt babysitter, ClientEnt client) {
+    public EmploymentDTO(BabysitterDTO babysitter, ClientDTO client) {
         this.babysitter = babysitter;
         this.client = client;
         beginningOfEmployment = LocalDateTime.now();
@@ -51,7 +52,7 @@ public class EmploymentDTO {
 
     @Override
     public String toString() {
-        return "uniqueID: " + uniqueID +
+        return "uniqueID: " + uuid +
                 "\nbabysitter: " + babysitter.getName() + " " + babysitter.getSurname() +
                 "\nuser: " + client.getLogin() +
                 "\nbeginningOfEmployment: " + beginningOfEmployment +

@@ -7,7 +7,7 @@ import pl.ks.dk.tks.domainmodel.users.SuperUser;
 import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.model.users.UserEnt;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserAdapterTest {
     @Test
@@ -23,9 +23,18 @@ public class UserAdapterTest {
         assertEquals(userEnt.getName(), user.getName());
         assertEquals(userEnt1.getName(), admin.getName());
         assertEquals(userEnt2.getName(), superUser.getName());
-
-        int i = 5;
-
-
     }
+
+    @Test
+    void RepoTest() {
+//        EmploymentAdapter employmentAdapter = new EmploymentAdapter();
+//        employmentAdapter.getEmploymentsRepositoryEnt()
+//                .addElement(new EmploymentEnt(new BabysitterEnt("Kinga", "Rusin", 50.0, 4, 4),
+//                        (ClientEnt) new ClientEnt("tHajto", "Tomasz", "Hajto", "hajto", "Client", 3, 4));
+//        addElement(new EmploymentEnt(
+//                babysittersRepositoryEnt.getBabysittersList().get(2),
+//                (ClientEnt) usersRepositoryEnt.getElements().get(3)));
+    }
+
+
 }

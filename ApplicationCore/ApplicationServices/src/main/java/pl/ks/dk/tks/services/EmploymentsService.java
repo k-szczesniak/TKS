@@ -24,8 +24,8 @@ public class EmploymentsService implements EmploymentUseCase {
     private GetEmploymentPort getEmploymentPort;
 
     @Override
-    public List<Employment> getActualEmploymentsForClient(Client client) {
-        return getEmploymentPort.getActualEmploymentsForClient(client);
+    public List<Employment> getActualEmploymentsForClient(String key) {
+        return getEmploymentPort.getActualEmploymentsForClient(key);
     }
 
     @Override

@@ -35,14 +35,13 @@ public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
     }
 
     @Override
-    public List<Employment> getActualEmploymentsForClient(Client client) {
+    public List<Employment> getActualEmploymentsForClient(String key) {
         List<Employment> actualEmploymentList = new ArrayList<>();
-        //TODO:Tu może nie pyknąć
         List<Employment> allEmploymentsList = employmentsRepositoryEnt.getElements().stream()
                 .map(EmploymentAdapter::convertEmploymentEntToEmployment)
                 .collect(Collectors.toList());
         for (Employment employment : allEmploymentsList) {
-            if (employment.getClient() == client && employment.getEndOfEmployment() == null)
+            if (employment.getClient().getUuid().equals(key) && employment.getEndOfEmployment() == null)
                 actualEmploymentList.add(employment);
         }
         return actualEmploymentList;

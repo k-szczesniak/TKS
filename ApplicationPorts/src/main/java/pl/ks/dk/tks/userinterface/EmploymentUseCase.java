@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EmploymentUseCase {
 
-    List<Employment> getActualEmploymentsForClient(Client client);
+    List<Employment> getActualEmploymentsForClient(String key);
 
     void employ(Client client, Babysitter babysitter);
 }

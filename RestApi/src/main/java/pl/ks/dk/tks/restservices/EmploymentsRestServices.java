@@ -31,8 +31,8 @@ public class EmploymentsRestServices {
     public Response getAllEmployments(@Context SecurityContext securityContext) {
         return Response.status(200)
                 .entity(EmploymentDTOConverter.convertEmploymentListToEmploymentDTOList(
-                        employmentUseCase.getActualEmploymentsForClient((Client)
-                                userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()))))
+                        employmentUseCase.getActualEmploymentsForClient(
+                                userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()).getUuid())))
                 .build();
     }
 
