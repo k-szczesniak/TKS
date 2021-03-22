@@ -10,8 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-//TODO: W WOLNEJ CHWILI: POSTCONSTRUCT
-
 @ApplicationScoped
 public class EmploymentsRepositoryEnt extends RepositoryEnt<EmploymentEnt> {
 

@@ -10,8 +10,6 @@ import pl.ks.dk.tks.domainmodel.users.Client;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-//TODO: NA KONIEC: PRZENIESC METODY Z EMPLOYMENT DO MANAGERA
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,29 +25,6 @@ public class Employment {
         this.babysitter = babysitter;
         this.client = client;
         beginningOfEmployment = LocalDateTime.now();
-    }
-
-    public void endEmployment() {
-        endOfEmployment = LocalDateTime.now();
-    }
-
-    public boolean isEnded() {
-        return !(endOfEmployment == null);
-    }
-
-    public double employmentDurationInHours() {
-        if (isEnded()) {
-            long differenceInSeconds = ChronoUnit.SECONDS.between(beginningOfEmployment, endOfEmployment);
-            return Math.ceil(differenceInSeconds / 3600.0);
-        }
-        throw new EmploymentException("Employment has not been ended");
-    }
-
-    public double employmentCost() {
-        if (isEnded()) {
-            return employmentDurationInHours() * babysitter.getBasePriceForHour();
-        }
-        throw new EmploymentException("Employment has not been ended");
     }
 
     @Override

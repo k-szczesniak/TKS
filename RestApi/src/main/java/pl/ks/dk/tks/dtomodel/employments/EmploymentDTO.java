@@ -59,4 +59,3 @@ public class EmploymentDTO {
                 "\nendOfEmployment: " + endOfEmployment;
     }
 }
-//TODO: DTO model nie zwraca hasła

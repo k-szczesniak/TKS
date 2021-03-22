@@ -12,8 +12,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
-//TODO: NA KONIEC: USYSTEMATYZOWAC NAZWY PAKIETOW I KLAS
-
 @ApplicationScoped
 public class UsersService implements UserUseCase {
 

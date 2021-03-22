@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.*;
 
-//TODO: NA KONIEC: ZASTANOWIC SIE NAD CLONEABLE, BEAN VALIDATION - USUNAC?
 @Getter
 @Setter
 @NoArgsConstructor
