@@ -14,6 +14,8 @@ public interface UserUseCase {
 
     void addUser(User user);
 
+    void updateUser(User user, String uuid);
+
     boolean checkIfUserIsActive(String login);
 
     User getUserByLoginAndPassword(String login, String password);

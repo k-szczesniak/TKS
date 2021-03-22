@@ -83,7 +83,7 @@ public class UsersRestServices {
         }
         try {
             validation(adminDTO);
-            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), UserDTOConverter.convertUserDTOToUser(adminDTO));
+            userUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(adminDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -101,8 +101,7 @@ public class UsersRestServices {
         }
         try {
             validation(superUserDTO);
-            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid),
-                    UserDTOConverter.convertUserDTOToUser(superUserDTO));
+            userUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(superUserDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -120,7 +119,7 @@ public class UsersRestServices {
         }
         try {
             validation(clientDTO);
-            BeanUtils.copyProperties(userUseCase.getUserByKey(uuid), UserDTOConverter.convertUserDTOToUser(clientDTO));
+            userUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(clientDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();

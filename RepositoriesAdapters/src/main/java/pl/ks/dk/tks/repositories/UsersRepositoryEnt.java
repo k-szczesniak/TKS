@@ -1,5 +1,6 @@
 package pl.ks.dk.tks.repositories;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import pl.ks.dk.tks.model.users.AdminEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
@@ -9,6 +10,7 @@ import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @ApplicationScoped
@@ -27,6 +29,14 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
             super.addElement(user);
         } else {
             throw new RepositoryExceptionEnt("Login is not unique");
+        }
+    }
+
+    public void updateElement(UserEnt user, String uuid) throws RepositoryExceptionEnt {
+        try {
+            BeanUtils.copyProperties(findUserByUuid(uuid), user);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RepositoryExceptionEnt("Error during update");
         }
     }
 
