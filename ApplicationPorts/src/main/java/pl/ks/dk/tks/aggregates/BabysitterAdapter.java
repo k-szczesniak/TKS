@@ -8,6 +8,7 @@ import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.babysitters.AddBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.DeleteBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.GetBabysitterPort;
+import pl.ks.dk.tks.infrastructure.babysitters.UpdateBabysitterPort;
 import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
 import pl.ks.dk.tks.model.babysitters.TeachingSitterEnt;
 import pl.ks.dk.tks.model.babysitters.TidingSitterEnt;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPort, GetBabysitterPort {
+public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPort, GetBabysitterPort, UpdateBabysitterPort {
 
     @Inject
     private BabysittersRepositoryEnt babysittersRepositoryEnt;
@@ -106,5 +107,14 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
             throw new AdapterException("Convert Babysitter to BabysitterEnt error", e);
         }
         return babysitter;
+    }
+
+    @Override
+    public void updateBabysitter(Babysitter babysitter, String key) {
+        try {
+            babysittersRepositoryEnt.updateElement(convertBabysitterToBabysitterEnt(babysitter), key);
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
+        }
     }
 }

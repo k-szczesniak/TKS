@@ -1,5 +1,6 @@
 package pl.ks.dk.tks.repositories;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
@@ -9,6 +10,7 @@ import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @ApplicationScoped
@@ -16,7 +18,8 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
 
     final int SHORT_ID_LENGTH = 8;
 
-    @Override public void addElement(BabysitterEnt element) {
+    @Override
+    public void addElement(BabysitterEnt element) {
         element.setUuid(RandomStringUtils.randomNumeric(SHORT_ID_LENGTH));
         super.addElement(element);
     }
@@ -24,6 +27,14 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
     @Override
     public void deleteElement(BabysitterEnt babysitter) {
         super.deleteElement(babysitter);
+    }
+
+    public void updateElement(BabysitterEnt babysitterEnt, String uuid) throws RepositoryExceptionEnt {
+        try {
+            BeanUtils.copyProperties(findByKey(uuid), babysitterEnt);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RepositoryExceptionEnt("Error during update");
+        }
     }
 
     public List<BabysitterEnt> getBabysittersList() {

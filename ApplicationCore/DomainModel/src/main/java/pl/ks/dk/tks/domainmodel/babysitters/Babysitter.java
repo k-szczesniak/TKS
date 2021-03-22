@@ -38,7 +38,7 @@ public class Babysitter {
     @AssertFalse
     private boolean employed;
 
-    private String uniqueID;
+    private String uuid;
 
     public Babysitter(String name, String surname, Double basePriceForHour, Integer minChildAge,
                       int maxNumberOfChildrenInTheFamily) {
