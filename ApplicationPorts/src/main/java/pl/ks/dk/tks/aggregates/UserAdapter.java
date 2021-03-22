@@ -8,6 +8,7 @@ import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.users.AddUserPort;
 import pl.ks.dk.tks.infrastructure.users.GetUserPort;
+import pl.ks.dk.tks.infrastructure.users.UpdateUserPort;
 import pl.ks.dk.tks.model.users.AdminEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
 import pl.ks.dk.tks.model.users.SuperUserEnt;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class UserAdapter implements AddUserPort, GetUserPort {
+public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
 
     @Inject
     private UsersRepositoryEnt usersRepositoryEnt;
@@ -56,6 +57,15 @@ public class UserAdapter implements AddUserPort, GetUserPort {
             throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
         return user;
+    }
+
+    @Override
+    public void updateUser(User user, String key) throws AdapterException {
+        try {
+            usersRepositoryEnt.updateElement(convertUserToUserEnt(user), key);
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
+        }
     }
 
     @Override
@@ -110,6 +120,4 @@ public class UserAdapter implements AddUserPort, GetUserPort {
         }
         return user;
     }
-
-
 }

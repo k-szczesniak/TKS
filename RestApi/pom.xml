@@ -70,6 +70,12 @@
         </dependency>
         <dependency>
             <groupId>pl.ks.dk.tks</groupId>
+            <artifactId>ApplicationServices</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.ks.dk.tks</groupId>
             <artifactId>ApplicationPorts</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>

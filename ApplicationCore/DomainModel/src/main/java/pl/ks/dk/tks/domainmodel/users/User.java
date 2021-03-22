@@ -31,7 +31,7 @@ public abstract class User {
     @Size(min = 8, max = 20)
     private String password;
 
-    private String uniqueID;
+    private String uuid;
 
     public User(String login, String name, String surname, String password) {
         this.login = login;
