@@ -17,9 +17,6 @@ class BabysittersRepositoryEntTest {
 
     protected final Logger log = Logger.getLogger(getClass().getName());
 
-    //updateElement - good,
-    //find by key - good, bad
-
     @Test
     void getNumberOfElementsTest() {
         BabysittersRepositoryEnt babysittersRepository = new BabysittersRepositoryEnt();

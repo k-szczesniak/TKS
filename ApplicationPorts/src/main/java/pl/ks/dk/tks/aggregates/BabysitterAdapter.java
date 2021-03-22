@@ -63,6 +63,15 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void updateBabysitter(Babysitter babysitter, String key) {
+        try {
+            babysittersRepositoryEnt.updateElement(convertBabysitterToBabysitterEnt(babysitter), key);
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
+        }
+    }
+
     public static BabysitterEnt convertBabysitterToBabysitterEnt(Babysitter babysitter) {
         if (babysitter instanceof TeachingSitter) {
             BabysitterEnt teachingSitterEnt = new TeachingSitterEnt();
@@ -107,14 +116,5 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
             throw new AdapterException("Convert Babysitter to BabysitterEnt error", e);
         }
         return babysitter;
-    }
-
-    @Override
-    public void updateBabysitter(Babysitter babysitter, String key) {
-        try {
-            babysittersRepositoryEnt.updateElement(convertBabysitterToBabysitterEnt(babysitter), key);
-        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
-            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
-        }
     }
 }

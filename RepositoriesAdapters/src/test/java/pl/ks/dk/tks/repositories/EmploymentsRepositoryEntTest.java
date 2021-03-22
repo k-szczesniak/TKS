@@ -16,9 +16,6 @@ class EmploymentsRepositoryEntTest {
 
     protected final Logger log = Logger.getLogger(getClass().getName());
 
-    //test podwojnego dodania
-    //test podwojnego usunięcia
-
     @Test
     void getNumberOfElements() {
         EmploymentsRepositoryEnt employmentsRepository = new EmploymentsRepositoryEnt();
