@@ -68,8 +68,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(babysitterDTO);
-            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
-                    BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
+            babysitterUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -87,8 +86,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(teachingSitterDTO);
-            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
-                    BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
+            babysitterUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -106,8 +104,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(tidingSitterDTO);
-            BeanUtils.copyProperties(babysitterUseCase.getBabysitterByKey(uuid),
-                    BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
+            babysitterUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();

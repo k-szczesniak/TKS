@@ -5,6 +5,7 @@ import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.babysitters.AddBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.DeleteBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.GetBabysitterPort;
+import pl.ks.dk.tks.infrastructure.babysitters.UpdateBabysitterPort;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
 
@@ -26,6 +27,9 @@ public class BabysittersService implements BabysitterUseCase {
 
     @Inject
     private GetBabysitterPort getBabysitterPort;
+
+    @Inject
+    private UpdateBabysitterPort updateBabysitterPort;
 
     @Override
     public Babysitter getBabysitterByKey(String uuid) throws ServiceException {
@@ -49,6 +53,15 @@ public class BabysittersService implements BabysitterUseCase {
             addBabysitterPort.addBabysitter(babysitter);
         } catch (AdapterException adapterException) {
             throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
+    }
+
+    @Override
+    public void updateBabysitter(Babysitter babysitter, String uuid) {
+        try {
+            updateBabysitterPort.updateBabysitter(babysitter, uuid);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(),adapterException);
         }
     }
 
