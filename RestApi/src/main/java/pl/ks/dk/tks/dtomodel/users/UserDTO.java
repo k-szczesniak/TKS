@@ -3,17 +3,19 @@ package pl.ks.dk.tks.dtomodel.users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONPropertyIgnore;
 import pl.ks.dk.tks.dtomodel.interfaces.EntityToSignDTO;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class UserDTO implements EntityToSignDTO {
+public abstract class UserDTO implements EntityToSignDTO, Serializable {
 
     private boolean isActive = true;
 
@@ -54,5 +56,10 @@ public abstract class UserDTO implements EntityToSignDTO {
         Map<String, String> map = new HashMap<>();
         map.put("uuid", getUuid());
         return map;
+    }
+
+    @JSONPropertyIgnore
+    public String getPassword() {
+        return password;
     }
 }

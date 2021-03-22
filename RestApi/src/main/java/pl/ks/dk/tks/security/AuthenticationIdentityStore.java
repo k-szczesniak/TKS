@@ -12,7 +12,6 @@ import javax.security.enterprise.identitystore.IdentityStore;
 import java.util.Arrays;
 import java.util.HashSet;
 
-//TODO: NA KONIEC: JAK NIE DZIALA TO PEWNIE TUTAJ, 27 i 29 linijka
 
 @ApplicationScoped
 public class AuthenticationIdentityStore implements IdentityStore {

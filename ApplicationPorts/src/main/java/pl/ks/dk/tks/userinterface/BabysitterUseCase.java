@@ -14,5 +14,5 @@ public interface BabysitterUseCase {
 
     void updateBabysitter(Babysitter babysitter, String uuid);
 
-    void deleteBabysitter(Babysitter babysitter);
+    void deleteBabysitter(String uuid);
 }

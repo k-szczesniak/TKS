@@ -24,9 +24,8 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
         super.addElement(element);
     }
 
-    @Override
-    public void deleteElement(BabysitterEnt babysitter) {
-        super.deleteElement(babysitter);
+    public void deleteElement(String uuid) {
+        super.deleteElement(findByKey(uuid));
     }
 
     public void updateElement(BabysitterEnt babysitterEnt, String uuid) throws RepositoryExceptionEnt {
@@ -74,10 +73,4 @@ public class BabysittersRepositoryEnt extends RepositoryEnt<BabysitterEnt> {
 
         return stringBuilder.toString();
     }
-
-    //    public List<BabysitterEnt> showSelectedBabysitter(String id) {
-//        List<BabysitterEnt> temporaryBabysittersList = new ArrayList<>();
-//        temporaryBabysittersList.add(findByKey(id));
-//        return temporaryBabysittersList;
-//    }
 }

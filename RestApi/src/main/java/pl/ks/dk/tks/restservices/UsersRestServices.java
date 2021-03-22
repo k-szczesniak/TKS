@@ -1,6 +1,6 @@
 package pl.ks.dk.tks.restservices;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.json.JSONObject;
 import pl.ks.dk.tks.converters.UserDTOConverter;
 import pl.ks.dk.tks.dtomodel.interfaces.EntityToSignDTO;
 import pl.ks.dk.tks.dtomodel.users.AdminDTO;
@@ -36,9 +36,8 @@ public class UsersRestServices {
     public Response findSelf(@Context SecurityContext securityContext) {
         try {
             return Response.status(200)
-                    .entity(UserDTOConverter
-                            .convertUserToUserDTO(
-                                    userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName())))
+                    .entity(JSONObject.wrap(UserDTOConverter.convertUserToUserDTO(
+                            userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()))).toString())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +52,7 @@ public class UsersRestServices {
             EntityToSignDTO entityToSign = UserDTOConverter.convertUserToUserDTO(userUseCase.getUserByKey(uuid));
             return Response.status(200)
                     .header("ETag", EntityIdentitySignerVerifier.calculateETag(entityToSign))
-                    .entity(entityToSign)
+                    .entity(JSONObject.wrap(entityToSign).toString())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,7 +64,8 @@ public class UsersRestServices {
     public Response getAllUsers() {
         try {
             return Response.status(200)
-                    .entity(UserDTOConverter.convertUserListToUserDTOList(userUseCase.getAllUsers()))
+                    .entity(JSONObject.wrap(UserDTOConverter.convertUserListToUserDTOList(userUseCase.getAllUsers()))
+                            .toString())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();

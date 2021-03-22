@@ -10,6 +10,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+//TODO: W WOLNEJ CHWILI: POSTCONSTRUCT
+
 @ApplicationScoped
 public class EmploymentsRepositoryEnt extends RepositoryEnt<EmploymentEnt> {
 
@@ -49,34 +51,4 @@ public class EmploymentsRepositoryEnt extends RepositoryEnt<EmploymentEnt> {
 
         return stringBuilder.toString();
     }
-
-
-//    public EmploymentEnt findByKey(String uuid) {
-//        List<EmploymentEnt> employmentList = getElements();
-//
-//        for (EmploymentEnt employment : employmentList) {
-//            if (employment.getUuid().equals(uuid)) {
-//                return employment;
-//            }
-//        }
-//        throw new RepositoryExceptionEnt("Element not found");
-//    }
-//
-//    public List<EmploymentEnt> showSelected(String id) {
-//        List<EmploymentEnt> temporaryEmploymentList = new ArrayList<>();
-//        for (EmploymentEnt employment : getElements()) {
-//            if (employment.getBabysitter() != null) {
-//                if (employment.getClient().getUuid().equals(id) || employment.getBabysitter().getUuid().equals(id)) {
-//                    temporaryEmploymentList.add(employment);
-//                    break;
-//                }
-//            } else {
-//                if (employment.getClient().getUuid().equals(id)) {
-//                    temporaryEmploymentList.add(employment);
-//                    break;
-//                }
-//            }
-//        }
-//        return temporaryEmploymentList;
-//    }
 }

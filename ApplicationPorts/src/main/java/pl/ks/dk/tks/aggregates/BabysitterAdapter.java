@@ -37,9 +37,9 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
     }
 
     @Override
-    public void deleteBabysitter(Babysitter babysitter) throws AdapterException{
+    public void deleteBabysitter(String uuid) throws AdapterException {
         try {
-            babysittersRepositoryEnt.deleteElement(convertBabysitterToBabysitterEnt(babysitter));
+            babysittersRepositoryEnt.deleteElement(uuid);
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
             throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
@@ -47,7 +47,7 @@ public class BabysitterAdapter implements AddBabysitterPort, DeleteBabysitterPor
 
     @Override
     public Babysitter getBabysitter(String uuid) throws AdapterException{
-        Babysitter babysitter = null;
+        Babysitter babysitter;
         try {
             babysitter = convertBabysitterEntToBabysitter(babysittersRepositoryEnt.findByKey(uuid));
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {

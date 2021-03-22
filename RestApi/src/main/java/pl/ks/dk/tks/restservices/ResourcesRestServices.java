@@ -1,6 +1,5 @@
 package pl.ks.dk.tks.restservices;
 
-import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.converters.BabysitterDTOConverter;
 import pl.ks.dk.tks.dtomodel.babysitters.BabysitterDTO;
 import pl.ks.dk.tks.dtomodel.babysitters.TeachingSitterDTO;
@@ -155,7 +154,7 @@ public class ResourcesRestServices {
     @Path("{uuid}")
     public Response deleteBabysitter(@PathParam("uuid") String uuid) {
         try {
-            babysitterUseCase.deleteBabysitter(babysitterUseCase.getBabysitterByKey(uuid));
+            babysitterUseCase.deleteBabysitter(uuid);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(400).build();
