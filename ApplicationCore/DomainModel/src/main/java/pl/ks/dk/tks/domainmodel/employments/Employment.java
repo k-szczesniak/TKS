@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 @NoArgsConstructor
 public class Employment {
 
-    private String uniqueID;
+    private String uuid;
     private Babysitter babysitter;
     private Client client;
     private LocalDateTime beginningOfEmployment;
@@ -54,7 +54,7 @@ public class Employment {
 
     @Override
     public String toString() {
-        return "uniqueID: " + uniqueID +
+        return "uniqueID: " + uuid +
                 "\nbabysitter: " + babysitter.getName() + " " + babysitter.getSurname() +
                 "\nuser: " + client.getLogin() +
                 "\nbeginningOfEmployment: " + beginningOfEmployment +

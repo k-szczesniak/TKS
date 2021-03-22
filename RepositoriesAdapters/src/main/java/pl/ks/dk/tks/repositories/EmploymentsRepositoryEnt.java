@@ -22,7 +22,7 @@ public class EmploymentsRepositoryEnt extends RepositoryEnt<EmploymentEnt> {
     UsersRepositoryEnt usersRepositoryEnt;
 
     @Override public void addElement(EmploymentEnt element) {
-        element.setUniqueID(RandomStringUtils.randomNumeric(SHORT_ID_LENGTH));
+        element.setUuid(RandomStringUtils.randomNumeric(SHORT_ID_LENGTH));
         super.addElement(element);
     }
 

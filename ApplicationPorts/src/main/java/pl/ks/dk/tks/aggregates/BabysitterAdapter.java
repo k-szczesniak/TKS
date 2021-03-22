@@ -1,6 +1,5 @@
 package pl.ks.dk.tks.aggregates;
 
-import jakarta.inject.Inject;
 import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.babysitters.TeachingSitter;
@@ -16,6 +15,7 @@ import pl.ks.dk.tks.repositories.BabysittersRepositoryEnt;
 import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,6 +1,9 @@
 package pl.ks.dk.tks.model.employments;
 
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.ks.dk.tks.model.babysitters.BabysitterEnt;
 import pl.ks.dk.tks.model.exceptions.EmploymentExceptionEnt;
 import pl.ks.dk.tks.model.users.ClientEnt;
@@ -9,18 +12,16 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class EmploymentEnt {
 
-    private String uniqueID;
+    private String uuid;
     private BabysitterEnt babysitter;
     private ClientEnt client;
     private LocalDateTime beginningOfEmployment;
     private LocalDateTime endOfEmployment;
-
-
-    public EmploymentEnt() {
-
-    }
 
     public EmploymentEnt(BabysitterEnt babysitter, ClientEnt client) {
         this.babysitter = babysitter;
@@ -53,42 +54,10 @@ public class EmploymentEnt {
 
     @Override
     public String toString() {
-        return "uniqueID: " + uniqueID +
+        return "uniqueID: " + uuid +
                 "\nbabysitter: " + babysitter.getName() + " " + babysitter.getSurname() +
                 "\nuser: " + client.getLogin() +
                 "\nbeginningOfEmployment: " + beginningOfEmployment +
                 "\nendOfEmployment: " + endOfEmployment;
-    }
-
-    public void setEndOfEmployment(LocalDateTime endOfEmployment) {
-        this.endOfEmployment = endOfEmployment;
-    }
-
-    public LocalDateTime getEndOfEmployment() {
-        return endOfEmployment;
-    }
-
-    public BabysitterEnt getBabysitter() {
-        return babysitter;
-    }
-
-    public ClientEnt getClient() {
-        return client;
-    }
-
-    public String getUuid() {
-        return uniqueID;
-    }
-
-    public void setUniqueID(String uniqueID) {
-        this.uniqueID = uniqueID;
-    }
-
-    public void setBabysitter(BabysitterEnt babysitter) {
-        this.babysitter = babysitter;
-    }
-
-    public LocalDateTime getBeginningOfEmployment() {
-        return beginningOfEmployment;
     }
 }

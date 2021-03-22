@@ -1,6 +1,5 @@
 package pl.ks.dk.tks.aggregates;
 
-import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.employments.Employment;
 import pl.ks.dk.tks.domainmodel.users.Client;
@@ -8,12 +7,12 @@ import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.employments.AddEmploymentPort;
 import pl.ks.dk.tks.infrastructure.employments.GetEmploymentPort;
 import pl.ks.dk.tks.model.employments.EmploymentEnt;
+import pl.ks.dk.tks.model.users.ClientEnt;
 import pl.ks.dk.tks.repositories.EmploymentsRepositoryEnt;
 import pl.ks.dk.tks.repositories.exceptions.RepositoryExceptionEnt;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,21 +50,23 @@ public class EmploymentAdapter implements AddEmploymentPort, GetEmploymentPort {
 
     public static EmploymentEnt convertEmploymentToEmploymentEnt(Employment employment) {
         EmploymentEnt employmentEnt = new EmploymentEnt();
-        try {
-            BeanUtils.copyProperties(employmentEnt, employment);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new AdapterException("Convert Employment to EmploymentEnt error", e);
-        }
+        employmentEnt.setBabysitter(BabysitterAdapter.convertBabysitterToBabysitterEnt(employment.getBabysitter()));
+        employmentEnt.setClient((ClientEnt) UserAdapter.convertUserToUserEnt(employment.getClient()));
+        employmentEnt.setEndOfEmployment(employment.getEndOfEmployment());
+        employmentEnt.setBeginningOfEmployment(employment.getBeginningOfEmployment());
+        employmentEnt.setUuid(employment.getUuid());
+
         return employmentEnt;
     }
 
     public static Employment convertEmploymentEntToEmployment(EmploymentEnt employmentEnt) {
         Employment employment = new Employment();
-        try {
-            BeanUtils.copyProperties(employment, employmentEnt);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new AdapterException("Convert EmploymentEnt to Employment error", e);
-        }
+        employment.setBabysitter(BabysitterAdapter.convertBabysitterEntToBabysitter(employmentEnt.getBabysitter()));
+        employment.setClient((Client) UserAdapter.convertUserEntToUser(employmentEnt.getClient()));
+        employment.setEndOfEmployment(employmentEnt.getEndOfEmployment());
+        employment.setBeginningOfEmployment(employmentEnt.getBeginningOfEmployment());
+        employment.setUuid(employmentEnt.getUuid());
+
         return employment;
     }
 }
