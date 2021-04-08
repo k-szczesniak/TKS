@@ -23,6 +23,7 @@
         <module>ApplicationPorts</module>
         <module>RepositoriesAdapters</module>
         <module>RestApi</module>
+        <module>SoapApi</module>
     </modules>
 
     <build>
