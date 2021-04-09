@@ -1,4 +1,4 @@
-package pl.ks.dk.tks.restservices;
+package pl.ks.dk.tks.restadapters;
 
 import pl.ks.dk.tks.converters.BabysitterDTOConverter;
 import pl.ks.dk.tks.dtomodel.babysitters.BabysitterDTO;
@@ -6,7 +6,7 @@ import pl.ks.dk.tks.dtomodel.babysitters.TeachingSitterDTO;
 import pl.ks.dk.tks.dtomodel.babysitters.TidingSitterDTO;
 import pl.ks.dk.tks.dtomodel.interfaces.EntityToSignDTO;
 import pl.ks.dk.tks.filters.EntitySignatureValidatorFilterBinding;
-import pl.ks.dk.tks.userinterface.BabysitterUseCase;
+import pl.ks.dk.tks.userinterface.rest.BabysitterRestUseCase;
 import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
 
 import javax.inject.Inject;
@@ -21,10 +21,10 @@ import java.util.Set;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/resources")
-public class ResourcesRestServices {
+public class ResourcesRestAdapter {
 
     @Inject
-    private BabysitterUseCase babysitterUseCase;
+    private BabysitterRestUseCase babysitterRestUseCase;
 
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -33,7 +33,7 @@ public class ResourcesRestServices {
     public Response getBabysitter(@PathParam("uuid") String uuid) {
         try {
             EntityToSignDTO entityToSign =
-                    BabysitterDTOConverter.convertBabysitterToBabysitterDTO(babysitterUseCase.getBabysitterByKey(uuid));
+                    BabysitterDTOConverter.convertBabysitterToBabysitterDTO(babysitterRestUseCase.getBabysitterByKey(uuid));
             return Response.status(200)
                     .header("ETag", EntityIdentitySignerVerifier.calculateETag(entityToSign))
                     .entity(entityToSign)
@@ -49,7 +49,7 @@ public class ResourcesRestServices {
         try {
             return Response.status(200)
                     .entity(BabysitterDTOConverter
-                            .convertBabysitterListToBabysitterDTOList(babysitterUseCase.getAllBabysitters()))
+                            .convertBabysitterListToBabysitterDTOList(babysitterRestUseCase.getAllBabysitters()))
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(babysitterDTO);
-            babysitterUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO), uuid);
+            babysitterRestUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -85,7 +85,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(teachingSitterDTO);
-            babysitterUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO), uuid);
+            babysitterRestUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -103,7 +103,7 @@ public class ResourcesRestServices {
         }
         try {
             validation(tidingSitterDTO);
-            babysitterUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO), uuid);
+            babysitterRestUseCase.updateBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -116,7 +116,7 @@ public class ResourcesRestServices {
     public Response createBabysitter(BabysitterDTO babysitterDTO) {
         try {
             validation(babysitterDTO);
-            babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
+            babysitterRestUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(babysitterDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -129,7 +129,7 @@ public class ResourcesRestServices {
     public Response createTeachingSitter(TeachingSitterDTO teachingSitterDTO) {
         try {
             validation(teachingSitterDTO);
-            babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
+            babysitterRestUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(teachingSitterDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -142,7 +142,7 @@ public class ResourcesRestServices {
     public Response createTidingSitter(TidingSitterDTO tidingSitterDTO) {
         try {
             validation(tidingSitterDTO);
-            babysitterUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
+            babysitterRestUseCase.addBabysitter(BabysitterDTOConverter.convertBabysitterDTOToBabysitter(tidingSitterDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -154,7 +154,7 @@ public class ResourcesRestServices {
     @Path("{uuid}")
     public Response deleteBabysitter(@PathParam("uuid") String uuid) {
         try {
-            babysitterUseCase.deleteBabysitter(uuid);
+            babysitterRestUseCase.deleteBabysitter(uuid);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(400).build();

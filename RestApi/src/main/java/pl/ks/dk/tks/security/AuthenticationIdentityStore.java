@@ -1,7 +1,7 @@
 package pl.ks.dk.tks.security;
 
 import pl.ks.dk.tks.domainmodel.users.User;
-import pl.ks.dk.tks.userinterface.UserUseCase;
+import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -17,17 +17,17 @@ import java.util.HashSet;
 public class AuthenticationIdentityStore implements IdentityStore {
 
     @Inject
-    UserUseCase userUseCase;
+    UserRestUseCase userRestUseCase;
 
     @Override
     public CredentialValidationResult validate(Credential credential) {
         if (credential instanceof UsernamePasswordCredential) {
             UsernamePasswordCredential usernamePasswordCredential =
                     (UsernamePasswordCredential) credential;
-            User user = userUseCase
+            User user = userRestUseCase
                     .getUserByLoginAndPassword(usernamePasswordCredential.getCaller(),
                             usernamePasswordCredential.getPasswordAsString());
-            if (user != null && userUseCase.checkIfUserIsActive(user.getLogin())) {
+            if (user != null && userRestUseCase.checkIfUserIsActive(user.getLogin())) {
                 return new CredentialValidationResult(user.getLogin(), new HashSet<>(
                         Arrays.asList(user.getRole())));
             }

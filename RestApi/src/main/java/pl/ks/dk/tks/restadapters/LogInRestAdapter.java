@@ -1,10 +1,10 @@
-package pl.ks.dk.tks.restservices;
+package pl.ks.dk.tks.restadapters;
 
 import com.nimbusds.jwt.SignedJWT;
 import pl.ks.dk.tks.security.JWTAuthenticationMechanism;
 import pl.ks.dk.tks.security.JWTGeneratorVerifier;
 import pl.ks.dk.tks.security.LoginData;
-import pl.ks.dk.tks.userinterface.UserUseCase;
+import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
 
 import javax.inject.Inject;
 import javax.security.enterprise.credential.Credential;
@@ -22,13 +22,13 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 
 @Path("/auth")
-public class LogInServices {
+public class LogInRestAdapter {
 
     @Inject
     IdentityStoreHandler identityStoreHandler;
 
     @Inject
-    private UserUseCase userUseCase;
+    private UserRestUseCase userRestUseCase;
 
     @POST
     public Response logIn(LoginData loginData) {
@@ -51,7 +51,7 @@ public class LogInServices {
         String tokenToUpdate = authHeader.substring(JWTAuthenticationMechanism.BEARER.length());
         try {
             String login = SignedJWT.parse(tokenToUpdate).getJWTClaimsSet().getSubject();
-            if (userUseCase.checkIfUserIsActive(login)) {
+            if (userRestUseCase.checkIfUserIsActive(login)) {
                 return Response.status(202)
                         .type("application/jwt")
                         .entity(JWTGeneratorVerifier.updateJWTString(tokenToUpdate))

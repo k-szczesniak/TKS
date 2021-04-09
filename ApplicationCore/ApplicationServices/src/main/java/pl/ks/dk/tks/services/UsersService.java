@@ -6,14 +6,15 @@ import pl.ks.dk.tks.infrastructure.users.AddUserPort;
 import pl.ks.dk.tks.infrastructure.users.GetUserPort;
 import pl.ks.dk.tks.infrastructure.users.UpdateUserPort;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
-import pl.ks.dk.tks.userinterface.UserUseCase;
+import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
+import pl.ks.dk.tks.userinterface.soap.UserSoapUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class UsersService implements UserUseCase {
+public class UsersService implements UserRestUseCase, UserSoapUseCase {
 
     @Inject
     private AddUserPort addUserPort;
@@ -58,6 +59,11 @@ public class UsersService implements UserUseCase {
         } catch (AdapterException adapterException) {
             throw new ServiceException(adapterException.getMessage(), adapterException);
         }
+    }
+
+    @Override
+    public int getUsersCount() {
+        return getUserPort.getUsersCount();
     }
 
     @Override

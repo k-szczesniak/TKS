@@ -4,11 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
-import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
 import pl.ks.dk.tks.domainmodel.users.Client;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Getter
 @Setter
