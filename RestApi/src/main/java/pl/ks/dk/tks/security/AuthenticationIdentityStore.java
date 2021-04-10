@@ -1,6 +1,7 @@
 package pl.ks.dk.tks.security;
 
 import pl.ks.dk.tks.domainmodel.users.User;
+import pl.ks.dk.tks.services.exceptions.ServiceException;
 import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -24,9 +25,15 @@ public class AuthenticationIdentityStore implements IdentityStore {
         if (credential instanceof UsernamePasswordCredential) {
             UsernamePasswordCredential usernamePasswordCredential =
                     (UsernamePasswordCredential) credential;
-            User user = userRestUseCase
-                    .getUserByLoginAndPassword(usernamePasswordCredential.getCaller(),
-                            usernamePasswordCredential.getPasswordAsString());
+            User user = null;
+            try {
+                user = userRestUseCase
+                        .getUserByLoginAndPassword(usernamePasswordCredential.getCaller(),
+                                usernamePasswordCredential.getPasswordAsString());
+            } catch (ServiceException e) {
+                e.printStackTrace();
+                return CredentialValidationResult.INVALID_RESULT;
+            }
             if (user != null && userRestUseCase.checkIfUserIsActive(user.getLogin())) {
                 return new CredentialValidationResult(user.getLogin(), new HashSet<>(
                         Arrays.asList(user.getRole())));

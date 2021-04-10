@@ -2,7 +2,7 @@ package pl.ks.dk.tks.services;
 
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.employments.Employment;
-import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
+import pl.ks.dk.tks.services.exceptions.EmploymentException;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.employments.AddEmploymentPort;

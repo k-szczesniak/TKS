@@ -53,17 +53,17 @@ public class UsersService implements UserRestUseCase, UserSoapUseCase {
     }
 
     @Override
+    public int getUsersCount() {
+        return getUserPort.getUsersCount();
+    }
+
+    @Override
     public void addUser(User user) throws ServiceException {
         try {
             addUserPort.addUser(user);
         } catch (AdapterException adapterException) {
             throw new ServiceException(adapterException.getMessage(), adapterException);
         }
-    }
-
-    @Override
-    public int getUsersCount() {
-        return getUserPort.getUsersCount();
     }
 
     @Override

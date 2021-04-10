@@ -87,6 +87,15 @@ public class UserAdapterTest {
     }
 
     @Test
+    void getUsersCountTest() {
+        given(usersRepositoryEnt.getNumberOfElements()).willReturn(prepareMockData().size());
+
+        int count = userAdapter.getUsersCount();
+        assertEquals(1, count);
+        verify(usersRepositoryEnt, times(1)).getNumberOfElements();
+    }
+
+    @Test
     void convertUserToUserEntTest() {
         User user = new Client("Login1", "Jan1", "Kowalski", "kowalski", "Client", 3, 4);
         User admin = new Admin("Login2", "Jan2", "Kowalski", "kowalski", "Admin");
