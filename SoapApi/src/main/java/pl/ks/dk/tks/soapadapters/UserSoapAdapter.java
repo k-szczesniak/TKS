@@ -1,12 +1,11 @@
 package pl.ks.dk.tks.soapadapters;
 
-import jakarta.inject.Inject;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
 import pl.ks.dk.tks.soapmodel.exceptions.UserSoapException;
 import pl.ks.dk.tks.soapmodel.users.*;
 import pl.ks.dk.tks.userinterface.soap.UserSoapUseCase;
 
-import javax.jws.WebMethod;
+import javax.inject.Inject;
 import javax.jws.WebService;
 import java.util.List;
 

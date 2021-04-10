@@ -5,7 +5,7 @@ import pl.ks.dk.tks.domainmodel.users.Admin;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.domainmodel.users.SuperUser;
 import pl.ks.dk.tks.domainmodel.users.User;
-import pl.ks.dk.tks.soapmodel.exceptions.SOAPConverterException;
+import pl.ks.dk.tks.soapmodel.exceptions.UserSoapConverterException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -27,11 +27,11 @@ public class UserSOAPConverter {
         }
     }
 
-    private static User copyUserSOAPToUser(User user, UserSOAP userSOAP) throws SOAPConverterException {
+    private static User copyUserSOAPToUser(User user, UserSOAP userSOAP) throws UserSoapConverterException {
         try {
             BeanUtils.copyProperties(user, userSOAP);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SOAPConverterException("Convert UserSOAP to User error", e);
+            throw new UserSoapConverterException("Convert UserSOAP to User error", e);
         }
         return user;
     }
@@ -50,11 +50,11 @@ public class UserSOAPConverter {
         }
     }
 
-    private static UserSOAP copyUserToUserSOAP(UserSOAP userSOAP, User user) throws SOAPConverterException {
+    private static UserSOAP copyUserToUserSOAP(UserSOAP userSOAP, User user) throws UserSoapConverterException {
         try {
             BeanUtils.copyProperties(userSOAP, user);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new SOAPConverterException("Convert User to UserSOAP error", e);
+            throw new UserSoapConverterException("Convert User to UserSOAP error", e);
         }
         return userSOAP;
     }
