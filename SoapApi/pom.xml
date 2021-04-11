@@ -13,64 +13,6 @@
 
     <build>
         <plugins>
-            <!--            <plugin>-->
-            <!--                <groupId>org.codehaus.mojo</groupId>-->
-            <!--                <artifactId>jaxb2-maven-plugin</artifactId>-->
-            <!--                <version>2.5.0</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <goals>-->
-            <!--                            <goal>schemagen</goal>-->
-            <!--                        </goals>-->
-            <!--                        <phase>generate-resources</phase>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--                <configuration>-->
-            <!--                    <createJavaDocAnnotations>false</createJavaDocAnnotations>-->
-            <!--                    <sources>-->
-            <!--                        <source>src/main/java/pl/ks/dk/tks/soapmodel</source>-->
-            <!--                    </sources>-->
-            <!--                    <transformSchemas>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/babysitter</uri>-->
-            <!--                            <toPrefix>bbs</toPrefix>-->
-            <!--                            <toFile>babysitter.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/tidingsitter</uri>-->
-            <!--                            <toFile>tidingsitter.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/teachingsitter</uri>-->
-            <!--                            <toFile>teachingsitter.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/user</uri>-->
-            <!--                            <toPrefix>usr</toPrefix>-->
-            <!--                            <toFile>user.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/client</uri>-->
-            <!--                            <toPrefix>cl</toPrefix>-->
-            <!--                            <toFile>client.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/superuser</uri>-->
-            <!--                            <toFile>superuser.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/admin</uri>-->
-            <!--                            <toFile>admin.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                        <transformSchema>-->
-            <!--                            <uri>http://soap.adapters.kurs.pl/employment</uri>-->
-            <!--                            <toPrefix>emp</toPrefix>-->
-            <!--                            <toFile>employment.xsd</toFile>-->
-            <!--                        </transformSchema>-->
-            <!--                    </transformSchemas>-->
-            <!--                </configuration>-->
-            <!--            </plugin>-->
-
             <!--                    testy-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
