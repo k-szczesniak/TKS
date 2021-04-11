@@ -1,10 +1,10 @@
-package pl.ks.dk.tks.restservices;
+package pl.ks.dk.tks.restadapters;
 
 import pl.ks.dk.tks.converters.EmploymentDTOConverter;
 import pl.ks.dk.tks.domainmodel.users.Client;
-import pl.ks.dk.tks.userinterface.BabysitterUseCase;
-import pl.ks.dk.tks.userinterface.EmploymentUseCase;
-import pl.ks.dk.tks.userinterface.UserUseCase;
+import pl.ks.dk.tks.userinterface.rest.BabysitterRestUseCase;
+import pl.ks.dk.tks.userinterface.rest.EmploymentRestUseCase;
+import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -16,23 +16,23 @@ import javax.ws.rs.core.SecurityContext;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/employment")
-public class EmploymentsRestServices {
+public class EmploymentsRestAdapter {
 
     @Inject
-    private BabysitterUseCase babysitterUseCase;
+    private BabysitterRestUseCase babysitterRestUseCase;
 
     @Inject
-    private UserUseCase userUseCase;
+    private UserRestUseCase userRestUseCase;
 
     @Inject
-    private EmploymentUseCase employmentUseCase;
+    private EmploymentRestUseCase employmentRestUseCase;
 
     @GET
     public Response getAllEmployments(@Context SecurityContext securityContext) {
         return Response.status(200)
                 .entity(EmploymentDTOConverter.convertEmploymentListToEmploymentDTOList(
-                        employmentUseCase.getActualEmploymentsForClient(
-                                userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()).getUuid())))
+                        employmentRestUseCase.getActualEmploymentsForClient(
+                                userRestUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()).getUuid())))
                 .build();
     }
 
@@ -40,8 +40,8 @@ public class EmploymentsRestServices {
     @Path("{uuid}")
     public Response employ(@Context SecurityContext securityContext, @PathParam("uuid") String uuid) {
         try {
-            employmentUseCase.employ((Client) userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()),
-                    babysitterUseCase.getBabysitterByKey(uuid));
+            employmentRestUseCase.employ((Client) userRestUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()),
+                    babysitterRestUseCase.getBabysitterByKey(uuid));
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();

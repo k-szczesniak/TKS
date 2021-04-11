@@ -75,6 +75,11 @@ public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public int getUsersCount() {
+        return usersRepositoryEnt.getNumberOfElements();
+    }
+
     public static UserEnt convertUserToUserEnt(User user) {
         if (user instanceof Client) {
             UserEnt clientEnt = new ClientEnt();

@@ -11,4 +11,6 @@ public interface GetUserPort {
     User getUserByKey(String key);
 
     List<User> getAllUsers();
+
+    int getUsersCount();
 }

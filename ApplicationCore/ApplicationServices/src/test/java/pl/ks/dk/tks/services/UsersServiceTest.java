@@ -37,7 +37,7 @@ class UsersServiceTest {
     private UpdateUserPort updateUserPort;
 
     @Test
-    void getUserByLogin() {
+    void getUserByLoginTest() {
         given(getUserPort.getUserByLogin(ArgumentMatchers.anyString())).willThrow(
                 AdapterException.class);
         given(getUserPort.getUserByLogin(ArgumentMatchers.eq("Login2")))
@@ -49,7 +49,7 @@ class UsersServiceTest {
     }
 
     @Test
-    void getUserByKey() {
+    void getUserByKeyTest() {
         given(getUserPort.getUserByKey(ArgumentMatchers.anyString())).willThrow(
                 AdapterException.class);
         given(getUserPort.getUserByKey(ArgumentMatchers.eq("12345678")))
@@ -61,12 +61,21 @@ class UsersServiceTest {
     }
 
     @Test
-    void getAllUsers() {
+    void getAllUsersTest() {
         given(getUserPort.getAllUsers()).willReturn(prepareMockData());
 
         List<User> users = usersService.getAllUsers();
         assertEquals(1, users.size());
         verify(getUserPort, times(1)).getAllUsers();
+    }
+
+    @Test
+    void getUsersCountTest() {
+        given(getUserPort.getUsersCount()).willReturn(prepareMockData().size());
+
+        int count = usersService.getUsersCount();
+        assertEquals(1, count);
+        verify(getUserPort, times(1)).getUsersCount();
     }
 
     @Test
@@ -98,14 +107,14 @@ class UsersServiceTest {
     }
 
     @Test
-    void checkIfUserIsActive() {
+    void checkIfUserIsActiveTest() {
         given(getUserPort.getUserByLogin(ArgumentMatchers.eq("Login2")))
                 .willReturn(new Admin("Login2", "Jan", "Kowalski", "kowalski", "Admin"));
         assertTrue(usersService.checkIfUserIsActive("Login2"));
     }
 
     @Test
-    void getUserByLoginAndPassword() {
+    void getUserByLoginAndPasswordTest() {
         Admin admin = new Admin("Login2", "Jan", "Kowalski", "kowalski", "Admin");
         given(getUserPort.getUserByLogin(ArgumentMatchers.eq("Login2")))
                 .willReturn(admin);

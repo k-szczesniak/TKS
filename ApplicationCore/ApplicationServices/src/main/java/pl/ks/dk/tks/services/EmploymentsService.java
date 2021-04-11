@@ -2,20 +2,20 @@ package pl.ks.dk.tks.services;
 
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 import pl.ks.dk.tks.domainmodel.employments.Employment;
-import pl.ks.dk.tks.domainmodel.exceptions.EmploymentException;
+import pl.ks.dk.tks.services.exceptions.EmploymentException;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.employments.AddEmploymentPort;
 import pl.ks.dk.tks.infrastructure.employments.GetEmploymentPort;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
-import pl.ks.dk.tks.userinterface.EmploymentUseCase;
+import pl.ks.dk.tks.userinterface.rest.EmploymentRestUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class EmploymentsService implements EmploymentUseCase {
+public class EmploymentsService implements EmploymentRestUseCase {
 
     @Inject
     private AddEmploymentPort addEmploymentPort;

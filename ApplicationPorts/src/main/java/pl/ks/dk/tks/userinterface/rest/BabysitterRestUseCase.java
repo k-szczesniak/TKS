@@ -1,10 +1,10 @@
-package pl.ks.dk.tks.userinterface;
+package pl.ks.dk.tks.userinterface.rest;
 
 import pl.ks.dk.tks.domainmodel.babysitters.Babysitter;
 
 import java.util.List;
 
-public interface BabysitterUseCase {
+public interface BabysitterRestUseCase {
 
     Babysitter getBabysitterByKey(String uuid);
 

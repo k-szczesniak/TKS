@@ -1,10 +1,10 @@
-package pl.ks.dk.tks.userinterface;
+package pl.ks.dk.tks.userinterface.rest;
 
 import pl.ks.dk.tks.domainmodel.users.User;
 
 import java.util.List;
 
-public interface UserUseCase {
+public interface UserRestUseCase {
 
     User getUserByLogin(String login);
 
