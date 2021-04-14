@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class EmploymentAndAuthorizationTest {
+
     @Test
     public void adminAuthorization() throws URISyntaxException {
         RequestSpecification requestPost = getBasicRequest();
@@ -58,43 +59,6 @@ public class EmploymentAndAuthorizationTest {
         assertTrue(responseFromSelf.contains("tTomkowski"));
         assertTrue(responseFromSelf.contains("Tomek"));
         assertFalse(responseFromSelf.contains("tomkowski"));
-    }
-
-    @Test
-    public void clientAuthorizationAndEmployment() throws URISyntaxException {
-        String strToFind = "client";
-        RequestSpecification requestPost = getBasicRequest();
-
-        requestPost.contentType("application/json");
-        String JSON = "{\n" +
-                "        \"login\": \"aWiadro\",\n" +
-                "        \"password\": \"wiadro\"\n" +
-                "    }";
-        requestPost.body(JSON);
-
-        Response responseFromAuth = requestPost.post(new URI("https://localhost:8181/TKS/rest/auth"));
-        String token = responseFromAuth.getBody().asString();
-
-        RequestSpecification request = getBasicRequest();
-        request.header(new Header("Authorization", "Bearer " + token));
-        request.contentType("application/json");
-
-        Response responseFromEmployment = request.get(new URI("https://localhost:8181/TKS/rest/employment"));
-
-        String responseFromEmploymentString = responseFromEmployment.asString();
-        int initialSize = StringUtils.countMatches(responseFromEmploymentString, strToFind);
-
-        String firstUuid = getFirstUUID(token);
-        request.post(new URI("https://localhost:8181/TKS/rest/employment/" + firstUuid));
-
-        responseFromEmployment = request.get(new URI("https://localhost:8181/TKS/rest/employment"));
-
-        responseFromEmploymentString = responseFromEmployment.asString();
-        int sizeAfterEmploy = StringUtils.countMatches(responseFromEmploymentString, strToFind);
-
-        assertEquals(initialSize + 1, sizeAfterEmploy);
-        assertTrue(responseFromEmploymentString.contains("aWiadro"));
-        assertTrue(responseFromEmploymentString.contains("Agata"));
     }
 
     private RequestSpecification getBasicRequest() {
