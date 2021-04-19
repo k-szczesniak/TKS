@@ -4,7 +4,7 @@ import com.nimbusds.jwt.SignedJWT;
 import pl.ks.dk.tks.security.JWTAuthenticationMechanism;
 import pl.ks.dk.tks.security.JWTGeneratorVerifier;
 import pl.ks.dk.tks.security.LoginData;
-import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
+import pl.ks.dk.tks.userinterface.UserUseCase;
 
 import javax.inject.Inject;
 import javax.security.enterprise.credential.Credential;
@@ -28,7 +28,7 @@ public class LogInRestAdapter {
     IdentityStoreHandler identityStoreHandler;
 
     @Inject
-    private UserRestUseCase userRestUseCase;
+    private UserUseCase userUseCase;
 
     @POST
     public Response logIn(LoginData loginData) {
@@ -51,7 +51,7 @@ public class LogInRestAdapter {
         String tokenToUpdate = authHeader.substring(JWTAuthenticationMechanism.BEARER.length());
         try {
             String login = SignedJWT.parse(tokenToUpdate).getJWTClaimsSet().getSubject();
-            if (userRestUseCase.checkIfUserIsActive(login)) {
+            if (userUseCase.checkIfUserIsActive(login)) {
                 return Response.status(202)
                         .type("application/jwt")
                         .entity(JWTGeneratorVerifier.updateJWTString(tokenToUpdate))

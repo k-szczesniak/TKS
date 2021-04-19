@@ -8,14 +8,14 @@ import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.employments.AddEmploymentPort;
 import pl.ks.dk.tks.infrastructure.employments.GetEmploymentPort;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
-import pl.ks.dk.tks.userinterface.rest.EmploymentRestUseCase;
+import pl.ks.dk.tks.userinterface.EmploymentUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class EmploymentsService implements EmploymentRestUseCase {
+public class EmploymentsService implements EmploymentUseCase {
 
     @Inject
     private AddEmploymentPort addEmploymentPort;

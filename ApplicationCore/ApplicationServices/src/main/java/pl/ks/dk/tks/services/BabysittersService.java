@@ -7,14 +7,14 @@ import pl.ks.dk.tks.infrastructure.babysitters.DeleteBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.GetBabysitterPort;
 import pl.ks.dk.tks.infrastructure.babysitters.UpdateBabysitterPort;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
-import pl.ks.dk.tks.userinterface.rest.BabysitterRestUseCase;
+import pl.ks.dk.tks.userinterface.BabysitterUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class BabysittersService implements BabysitterRestUseCase {
+public class BabysittersService implements BabysitterUseCase {
 
     @Inject
     private DeleteBabysitterPort deleteBabysitterPort;

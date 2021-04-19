@@ -2,7 +2,7 @@ package pl.ks.dk.tks.security;
 
 import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
-import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
+import pl.ks.dk.tks.userinterface.UserUseCase;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import java.util.HashSet;
 public class AuthenticationIdentityStore implements IdentityStore {
 
     @Inject
-    UserRestUseCase userRestUseCase;
+    UserUseCase userUseCase;
 
     @Override
     public CredentialValidationResult validate(Credential credential) {
@@ -27,14 +27,14 @@ public class AuthenticationIdentityStore implements IdentityStore {
                     (UsernamePasswordCredential) credential;
             User user = null;
             try {
-                user = userRestUseCase
+                user = userUseCase
                         .getUserByLoginAndPassword(usernamePasswordCredential.getCaller(),
                                 usernamePasswordCredential.getPasswordAsString());
             } catch (ServiceException e) {
                 e.printStackTrace();
                 return CredentialValidationResult.INVALID_RESULT;
             }
-            if (user != null && userRestUseCase.checkIfUserIsActive(user.getLogin())) {
+            if (user != null && userUseCase.checkIfUserIsActive(user.getLogin())) {
                 return new CredentialValidationResult(user.getLogin(), new HashSet<>(
                         Arrays.asList(user.getRole())));
             }

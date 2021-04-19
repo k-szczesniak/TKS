@@ -7,7 +7,7 @@ import pl.ks.dk.tks.dtomodel.users.AdminDTO;
 import pl.ks.dk.tks.dtomodel.users.ClientDTO;
 import pl.ks.dk.tks.dtomodel.users.SuperUserDTO;
 import pl.ks.dk.tks.filters.EntitySignatureValidatorFilterBinding;
-import pl.ks.dk.tks.userinterface.rest.UserRestUseCase;
+import pl.ks.dk.tks.userinterface.UserUseCase;
 import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
 
 import javax.inject.Inject;
@@ -27,7 +27,7 @@ import java.util.Set;
 public class UsersRestAdapter {
 
     @Inject
-    private UserRestUseCase userRestUseCase;
+    private UserUseCase userUseCase;
 
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -37,7 +37,7 @@ public class UsersRestAdapter {
         try {
             return Response.status(200)
                     .entity(JSONObject.wrap(UserDTOConverter.convertUserToUserDTO(
-                            userRestUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()))).toString())
+                            userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()))).toString())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class UsersRestAdapter {
     @Path("{uuid}")
     public Response getClient(@PathParam("uuid") String uuid) {
         try {
-            EntityToSignDTO entityToSign = UserDTOConverter.convertUserToUserDTO(userRestUseCase.getUserByKey(uuid));
+            EntityToSignDTO entityToSign = UserDTOConverter.convertUserToUserDTO(userUseCase.getUserByKey(uuid));
             return Response.status(200)
                     .header("ETag", EntityIdentitySignerVerifier.calculateETag(entityToSign))
                     .entity(JSONObject.wrap(entityToSign).toString())
@@ -64,7 +64,7 @@ public class UsersRestAdapter {
     public Response getAllUsers() {
         try {
             return Response.status(200)
-                    .entity(JSONObject.wrap(UserDTOConverter.convertUserListToUserDTOList(userRestUseCase.getAllUsers()))
+                    .entity(JSONObject.wrap(UserDTOConverter.convertUserListToUserDTOList(userUseCase.getAllUsers()))
                             .toString())
                     .build();
         } catch (Exception e) {
@@ -83,7 +83,7 @@ public class UsersRestAdapter {
         }
         try {
             validation(adminDTO);
-            userRestUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(adminDTO), uuid);
+            userUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(adminDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -101,7 +101,7 @@ public class UsersRestAdapter {
         }
         try {
             validation(superUserDTO);
-            userRestUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(superUserDTO), uuid);
+            userUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(superUserDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -119,7 +119,7 @@ public class UsersRestAdapter {
         }
         try {
             validation(clientDTO);
-            userRestUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(clientDTO), uuid);
+            userUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(clientDTO), uuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -133,7 +133,7 @@ public class UsersRestAdapter {
     public Response createAdmin(AdminDTO adminDTO) {
         try {
             validation(adminDTO);
-            userRestUseCase.addUser(UserDTOConverter.convertUserDTOToUser(adminDTO));
+            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(adminDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -146,7 +146,7 @@ public class UsersRestAdapter {
     public Response createSuperUser(SuperUserDTO superUserDTO) {
         try {
             validation(superUserDTO);
-            userRestUseCase.addUser(UserDTOConverter.convertUserDTOToUser(superUserDTO));
+            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(superUserDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -159,7 +159,7 @@ public class UsersRestAdapter {
     public Response createClient(ClientDTO clientDTO) {
         try {
             validation(clientDTO);
-            userRestUseCase.addUser(UserDTOConverter.convertUserDTOToUser(clientDTO));
+            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(clientDTO));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.status(422).build();

@@ -3,7 +3,7 @@ package pl.ks.dk.tks.soapadapters;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
 import pl.ks.dk.tks.soapmodel.exceptions.UserSoapException;
 import pl.ks.dk.tks.soapmodel.users.*;
-import pl.ks.dk.tks.userinterface.soap.UserSoapUseCase;
+import pl.ks.dk.tks.userinterface.UserUseCase;
 
 import javax.inject.Inject;
 import javax.jws.WebService;
@@ -13,27 +13,27 @@ import java.util.List;
 public class UserSoapAdapter {
 
     @Inject
-    private UserSoapUseCase userSoapUseCase;
+    private UserUseCase userUseCase;
 
     public UserSOAP getClient(String uuid) throws UserSoapException{
         try {
-            return UserSOAPConverter.convertUserToUserSOAP(userSoapUseCase.getUserByKey(uuid));
+            return UserSOAPConverter.convertUserToUserSOAP(userUseCase.getUserByKey(uuid));
         } catch (ServiceException e) {
             throw new UserSoapException(e);
         }
     }
 
     public int getClientCount() {
-        return userSoapUseCase.getUsersCount();
+        return userUseCase.getUsersCount();
     }
 
     public List<UserSOAP> getAllUsers() {
-        return UserSOAPConverter.convertUserListToUserSOAPList(userSoapUseCase.getAllUsers());
+        return UserSOAPConverter.convertUserListToUserSOAPList(userUseCase.getAllUsers());
     }
 
     public void createAdmin(AdminSOAP adminSOAP) throws UserSoapException {
         try {
-            userSoapUseCase.addUser(UserSOAPConverter.convertUserSOAPToUser(adminSOAP));
+            userUseCase.addUser(UserSOAPConverter.convertUserSOAPToUser(adminSOAP));
         } catch (Exception e) {
             throw new UserSoapException(e);
         }
@@ -41,7 +41,7 @@ public class UserSoapAdapter {
 
     public void createSuperUser(SuperUserSOAP superUserSOAP) throws UserSoapException {
         try {
-            userSoapUseCase.addUser(UserSOAPConverter.convertUserSOAPToUser(superUserSOAP));
+            userUseCase.addUser(UserSOAPConverter.convertUserSOAPToUser(superUserSOAP));
         } catch (Exception e) {
             throw new UserSoapException(e);
         }
@@ -49,7 +49,7 @@ public class UserSoapAdapter {
 
     public void createClient(ClientSOAP clientSOAP) throws UserSoapException {
         try {
-            userSoapUseCase.addUser(UserSOAPConverter.convertUserSOAPToUser(clientSOAP));
+            userUseCase.addUser(UserSOAPConverter.convertUserSOAPToUser(clientSOAP));
         } catch (Exception e) {
             throw new UserSoapException(e);
         }

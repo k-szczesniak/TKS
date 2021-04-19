@@ -1,10 +1,10 @@
-package pl.ks.dk.tks.userinterface.rest;
+package pl.ks.dk.tks.userinterface;
 
 import pl.ks.dk.tks.domainmodel.users.User;
 
 import java.util.List;
 
-public interface UserRestUseCase {
+public interface UserUseCase {
 
     User getUserByLogin(String login);
 
@@ -19,4 +19,6 @@ public interface UserRestUseCase {
     boolean checkIfUserIsActive(String login);
 
     User getUserByLoginAndPassword(String login, String password);
+
+    int getUsersCount();
 }
