@@ -1,16 +1,23 @@
-package pl.ks.dk.us.users;
+package pl.ks.dk.us.dtomodel.users;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONPropertyIgnore;
+import pl.ks.dk.us.dtomodel.interfaces.EntityToSignDTO;
+import pl.ks.dk.us.users.Role;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class UserDTO implements EntityToSignDTO, Serializable {
 
     private boolean isActive = true;
 
@@ -34,9 +41,7 @@ public class User {
 
     private Role role;
 
-//    TODO: Zastanowić się nad BeanValidation, czy jest potrzebne jeżeli obiekt jest tworzony jako DTO
-
-    public User(String login, String name, String surname, String password, String role) {
+    public UserDTO(String login, String name, String surname, String password, String role) {
         this.login = login;
         this.name = name;
         this.surname = surname;
@@ -48,7 +53,18 @@ public class User {
 //        isActive = !isActive;
 //    }
 
+    public Map<String, String> takePayload() {
+        Map<String, String> map = new HashMap<>();
+        map.put("uuid", getUuid());
+        return map;
+    }
+
     public String getRole() {
         return role.toString();
+    }
+
+    @JSONPropertyIgnore
+    public String getPassword() {
+        return password;
     }
 }

@@ -64,15 +64,14 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
         throw new RepositoryExceptionEnt("User not found");
     }
 
-//    TODO:Czy to jest potrzebne ?
-//    @PostConstruct
-//    private void initUsersList() {
-//        addElement(new AdminEnt("aAdamski", "Adam", "Adamski", "adamski", "Admin"));
-//        addElement(new SuperUserEnt("tTomkowski", "Tomek", "Tomkowski", "tomkowski", "SuperUser"));
-//        addElement(new ClientEnt("tHajto", "Tomasz", "Hajto", "hajto", "Client", 3, 4));
-//        addElement(new ClientEnt("jUrban", "Jan", "Urban", "urban", "Client", 2, 7));
-//        addElement(
-//                new ClientEnt("jKwiatkowska", "Janina", "Kwiatkowska", "kwiatkowska", "Client", 2, 5));
-//        addElement(new ClientEnt("aWiadro", "Agata", "Wiadro", "wiadro", "Client", 1, 13));
-//    }
+    @PostConstruct
+    private void initUsersList() {
+        addElement(new UserEnt("aAdamski", "Adam", "Adamski", "adamski", "Admin"));
+        addElement(new UserEnt("tTomkowski", "Tomek", "Tomkowski", "tomkowski", "SuperUser"));
+        addElement(new UserEnt("tHajto", "Tomasz", "Hajto", "hajto", "Client"));
+        addElement(new UserEnt("jUrban", "Jan", "Urban", "urban", "Client"));
+        addElement(
+                new UserEnt("jKwiatkowska", "Janina", "Kwiatkowska", "kwiatkowska", "Client"));
+        addElement(new UserEnt("aWiadro", "Agata", "Wiadro", "wiadro", "Client"));
+    }
 }

@@ -32,22 +32,19 @@ public class UserEnt {
 
     private String uuid;
 
-//    TODO: Zastanowić się nad BeanValidation, czy jest potrzebne jeżeli obiekt jest tworzony jako DTO
-//    TODO: Zastanowić się nad grupą i id
+    private String role;
 
-    public UserEnt(String login, String name, String surname, String password) {
+//    TODO: Zastanowić się nad BeanValidation, czy jest potrzebne jeżeli obiekt jest tworzony jako DTO
+
+    public UserEnt(String login, String name, String surname, String password, String role) {
         this.login = login;
         this.name = name;
         this.surname = surname;
         this.password = password;
+        this.role = role;
     }
 
     public void changeActive() {
         isActive = !isActive;
     }
-
-    public String getRole() {
-        return "Client";
-    }
-
 }

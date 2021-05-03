@@ -1,6 +1,5 @@
 package pl.ks.dk.us.aggregates;
 
-import org.apache.commons.beanutils.BeanUtils;
 import pl.ks.dk.us.exceptions.AdapterException;
 import pl.ks.dk.us.infrastructure.AddUserPort;
 import pl.ks.dk.us.infrastructure.GetUserPort;
@@ -12,7 +11,6 @@ import pl.ks.dk.us.users.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,30 +73,30 @@ public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
     }
 
     public static UserEnt convertUserToUserEnt(User user) {
-            UserEnt userEnt = new UserEnt();
-            return copyUserToUserEnt(userEnt, user);
+        return copyUserToUserEnt(user);
     }
 
     public static User convertUserEntToUser(UserEnt userEnt) {
-            User user = new User();
-            return copyUserEntToUser(user, userEnt);
+        return copyUserEntToUser(userEnt);
     }
 
-    private static UserEnt copyUserToUserEnt(UserEnt userEnt, User user) throws AdapterException {
-        try {
-            BeanUtils.copyProperties(userEnt, user);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new AdapterException("Convert User to UserEnt error", e);
+    private static UserEnt copyUserToUserEnt(User user) throws AdapterException {
+        UserEnt userEnt =
+                new UserEnt(user.getLogin(), user.getName(), user.getSurname(), user.getPassword(), user.getRole());
+        if (user.getUuid() != null) {
+            userEnt.setUuid(user.getUuid());
         }
+        userEnt.setActive(user.isActive());
         return userEnt;
     }
 
-    private static User copyUserEntToUser(User user, UserEnt userEnt) throws AdapterException {
-        try {
-            BeanUtils.copyProperties(user, userEnt);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new AdapterException("Convert UserEnt to User error", e);
+    private static User copyUserEntToUser(UserEnt userEnt) throws AdapterException {
+        User user = new User(userEnt.getLogin(), userEnt.getName(), userEnt.getSurname(), userEnt.getPassword(),
+                userEnt.getRole());
+        if (userEnt.getUuid() != null) {
+            user.setUuid(userEnt.getUuid());
         }
+        user.setActive(userEnt.isActive());
         return user;
     }
 }

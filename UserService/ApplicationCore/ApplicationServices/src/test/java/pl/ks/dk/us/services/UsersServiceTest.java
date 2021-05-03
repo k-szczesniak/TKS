@@ -40,7 +40,7 @@ class UsersServiceTest {
         given(getUserPort.getUserByLogin(ArgumentMatchers.anyString())).willThrow(
                 AdapterException.class);
         given(getUserPort.getUserByLogin(ArgumentMatchers.eq("Login2")))
-                .willReturn(new User("Login2", "Jan", "Kowalski", "kowalski"));
+                .willReturn(new User("Login2", "Jan", "Kowalski", "kowalski", "Client"));
 
         assertEquals("Jan", usersService.getUserByLogin("Login2").getName());
         assertThrows(ServiceException.class, () -> usersService.getUserByLogin("OtherLogin"));
@@ -52,7 +52,7 @@ class UsersServiceTest {
         given(getUserPort.getUserByKey(ArgumentMatchers.anyString())).willThrow(
                 AdapterException.class);
         given(getUserPort.getUserByKey(ArgumentMatchers.eq("12345678")))
-                .willReturn(new User("Login2", "Jan", "Kowalski", "kowalski"));
+                .willReturn(new User("Login2", "Jan", "Kowalski", "kowalski", "Client"));
 
         assertEquals("Jan", usersService.getUserByKey("12345678").getName());
         assertThrows(ServiceException.class, () -> usersService.getUserByKey("OtherUuid"));
@@ -79,7 +79,7 @@ class UsersServiceTest {
 
     @Test
     void addUserPositiveTest() {
-        usersService.addUser(new User("Login2", "Jan", "Kowalski", "kowalski"));
+        usersService.addUser(new User("Login2", "Jan", "Kowalski", "kowalski", "Client"));
         verify(addUserPort).addUser(ArgumentMatchers.any(User.class));
     }
 
@@ -87,12 +87,12 @@ class UsersServiceTest {
     void addUserNegativeTest() {
         doThrow(AdapterException.class).when(addUserPort).addUser(ArgumentMatchers.any(User.class));
         assertThrows(ServiceException.class,
-                () -> usersService.addUser(new User("Login2", "Jan", "Kowalski", "kowalski")));
+                () -> usersService.addUser(new User("Login2", "Jan", "Kowalski", "kowalski", "Client")));
     }
 
     @Test
     void updateUserPositiveTest() {
-        usersService.updateUser(new User("Login2", "Jan", "Kowalski", "kowalski"), "12345678");
+        usersService.updateUser(new User("Login2", "Jan", "Kowalski", "kowalski", "Client"), "12345678");
         verify(updateUserPort)
                 .updateUser(ArgumentMatchers.any(User.class), ArgumentMatchers.anyString());
     }
@@ -102,19 +102,19 @@ class UsersServiceTest {
         doThrow(AdapterException.class).when(updateUserPort)
                 .updateUser(ArgumentMatchers.any(User.class), ArgumentMatchers.anyString());
         assertThrows(ServiceException.class,
-                () -> usersService.updateUser(new User("Login2", "Jan", "Kowalski", "kowalski"), "12345678"));
+                () -> usersService.updateUser(new User("Login2", "Jan", "Kowalski", "kowalski", "Client"), "12345678"));
     }
 
     @Test
     void checkIfUserIsActiveTest() {
         given(getUserPort.getUserByLogin(ArgumentMatchers.eq("Login2")))
-                .willReturn(new User("Login2", "Jan", "Kowalski", "kowalski"));
+                .willReturn(new User("Login2", "Jan", "Kowalski", "kowalski", "Client"));
         assertTrue(usersService.checkIfUserIsActive("Login2"));
     }
 
     @Test
     void getUserByLoginAndPasswordTest() {
-        User user = new User("Login2", "Jan", "Kowalski", "kowalski");
+        User user = new User("Login2", "Jan", "Kowalski", "kowalski", "Client");
         given(getUserPort.getUserByLogin(ArgumentMatchers.eq("Login2")))
                 .willReturn(user);
 
@@ -124,7 +124,7 @@ class UsersServiceTest {
 
     private List<User> prepareMockData() {
         List<User> userList = new ArrayList<>();
-        userList.add(new User("Login2", "Jan", "Kowalski", "kowalski"));
+        userList.add(new User("Login2", "Jan", "Kowalski", "kowalski", "Client"));
         return userList;
     }
 }
