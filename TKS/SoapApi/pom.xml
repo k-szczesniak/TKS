@@ -20,13 +20,24 @@
                 <version>2.6</version>
                 <executions>
                     <execution>
-                        <id>wsgen</id>
+                        <id>wsgen1</id>
                         <phase>generate-test-sources</phase>
                         <goals>
                             <goal>wsgen-test</goal>
                         </goals>
                         <configuration>
                             <sei>pl.ks.dk.tks.soapadapters.UserSoapAdapter</sei>
+                            <genWsdl>true</genWsdl>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>wsgen2</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>wsgen-test</goal>
+                        </goals>
+                        <configuration>
+                            <sei>pl.ks.dk.tks.soapadapters.BabysitterSoapAdapter</sei>
                             <genWsdl>true</genWsdl>
                         </configuration>
                     </execution>
@@ -40,7 +51,9 @@
                             <wsdlDirectory>${project.build.directory}/generated-sources/test-wsdl</wsdlDirectory>
                             <packageName>pl.ks.dk.model</packageName>
                             <wsdlLocation>http://localhost:8080/Soap/ClientAPI?wsdl</wsdlLocation>
+                            <wsdlLocation>http://localhost:8080/Soap/BabysitterAPI?wsdl</wsdlLocation>
                             <staleFile>${project.build.directory}/jaxws/stale/Client.stale</staleFile>
+                            <staleFile>${project.build.directory}/jaxws/stale/Babysitter.stale</staleFile>
                         </configuration>
                     </execution>
                 </executions>
