@@ -49,10 +49,6 @@ public class UserDTO implements EntityToSignDTO, Serializable {
         this.role = Role.valueOf(role);
     }
 
-//    public void changeActive() {
-//        isActive = !isActive;
-//    }
-
     public Map<String, String> takePayload() {
         Map<String, String> map = new HashMap<>();
         map.put("uuid", getUuid());

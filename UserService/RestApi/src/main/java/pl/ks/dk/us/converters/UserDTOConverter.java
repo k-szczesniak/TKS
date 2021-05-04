@@ -1,7 +1,6 @@
 package pl.ks.dk.us.converters;
 
 import pl.ks.dk.us.dtomodel.users.UserDTO;
-import pl.ks.dk.us.exceptions.DTOConverterException;
 import pl.ks.dk.us.users.User;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class UserDTOConverter {
         return copyUserToUserDTO(user);
     }
 
-    private static User copyUserDTOToUser(UserDTO userDTO) throws DTOConverterException {
+    private static User copyUserDTOToUser(UserDTO userDTO) {
         User user = new User(userDTO.getLogin(), userDTO.getName(), userDTO.getSurname(), userDTO.getPassword(),
                 userDTO.getRole());
         if (userDTO.getUuid() != null) {
@@ -27,7 +26,9 @@ public class UserDTOConverter {
         return user;
     }
 
-    private static UserDTO copyUserToUserDTO(User user) throws DTOConverterException {
+    //TODO: Usunac wyjatek od zlego convertowania
+
+    private static UserDTO copyUserToUserDTO(User user) {
         UserDTO userDTO =
                 new UserDTO(user.getLogin(), user.getName(), user.getSurname(), user.getPassword(), user.getRole());
         if (user.getUuid() != null) {
