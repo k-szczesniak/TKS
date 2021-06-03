@@ -6,6 +6,14 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.ks.dk.tks.dtomodel.users.AdminDTO;
 import pl.ks.dk.tks.security.JWTGeneratorVerifier;
 import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
@@ -13,21 +21,46 @@ import pl.ks.dk.tks.utils.EntityIdentitySignerVerifier;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Testcontainers
 public class UsersCRUTest {
     private final String token = JWTGeneratorVerifier.generateJWTString(new CredentialValidationResult("aAdamski", new HashSet<>(
             Arrays.asList("Admin"))));
 
+    static final Logger LOGGER = LoggerFactory.getLogger(BabysittersCRUDTest.class);
+    private String stringURL;
+
+    public UsersCRUTest() {
+        Formatter formatter = new Formatter();
+        stringURL = formatter.format("https://localhost:%d/TKS", restServices.getMappedPort(8181)).toString();
+        System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+    }
+
+    @Container
+    private static final GenericContainer restServices = new GenericContainer<>(
+            new ImageFromDockerfile()
+                    .withDockerfileFromBuilder(builder -> builder
+                            .from("payara/server-full:5.2021.2-jdk11")
+                            .copy("REST.war", "/opt/payara/deployments")
+                            .build())
+                    .withFileFromPath("REST.war", Path.of("target", "REST.war"))
+    )
+            .withExposedPorts(8080, 4848)
+            .waitingFor(Wait.forHttp("/TKS/rest/java").forPort(8080).forStatusCode(200))
+            .withLogConsumer(new Slf4jLogConsumer(LOGGER));
+
     @Test
     public void getAllUsersTest() throws URISyntaxException {
         RequestSpecification request = getBasicRequest();
-        Response response = request.get(new URI("https://localhost:8181/TKS/rest/users"));
+        Response response = request.get(new URI(stringURL + "/rest/users"));
         String responseString = response.asString();
 
         assertTrue(responseString.contains("\"login\":\"aAdamski\""));
@@ -44,7 +77,7 @@ public class UsersCRUTest {
 
         RequestSpecification request = getBasicRequest();
         String firstUUID = getUUID();
-        Response response = request.get(new URI("https://localhost:8181/TKS/rest/users/" + firstUUID));
+        Response response = request.get(new URI(stringURL + "/rest/users/" + firstUUID));
 
         adminDTO.setUuid(firstUUID);
         String expectedETag = EntityIdentitySignerVerifier.calculateETag(adminDTO);
@@ -61,126 +94,6 @@ public class UsersCRUTest {
         assertFalse(responseString.contains("password"));
     }
 
-    @Test
-    public void createClientTest() throws URISyntaxException {
-        String randomLogin = RandomStringUtils.randomAlphanumeric(8);
-        String JSON = "{\n" +
-                "        \"ageOfTheYoungestChild\": 7,\n" +
-                "        \"name\": \"testName\",\n" +
-                "        \"numberOfChildren\": 14,\n" +
-                "        \"role\": \"Client\",\n" +
-                "        \"password\": \"testTEST\",\n" +
-                "        \"surname\": \"testSurname\",\n" +
-                "        \"login\": \"" + randomLogin + "\"\n" +
-                "    }";
-
-        RequestSpecification requestAll = getBasicRequest();
-        RequestSpecification requestPost = getBasicRequest();
-
-        requestPost.contentType("application/json");
-        requestPost.body(JSON);
-
-        String getAllResponseString = requestAll.get(new URI("https://localhost:8181/TKS/rest/users")).asString();
-        int initialSize = getAllResponseString.split("},").length;
-
-        requestPost.post(new URI("https://localhost:8181/TKS/rest/users/client"));
-
-        getAllResponseString = requestAll.get(new URI("https://localhost:8181/TKS/rest/users")).asString();
-        assertEquals(initialSize + 1, getAllResponseString.split("},").length);
-
-        assertTrue(getAllResponseString.contains("\"login\":\"" + randomLogin + "\""));
-    }
-
-
-    @Test
-    public void createAdminTest() throws URISyntaxException {
-        String randomLogin = RandomStringUtils.randomAlphanumeric(8);
-        String JSON = "{\n" +
-                "        \"name\": \"testName\",\n" +
-                "        \"role\": \"Admin\",\n" +
-                "        \"password\": \"testTEST\",\n" +
-                "        \"surname\": \"testSurname\",\n" +
-                "        \"login\": \"" + randomLogin + "\"\n" +
-                "    }";
-
-        RequestSpecification requestAll = getBasicRequest();
-        RequestSpecification requestPost = getBasicRequest();
-
-        requestPost.contentType("application/json");
-        requestPost.body(JSON);
-
-        String getAllResponseString = requestAll.get(new URI("https://localhost:8181/TKS/rest/users")).asString();
-        int initialSize = getAllResponseString.split("},").length;
-
-        requestPost.post(new URI("https://localhost:8181/TKS/rest/users/admin"));
-
-        getAllResponseString = requestAll.get(new URI("https://localhost:8181/TKS/rest/users")).asString();
-        assertEquals(initialSize + 1, getAllResponseString.split("},").length);
-
-        assertTrue(getAllResponseString.contains("\"login\":\"" + randomLogin + "\""));
-    }
-
-    @Test
-    public void createSuperUserTest() throws URISyntaxException {
-        String randomLogin = RandomStringUtils.randomAlphanumeric(8);
-        String JSON = "{\n" +
-                "        \"name\": \"testName\",\n" +
-                "        \"role\": \"SuperUser\",\n" +
-                "        \"password\": \"testTEST\",\n" +
-                "        \"surname\": \"testSurname\",\n" +
-                "        \"login\": \"" + randomLogin + "\"\n" +
-                "    }";
-
-        RequestSpecification requestAll = getBasicRequest();
-        RequestSpecification requestPost = getBasicRequest();
-
-        requestPost.contentType("application/json");
-        requestPost.body(JSON);
-
-        String getAllResponseString = requestAll.get(new URI("https://localhost:8181/TKS/rest/users")).asString();
-        int initialSize = getAllResponseString.split("},").length;
-
-        requestPost.post(new URI("https://localhost:8181/TKS/rest/users/superUser"));
-
-        getAllResponseString = requestAll.get(new URI("https://localhost:8181/TKS/rest/users")).asString();
-        assertEquals(initialSize + 1, getAllResponseString.split("},").length);
-
-        assertTrue(getAllResponseString.contains("\"login\":\"" + randomLogin + "\""));
-    }
-
-    @Test
-    public void updateAdmin() throws URISyntaxException {
-        String firstUUID = getUUID();
-        RequestSpecification requestGet = getBasicRequest();
-        Response getResponse = requestGet.get(new URI("https://localhost:8181/TKS/rest/users/" + firstUUID));
-
-        Pattern surnamePattern = Pattern.compile("(?<=\"surname\":\")[^\"]+");
-        Matcher m = surnamePattern.matcher(getResponse.asString());
-        String originalSurname = m.find() ? m.group() : "";
-        String ETag = getResponse.header("ETag");
-
-        RequestSpecification requestPut = getBasicRequest();
-        requestPut.contentType("application/json");
-        requestPut.header("If-Match", ETag);
-
-        String randomSurname = RandomStringUtils.randomAlphabetic(8);
-        String JSON = "{\n" +
-                "        \"name\": \"Adam\",\n" +
-                "        \"role\": \"Admin\",\n" +
-                "        \"password\": \"adamski1\",\n" +
-                "        \"surname\": \"" + randomSurname + "\",\n" +
-                "        \"login\": \"" + "aAdamski" + "\",\n" +
-                "        \"uuid\": \"" + firstUUID + "\"\n" +
-                "    }";
-        requestPut.body(JSON);
-        requestPut.put("https://localhost:8181/TKS/rest/users/admin/" + firstUUID);
-
-        getResponse = requestGet.get(new URI("https://localhost:8181/TKS/rest/users/" + firstUUID));
-        m = surnamePattern.matcher(getResponse.asString());
-        String changedSurname = m.find() ? m.group() : "";
-        assertNotEquals(originalSurname, changedSurname);
-    }
-
     private RequestSpecification getBasicRequest() {
         RequestSpecification request = RestAssured.given();
         request.relaxedHTTPSValidation();
@@ -191,7 +104,7 @@ public class UsersCRUTest {
     private String getUUID() throws URISyntaxException {
         RequestSpecification request = getBasicRequest();
 
-        Response getAllResponse = request.get(new URI("https://localhost:8181/TKS/rest/users"));
+        Response getAllResponse = request.get(new URI(stringURL + "/rest/users"));
         String responseString = getAllResponse.asString();
         Pattern pattern = Pattern.compile("(?<=\"uuid\":\")\\d{8}");
         Matcher m = pattern.matcher(responseString);
