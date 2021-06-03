@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <default-context-path>TKS</default-context-path>
+
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
+
+    <security-role>
+        <role-name>Admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>SuperUser</role-name>
+    </security-role>
+    <security-role>
+        <role-name>Client</role-name>
+    </security-role>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>AdminPages</web-resource-name>
+            <url-pattern>/rest/users/*</url-pattern>
+            <url-pattern>/rest/resources/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>PUT</http-method>
+            <http-method>POST</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Admin</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>SuperUserResourcePages</web-resource-name>
+            <url-pattern>/rest/resources/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>PUT</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>SuperUserUsersPages</web-resource-name>
+            <url-pattern>/rest/users/*</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>SuperUser</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>ClientResourcePages</web-resource-name>
+            <url-pattern>/rest/resources/*</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>ClientEmploymentPages</web-resource-name>
+            <url-pattern>/rest/employment/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Client</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Common</web-resource-name>
+            <url-pattern>/rest/users/_self</url-pattern>
+            <url-pattern>/rest/auth/update</url-pattern>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Admin</role-name>
+            <role-name>SuperUser</role-name>
+            <role-name>Client</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+</web-app>

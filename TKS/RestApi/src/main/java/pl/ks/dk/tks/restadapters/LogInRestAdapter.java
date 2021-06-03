@@ -1,7 +1,7 @@
 package pl.ks.dk.tks.restadapters;
 
 import com.nimbusds.jwt.SignedJWT;
-import pl.ks.dk.tks.security.JWTAuthenticationMechanism;
+import pl.ks.dk.tks.security.JwtAuthenticationMechanism;
 import pl.ks.dk.tks.security.JWTGeneratorVerifier;
 import pl.ks.dk.tks.security.LoginData;
 import pl.ks.dk.tks.userinterface.UserUseCase;
@@ -47,8 +47,8 @@ public class LogInRestAdapter {
     @GET
     @Path("/update")
     public Response updateToken(@Context HttpServletRequest httpServletRequest) {
-        String authHeader = httpServletRequest.getHeader(JWTAuthenticationMechanism.AUTHORIZATION);
-        String tokenToUpdate = authHeader.substring(JWTAuthenticationMechanism.BEARER.length());
+        String authHeader = httpServletRequest.getHeader(JwtAuthenticationMechanism.AUTHORIZATION);
+        String tokenToUpdate = authHeader.substring(JwtAuthenticationMechanism.BEARER.length());
         try {
             String login = SignedJWT.parse(tokenToUpdate).getJWTClaimsSet().getSubject();
             if (userUseCase.checkIfUserIsActive(login)) {

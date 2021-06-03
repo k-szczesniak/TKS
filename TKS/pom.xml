@@ -24,6 +24,7 @@
         <module>RepositoriesAdapters</module>
         <module>RestApi</module>
         <module>SoapApi</module>
+        <module>RentService</module>
     </modules>
 
     <build>

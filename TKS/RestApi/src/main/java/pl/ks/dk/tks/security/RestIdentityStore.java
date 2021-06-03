@@ -11,11 +11,12 @@ import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 
 @ApplicationScoped
-public class AuthenticationIdentityStore implements IdentityStore {
+public class RestIdentityStore implements IdentityStore {
 
     @Inject
     UserUseCase userUseCase;
@@ -34,9 +35,9 @@ public class AuthenticationIdentityStore implements IdentityStore {
                 e.printStackTrace();
                 return CredentialValidationResult.INVALID_RESULT;
             }
-            if (user != null && userUseCase.checkIfUserIsActive(user.getLogin())) {
+            if (user != null && user.isActive()) {
                 return new CredentialValidationResult(user.getLogin(), new HashSet<>(
-                        Arrays.asList(user.getRole())));
+                        Collections.singletonList(user.getRole())));
             }
         }
         return CredentialValidationResult.INVALID_RESULT;

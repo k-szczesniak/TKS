@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>TKSProject</artifactId>
+        <groupId>pl.ks.dk.tks</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <packaging>war</packaging>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>RentService</artifactId>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>pl.ks.dk.tks</groupId>
+            <artifactId>RestApi</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>pl.ks.dk.tks</groupId>
+            <artifactId>SoapApi</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <overlays>
+                        <overlay>
+                            <groupId>pl.ks.dk.tks</groupId>
+                            <artifactId>RestApi</artifactId>
+                        </overlay>
+                        <overlay>
+                            <groupId>pl.ks.dk.tks</groupId>
+                            <artifactId>SoapApi</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
