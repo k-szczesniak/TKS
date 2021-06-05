@@ -3,32 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>TKSProject</artifactId>
-        <groupId>pl.ks.dk.tks</groupId>
+        <artifactId>UserService</artifactId>
+        <groupId>pl.ks.dk.us</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <packaging>war</packaging>
-
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>RentService</artifactId>
+    <artifactId>UsersService</artifactId>
+
+    <packaging>war</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>pl.ks.dk.tks</groupId>
+            <groupId>pl.ks.dk.us</groupId>
             <artifactId>RestApi</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>pl.ks.dk.tks</groupId>
+            <groupId>pl.ks.dk.us</groupId>
             <artifactId>SoapApi</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>war</type>
         </dependency>
-    </dependencies>
-
-    <build>
+    </dependencies><build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -37,11 +35,11 @@
                 <configuration>
                     <overlays>
                         <overlay>
-                            <groupId>pl.ks.dk.tks</groupId>
+                            <groupId>pl.ks.dk.us</groupId>
                             <artifactId>RestApi</artifactId>
                         </overlay>
                         <overlay>
-                            <groupId>pl.ks.dk.tks</groupId>
+                            <groupId>pl.ks.dk.us</groupId>
                             <artifactId>SoapApi</artifactId>
                         </overlay>
                     </overlays>

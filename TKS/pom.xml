@@ -25,6 +25,7 @@
         <module>RestApi</module>
         <module>SoapApi</module>
         <module>RentService</module>
+        <module>MessageQueue</module>
     </modules>
 
     <build>
