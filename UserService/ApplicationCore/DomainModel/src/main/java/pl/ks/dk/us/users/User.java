@@ -35,8 +35,6 @@ public class User implements Serializable {
 
     private Role role;
 
-//    TODO: Zastanowić się nad BeanValidation, czy jest potrzebne jeżeli obiekt jest tworzony jako DTO
-
     public User(String login, String name, String surname, String password, String role) {
         this.login = login;
         this.name = name;
@@ -44,10 +42,6 @@ public class User implements Serializable {
         this.password = password;
         this.role = Role.valueOf(role);
     }
-
-//    public void changeActive() {
-//        isActive = !isActive;
-//    }
 
     public String getRole() {
         return role.toString();

@@ -1,12 +1,14 @@
 package pl.ks.dk.us.restadapters;
 
 import org.json.JSONObject;
+import pl.ks.dk.us.Publisher;
+import pl.ks.dk.us.Serialization;
 import pl.ks.dk.us.converters.UserDTOConverter;
 import pl.ks.dk.us.dtomodel.interfaces.EntityToSignDTO;
 import pl.ks.dk.us.dtomodel.users.UserDTO;
 import pl.ks.dk.us.filters.EntitySignatureValidatorFilterBinding;
-import pl.ks.dk.us.utils.EntityIdentitySignerVerifier;
 import pl.ks.dk.us.userinterface.UserUseCase;
+import pl.ks.dk.us.utils.EntityIdentitySignerVerifier;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -17,12 +19,17 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.io.IOException;
 import java.util.Set;
+
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/users")
 public class UsersRestAdapter {
+
+    @Inject
+    private Publisher publisher;
 
     @Inject
     private UserUseCase userUseCase;
@@ -75,7 +82,7 @@ public class UsersRestAdapter {
     @Path("/user/{uuid}")
     @EntitySignatureValidatorFilterBinding
     public Response updateUser(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
-                                 UserDTO userDTO) {
+                               UserDTO userDTO) {
         if (!EntityIdentitySignerVerifier.verifyEntityIntegrity(header, userDTO)) {
             return Response.status(406).build();
         }
@@ -94,8 +101,15 @@ public class UsersRestAdapter {
     public Response createUser(UserDTO userDTO) {
         try {
             validation(userDTO);
-            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(userDTO));
-        } catch (IllegalArgumentException e) {
+            if (userDTO.getRole().equals("Client")) {
+                publisher.createUser(Serialization
+                        .clientToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO), userDTO.getNumberOfChildren(),
+                                userDTO.getAgeOfTheYoungestChild()));
+            } else if (userDTO.getRole().equals("Admin") || userDTO.getRole().equals("SuperUser")) {
+                publisher.createUser(Serialization.userToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO)));
+            }
+//            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(userDTO));
+        } catch (IllegalArgumentException | IOException e) {
             e.printStackTrace();
             return Response.status(422).build();
         }

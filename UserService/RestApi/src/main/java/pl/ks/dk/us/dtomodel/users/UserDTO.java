@@ -7,9 +7,7 @@ import org.json.JSONPropertyIgnore;
 import pl.ks.dk.us.dtomodel.interfaces.EntityToSignDTO;
 import pl.ks.dk.us.users.Role;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +38,10 @@ public class UserDTO implements EntityToSignDTO, Serializable {
     private String uuid;
 
     private Role role;
+
+    private Integer numberOfChildren;
+
+    private Integer ageOfTheYoungestChild;
 
     public UserDTO(String login, String name, String surname, String password, String role) {
         this.login = login;

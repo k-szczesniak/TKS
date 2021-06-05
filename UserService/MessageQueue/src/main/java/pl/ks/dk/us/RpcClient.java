@@ -1,15 +1,16 @@
-import com.rabbitmq.client.*;
+package pl.ks.dk.us;
+
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.java.Log;
-import pl.ks.dk.us.dtomodel.users.UserDTO;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 @Log
@@ -57,24 +58,36 @@ public class RpcClient {
         return replyQueueName;
     }
 
-    public UserDTO get(String username) {
-        String replyQueueName = prepare("GET " + username);
-        final BlockingQueue<UserDTO> response = new ArrayBlockingQueue<>(1);
-        UserDTO result = null;
+    @PreDestroy
+    public void dispose() {
         try {
-            String ctag = channel.basicConsume(replyQueueName, true, (consumerTag, delivery) -> {
-//                if (delivery.getProperties().getCorrelationId().equals(corrId)) {
-//                    response.offer(Objects.requireNonNull(Serialization.deserialize(delivery.getBody())));
-//                }
-            }, consumerTag -> {
-            });
-            result = response.take();
-            channel.basicCancel(ctag);
-        } catch (InterruptedException | IOException e) {
+            channel.close();
+            connection.close();
+        } catch (TimeoutException | IOException e) {
             log.warning(e.getMessage());
         }
-        return result;
     }
+}
+
+
+//    public UserDTO get(String username) {
+//        String replyQueueName = prepare("GET " + username);
+//        final BlockingQueue<UserDTO> response = new ArrayBlockingQueue<>(1);
+//        UserDTO result = null;
+//        try {
+//            String ctag = channel.basicConsume(replyQueueName, true, (consumerTag, delivery) -> {
+//                if (delivery.getProperties().getCorrelationId().equals(corrId)) {
+//                    response.offer(Objects.requireNonNull(pl.ks.dk.us.Serialization.deserialize(delivery.getBody())));
+//                }
+//            }, consumerTag -> {
+//            });
+//            result = response.take();
+//            channel.basicCancel(ctag);
+//        } catch (InterruptedException | IOException e) {
+//            log.warning(e.getMessage());
+//        }
+//        return result;
+//    }
 
 //    public List<UserWeb> getAll() {
 //        String replyQueueName = prepare("GET_ALL ");
@@ -113,14 +126,3 @@ public class RpcClient {
 //        }
 //        return result;
 //    }
-
-    @PreDestroy
-    public void dispose() {
-        try {
-            channel.close();
-            connection.close();
-        } catch (TimeoutException | IOException e) {
-            log.warning(e.getMessage());
-        }
-    }
-}

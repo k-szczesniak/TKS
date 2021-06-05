@@ -26,8 +26,6 @@ public class UserDTOConverter {
         return user;
     }
 
-    //TODO: Usunac wyjatek od zlego convertowania
-
     private static UserDTO copyUserToUserDTO(User user) {
         UserDTO userDTO =
                 new UserDTO(user.getLogin(), user.getName(), user.getSurname(), user.getPassword(), user.getRole());

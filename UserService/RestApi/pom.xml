@@ -93,6 +93,12 @@
         </dependency>
         <dependency>
             <groupId>pl.ks.dk.us</groupId>
+            <artifactId>MessageQueue</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.ks.dk.us</groupId>
             <artifactId>ApplicationPorts</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
