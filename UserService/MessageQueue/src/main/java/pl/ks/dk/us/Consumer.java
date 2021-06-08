@@ -1,9 +1,6 @@
 package pl.ks.dk.us;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
+import com.rabbitmq.client.*;
 import lombok.extern.java.Log;
 import pl.ks.dk.us.userinterface.UserUseCase;
 import pl.ks.dk.us.users.User;
@@ -28,7 +25,8 @@ public class Consumer {
     @Inject
     private UserUseCase userUseCase;
 
-    @Inject Publisher publisher;
+    @Inject
+    Publisher publisher;
 
     private static final String HOST_NAME = "localhost";
     private static final String EXCHANGE_NAME = "exchange_topic";
@@ -84,17 +82,10 @@ public class Consumer {
                 case CREATE_USER_KEY: {
                     try {
                         createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (IllegalArgumentException e) {
-                        log.info("Create user failed, login already exists");
                     } catch (Exception e) {
-                        JsonReader
-                                reader = Json.createReader(
-                                new StringReader(new String(delivery.getBody(), StandardCharsets.UTF_8)));
-                        JsonObject jsonObject = reader.readObject();
-                        String login = jsonObject.getString("login");
-                        log.info("UserService: Exception when creating user, sending remove message with login: " +
-                                login);
-//                        publisher.removeUser(login);
+                        String login = getUserLogin(delivery);
+                        log.info("UserService: Error creating user: " + login + ", sending remove message");
+                        publisher.removeUser(login);
                     }
                     break;
                 }
@@ -102,10 +93,14 @@ public class Consumer {
                     updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
                     break;
                 }
-//                case REMOVE_USER_KEY: {
-//                    log.info("UserService: Received remove message");
-//                    removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-//                }
+                case REMOVE_USER_KEY: {
+                    log.info("UserService: Received remove message");
+                    try {
+                        removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                    } catch (Exception e) {
+                        log.info("UserService: There was an error deleting the user");
+                    }
+                }
                 default: {
                     break;
                 }
@@ -116,14 +111,14 @@ public class Consumer {
         });
     }
 
-    private void createUser(String message) {
+    private void createUser(String message) throws MessageQueueException {
         log.info("UserService: Attempting to create user");
         User user = prepareUser(message);
         try {
             userUseCase.addUser(user);
             log.info("UserService: User " + user.getLogin() + " has been added");
         } catch (ServiceException e) {
-            log.info("UserService: There was an error adding the user");
+            throw new MessageQueueException("UserService: There was an error adding the user");
         }
     }
 
@@ -134,14 +129,18 @@ public class Consumer {
             userUseCase.updateUserByLogin(user, user.getLogin());
             log.info("UserService: User " + user.getLogin() + " has been updated");
         } catch (ServiceException e) {
-            log.info("UserService: Attempting to update user");
+            log.info("UserService: There was an error updating the user");
         }
     }
 
-//    private void removeUser(String message) {
-//        log.info("UserService: Removing user " + message);
-//        userUseCase.removeUser(message);
-//    }
+    private void removeUser(String message) throws MessageQueueException {
+        log.info("UserService: Removing user " + message);
+        try {
+            userUseCase.deleteUser(message);
+        } catch (ServiceException e) {
+            throw new MessageQueueException("UserService: There was an error deleting the user");
+        }
+    }
 
     private User prepareUser(String message) {
         JsonReader reader = Json.createReader(new StringReader(message));
@@ -150,5 +149,11 @@ public class Consumer {
                 jsonObject.getString("password"), jsonObject.getString("role"));
     }
 
-
+    private String getUserLogin(Delivery delivery) {
+        JsonReader reader = Json.createReader(new StringReader(
+                new String(delivery.getBody(), StandardCharsets.UTF_8)));
+        JsonObject jsonObject = reader.readObject();
+        String login = jsonObject.getString("login");
+        return login;
+    }
 }

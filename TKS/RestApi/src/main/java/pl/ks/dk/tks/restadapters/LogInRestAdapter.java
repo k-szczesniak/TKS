@@ -1,7 +1,7 @@
 package pl.ks.dk.tks.restadapters;
 
 import com.nimbusds.jwt.SignedJWT;
-import pl.ks.dk.tks.Receiver;
+import pl.ks.dk.tks.Consumer;
 import pl.ks.dk.tks.security.JWTGeneratorVerifier;
 import pl.ks.dk.tks.security.JwtAuthenticationMechanism;
 import pl.ks.dk.tks.security.LoginData;
@@ -29,7 +29,7 @@ public class LogInRestAdapter {
     IdentityStoreHandler identityStoreHandler;
 
     @Inject
-    Receiver receiver;
+    Consumer consumer;
 
     @Inject
     private UserUseCase userUseCase;

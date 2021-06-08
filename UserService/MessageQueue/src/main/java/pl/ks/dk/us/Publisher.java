@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 @Log
 @ApplicationScoped
 public class Publisher {
+
     private static final String HOST_NAME = "localhost";
     private static final String EXCHANGE_NAME = "exchange_topic";
     private static final String EXCHANGE_TYPE = "topic";
@@ -74,6 +75,7 @@ public class Publisher {
     }
 
     public void createUser(String json) throws IOException {
+        log.info("UserService: Sending create message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         long sequenceNumber = channel.getNextPublishSeqNo();
         outstandingConfirms.put(sequenceNumber, json);
@@ -81,11 +83,13 @@ public class Publisher {
     }
 
     public void updateUser(String json) throws IOException {
+        log.info("UserService: Sending update message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         channel.basicPublish(EXCHANGE_NAME, UPDATE_USER_KEY, null, json.getBytes(StandardCharsets.UTF_8));
     }
 
     public void removeUser(String login) throws IOException {
+        log.info("UserService: Sending remove message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         long sequenceNumber = channel.getNextPublishSeqNo();
         outstandingConfirms.put(sequenceNumber, login);

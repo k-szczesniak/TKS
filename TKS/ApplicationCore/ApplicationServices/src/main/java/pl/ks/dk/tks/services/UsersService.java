@@ -3,6 +3,7 @@ package pl.ks.dk.tks.services;
 import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.users.AddUserPort;
+import pl.ks.dk.tks.infrastructure.users.DeleteUserPort;
 import pl.ks.dk.tks.infrastructure.users.GetUserPort;
 import pl.ks.dk.tks.infrastructure.users.UpdateUserPort;
 import pl.ks.dk.tks.services.exceptions.ServiceException;
@@ -23,6 +24,9 @@ public class UsersService implements UserUseCase {
 
     @Inject
     private UpdateUserPort updateUserPort;
+
+    @Inject
+    private DeleteUserPort deleteUserPort;
 
     @Override
     public User getUserByLogin(String login) throws ServiceException {
@@ -69,6 +73,15 @@ public class UsersService implements UserUseCase {
     public void updateUser(User user, String uuid) {
         try {
             updateUserPort.updateUser(user, uuid);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
+    }
+
+    @Override
+    public void deleteUser(String login) throws ServiceException {
+        try {
+            deleteUserPort.deleteUser(login);
         } catch (AdapterException adapterException) {
             throw new ServiceException(adapterException.getMessage(), adapterException);
         }

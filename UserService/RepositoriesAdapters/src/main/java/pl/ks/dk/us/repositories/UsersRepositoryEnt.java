@@ -37,6 +37,10 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
         }
     }
 
+    public void deleteElementByLogin(String login) throws RepositoryExceptionEnt {
+        super.deleteElement(findUserByLogin(login));
+    }
+
     public void updateElementByLogin(UserEnt user, String login) throws RepositoryExceptionEnt {
         try {
             BeanUtils.copyProperties(findUserByLogin(login), user);

@@ -44,7 +44,7 @@ public class Publisher {
             channel.confirmSelect();
             channel.addConfirmListener(cleanOutstandingConfirms,
                     (sequenceNumber, multiple) -> {
-                        log.severe("User Service: Message number: " + sequenceNumber + " failed");
+                        log.severe("RentService: Message number: " + sequenceNumber + " failed");
                     });
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class Publisher {
     }
 
     ConfirmCallback cleanOutstandingConfirms = (sequenceNumber, multiple) -> {
-        log.info("User Service: Message number: " + sequenceNumber + " successfully sent");
+        log.info("RentService: Message number: " + sequenceNumber + " successfully sent");
         if (multiple) {
             ConcurrentNavigableMap<Long, String> confirmed = outstandingConfirms.headMap(
                     sequenceNumber, true
@@ -73,7 +73,7 @@ public class Publisher {
     }
 
     public void removeUser(String login) throws IOException {
-        log.info("User Service: Sending remove message");
+        log.info("RentService: Sending remove message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         long sequenceNumber = channel.getNextPublishSeqNo();
         outstandingConfirms.put(sequenceNumber,login);

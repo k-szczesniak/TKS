@@ -1,9 +1,6 @@
 package pl.ks.dk.tks;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
+import com.rabbitmq.client.*;
 import lombok.extern.java.Log;
 import pl.ks.dk.tks.domainmodel.users.Admin;
 import pl.ks.dk.tks.domainmodel.users.Client;
@@ -20,7 +17,6 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.validation.ValidationException;
 import javax.xml.rpc.ServiceException;
 import java.io.IOException;
 import java.io.StringReader;
@@ -28,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 @Log
 @ApplicationScoped
-public class Receiver {
+public class Consumer {
     @Inject
     private UserUseCase userUseCase;
 
@@ -88,19 +84,11 @@ public class Receiver {
             switch (delivery.getEnvelope().getRoutingKey()) {
                 case CREATE_USER_KEY: {
                     try {
-                        log.info("RentService: Received create user message");
                         createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (ValidationException e) {
-                        JsonReader reader = Json
-                                .createReader(new StringReader(new String(delivery.getBody(), StandardCharsets.UTF_8)));
-                        JsonObject jsonObject = reader.readObject();
-                        String login = jsonObject.getString("login");
-                        log.info(e.getMessage());
-                        log.info("RentService:Exception when creating user, sending remove message with login: " +
-                                login);
-//                        publisher.removeUser(login);
                     } catch (Exception e) {
-                        log.severe(e.getMessage());
+                        String login = getUserLogin(delivery);
+                        log.info("RentService: Error creating user: " + login + ", sending remove message");
+                        publisher.removeUser(login);
                     }
                     break;
                 }
@@ -108,9 +96,13 @@ public class Receiver {
                     updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
                     break;
                 }
-//                case REMOVE_USER_KEY: {
-//                    removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-//                }
+                case REMOVE_USER_KEY: {
+                    try {
+                        removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                    } catch (Exception e) {
+                        log.info("RentService: There was an error deleting the user");
+                    }
+                }
                 default: {
                     break;
                 }
@@ -121,7 +113,7 @@ public class Receiver {
         });
     }
 
-    private void createUser(String message) {
+    private void createUser(String message) throws MessageQueueException {
         log.info("RentService: Attempting to create user");
         User user = prepareUser(message);
         if (user != null) {
@@ -129,7 +121,7 @@ public class Receiver {
                 userUseCase.addUser(user);
                 log.info("RentService: User " + user.getLogin() + " has been added");
             } catch (ServiceException e) {
-                log.info("RentService: There was an error adding the user");
+                throw new MessageQueueException("RentService: There was an error adding the user");
             }
         } else {
             log.info("RentService: There was an error adding the user");
@@ -151,9 +143,14 @@ public class Receiver {
         }
     }
 
-//    private void removeUser(String message) {
-//        userService.removeUser(message);
-//    }
+    private void removeUser(String message) throws MessageQueueException {
+        log.info("RentService: Removing user " + message);
+        try {
+            userUseCase.deleteUser(message);
+        } catch (ServiceException e) {
+            throw new MessageQueueException("RentService: There was an error deleting the user");
+        }
+    }
 
     private User prepareUser(String message) {
         JsonReader reader = Json.createReader(new StringReader(message));
@@ -175,6 +172,11 @@ public class Receiver {
         return null;
     }
 
-    //TODO: PRYWATNA METODA DO POBIERANIA WARTOSCI ZE JSONA
-
+    private String getUserLogin(Delivery delivery) {
+        JsonReader reader = Json
+                .createReader(new StringReader(new String(delivery.getBody(), StandardCharsets.UTF_8)));
+        JsonObject jsonObject = reader.readObject();
+        String login = jsonObject.getString("login");
+        return login;
+    }
 }

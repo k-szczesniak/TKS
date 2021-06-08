@@ -17,6 +17,8 @@ public interface UserUseCase {
 
     void updateUser(User user, String uuid);
 
+    void deleteUser(String login) throws ServiceException;
+
     void updateUserByLogin(User user, String login) throws ServiceException;
 
     boolean checkIfUserIsActive(String login);

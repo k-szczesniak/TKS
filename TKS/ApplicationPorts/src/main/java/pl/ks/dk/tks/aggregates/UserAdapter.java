@@ -7,6 +7,7 @@ import pl.ks.dk.tks.domainmodel.users.SuperUser;
 import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.exceptions.AdapterException;
 import pl.ks.dk.tks.infrastructure.users.AddUserPort;
+import pl.ks.dk.tks.infrastructure.users.DeleteUserPort;
 import pl.ks.dk.tks.infrastructure.users.GetUserPort;
 import pl.ks.dk.tks.infrastructure.users.UpdateUserPort;
 import pl.ks.dk.tks.model.users.AdminEnt;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
+public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort, DeleteUserPort {
 
     @Inject
     private UsersRepositoryEnt usersRepositoryEnt;
@@ -63,6 +64,15 @@ public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
     public void updateUser(User user, String key) throws AdapterException {
         try {
             usersRepositoryEnt.updateElement(convertUserToUserEnt(user), key);
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
+        }
+    }
+
+    @Override
+    public void deleteUser(String login) throws AdapterException {
+        try {
+            usersRepositoryEnt.deleteElementByLogin(login);
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
             throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }

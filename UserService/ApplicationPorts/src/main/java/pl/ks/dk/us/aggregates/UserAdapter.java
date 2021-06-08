@@ -2,6 +2,7 @@ package pl.ks.dk.us.aggregates;
 
 import pl.ks.dk.us.exceptions.AdapterException;
 import pl.ks.dk.us.infrastructure.AddUserPort;
+import pl.ks.dk.us.infrastructure.DeleteUserPort;
 import pl.ks.dk.us.infrastructure.GetUserPort;
 import pl.ks.dk.us.infrastructure.UpdateUserPort;
 import pl.ks.dk.us.model.UserEnt;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
+public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort, DeleteUserPort {
 
     @Inject
     private UsersRepositoryEnt usersRepositoryEnt;
@@ -55,6 +56,15 @@ public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
     public void updateUser(User user, String key) throws AdapterException {
         try {
             usersRepositoryEnt.updateElement(convertUserToUserEnt(user), key);
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
+        }
+    }
+
+    @Override
+    public void deleteUser(String login) throws AdapterException {
+        try {
+            usersRepositoryEnt.deleteElementByLogin(login);
         } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
             throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
         }
