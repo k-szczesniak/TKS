@@ -8,6 +8,7 @@ import lombok.extern.java.Log;
 import pl.ks.dk.tks.domainmodel.users.Admin;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.domainmodel.users.SuperUser;
+import pl.ks.dk.tks.domainmodel.users.User;
 import pl.ks.dk.tks.userinterface.UserUseCase;
 
 import javax.annotation.PostConstruct;
@@ -20,13 +21,14 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.validation.ValidationException;
+import javax.xml.rpc.ServiceException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
 @Log
 @ApplicationScoped
-public class Consumer {
+public class Receiver {
     @Inject
     private UserUseCase userUseCase;
 
@@ -86,7 +88,7 @@ public class Consumer {
             switch (delivery.getEnvelope().getRoutingKey()) {
                 case CREATE_USER_KEY: {
                     try {
-                        log.info("UserService: Received create user message");
+                        log.info("RentService: Received create user message");
                         createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
                     } catch (ValidationException e) {
                         JsonReader reader = Json
@@ -94,7 +96,7 @@ public class Consumer {
                         JsonObject jsonObject = reader.readObject();
                         String login = jsonObject.getString("login");
                         log.info(e.getMessage());
-                        log.info("UserService:Exception when creating user, sending remove message with login: " +
+                        log.info("RentService:Exception when creating user, sending remove message with login: " +
                                 login);
 //                        publisher.removeUser(login);
                     } catch (Exception e) {
@@ -102,10 +104,10 @@ public class Consumer {
                     }
                     break;
                 }
-//                case UPDATE_USER_KEY: {
-//                    updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-//                    break;
-//                }
+                case UPDATE_USER_KEY: {
+                    updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                    break;
+                }
 //                case REMOVE_USER_KEY: {
 //                    removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
 //                }
@@ -120,42 +122,59 @@ public class Consumer {
     }
 
     private void createUser(String message) {
-        JsonReader reader = Json.createReader(new StringReader(message));
-        JsonObject jsonObject = reader.readObject();
-        log.info("Method createUser invoked with parameter: " + message);
-        if (jsonObject.getString("role").equalsIgnoreCase("admin")) {
-            userUseCase.addUser(new Admin(jsonObject.getString("login"), jsonObject.getString("name"),
-                    jsonObject.getString("surname"),
-                    jsonObject.getString("password"), jsonObject.getString("role")));
-        } else if (jsonObject.getString("role").equalsIgnoreCase("superUser")) {
-            userUseCase.addUser(new SuperUser(jsonObject.getString("login"), jsonObject.getString("name"),
-                    jsonObject.getString("surname"),
-                    jsonObject.getString("password"), jsonObject.getString("role")));
-        } else if (jsonObject.getString("role").equalsIgnoreCase("client")) {
-            userUseCase.addUser(new Client(jsonObject.getString("login"), jsonObject.getString("name"),
-                    jsonObject.getString("surname"),
-                    jsonObject.getString("password"), jsonObject.getString("role"),
-                    jsonObject.getInt("numberOfChildren"), jsonObject.getInt("ageOfTheYoungestChild")));
+        log.info("RentService: Attempting to create user");
+        User user = prepareUser(message);
+        if (user != null) {
+            try {
+                userUseCase.addUser(user);
+                log.info("RentService: User " + user.getLogin() + " has been added");
+            } catch (ServiceException e) {
+                log.info("RentService: There was an error adding the user");
+            }
+        } else {
+            log.info("RentService: There was an error adding the user");
         }
     }
 
-    //TODO: PRYWATNA METODA DO POBIERANIA WARTOSCI ZE JSONA
-
-//    private void updateUser(String message) {
-//        JsonReader reader = Json.createReader(new StringReader(message));
-//        JsonObject jsonObject = reader.readObject();
-//        log.info("Method updateUser invoked with parameter: " + message);
-//        userUseCase.updateUser(
-//                jsonObject.getString("login"),
-//                jsonObject.getString("password"),
-//                jsonObject.getString("name"),
-//                jsonObject.getString("surname")
-//        );
-//    }
+    private void updateUser(String message) {
+        log.info("RentService: Attempting to update user");
+        User user = prepareUser(message);
+        if (user != null) {
+            try {
+                userUseCase.updateUserByLogin(user, user.getLogin());
+                log.info("RentService: User " + user.getLogin() + "has been updated");
+            } catch (ServiceException e) {
+                log.info("RentService: There was an error updating the user");
+            }
+        } else {
+            log.info("RentService: There was an error updating the user");
+        }
+    }
 
 //    private void removeUser(String message) {
 //        userService.removeUser(message);
 //    }
 
+    private User prepareUser(String message) {
+        JsonReader reader = Json.createReader(new StringReader(message));
+        JsonObject jsonObject = reader.readObject();
+        if (jsonObject.getString("role").equalsIgnoreCase("admin")) {
+            return new Admin(jsonObject.getString("login"), jsonObject.getString("name"),
+                    jsonObject.getString("surname"),
+                    jsonObject.getString("password"), jsonObject.getString("role"));
+        } else if (jsonObject.getString("role").equalsIgnoreCase("superUser")) {
+            return new SuperUser(jsonObject.getString("login"), jsonObject.getString("name"),
+                    jsonObject.getString("surname"),
+                    jsonObject.getString("password"), jsonObject.getString("role"));
+        } else if (jsonObject.getString("role").equalsIgnoreCase("client")) {
+            return new Client(jsonObject.getString("login"), jsonObject.getString("name"),
+                    jsonObject.getString("surname"),
+                    jsonObject.getString("password"), jsonObject.getString("role"),
+                    jsonObject.getInt("numberOfChildren"), jsonObject.getInt("ageOfTheYoungestChild"));
+        }
+        return null;
+    }
+
+    //TODO: PRYWATNA METODA DO POBIERANIA WARTOSCI ZE JSONA
 
 }

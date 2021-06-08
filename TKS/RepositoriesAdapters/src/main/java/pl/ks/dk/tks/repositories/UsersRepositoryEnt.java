@@ -40,6 +40,14 @@ public class UsersRepositoryEnt extends RepositoryEnt<UserEnt> {
         }
     }
 
+    public void updateElementByLogin(UserEnt user, String login) throws RepositoryExceptionEnt {
+        try {
+            BeanUtils.copyProperties(findUserByLogin(login), user);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RepositoryExceptionEnt("Error during update");
+        }
+    }
+
     private boolean isLoginUnique(String login) {
         for (UserEnt user : getElements()) {
             if (user.getLogin().equals(login)) {

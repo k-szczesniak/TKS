@@ -2,6 +2,7 @@ package pl.ks.dk.tks.userinterface;
 
 import pl.ks.dk.tks.domainmodel.users.User;
 
+import javax.xml.rpc.ServiceException;
 import java.util.List;
 
 public interface UserUseCase {
@@ -12,9 +13,11 @@ public interface UserUseCase {
 
     List<User> getAllUsers();
 
-    void addUser(User user);
+    void addUser(User user) throws ServiceException;
 
     void updateUser(User user, String uuid);
+
+    void updateUserByLogin(User user, String login) throws ServiceException;
 
     boolean checkIfUserIsActive(String login);
 

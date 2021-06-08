@@ -54,6 +54,7 @@ public class UserDTO implements EntityToSignDTO, Serializable {
     public Map<String, String> takePayload() {
         Map<String, String> map = new HashMap<>();
         map.put("uuid", getUuid());
+        map.put("login", getLogin());
         return map;
     }
 

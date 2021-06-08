@@ -88,7 +88,13 @@ public class UsersRestAdapter {
         }
         try {
             validation(userDTO);
-            userUseCase.updateUser(UserDTOConverter.convertUserDTOToUser(userDTO), uuid);
+            if (userDTO.getRole().equals("Client")) {
+                publisher.updateUser(Serialization
+                        .clientToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO), userDTO.getNumberOfChildren(),
+                                userDTO.getAgeOfTheYoungestChild()));
+            } else if (userDTO.getRole().equals("Admin") || userDTO.getRole().equals("SuperUser")) {
+                publisher.updateUser(Serialization.userToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO)));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(422).build();
@@ -108,7 +114,6 @@ public class UsersRestAdapter {
             } else if (userDTO.getRole().equals("Admin") || userDTO.getRole().equals("SuperUser")) {
                 publisher.createUser(Serialization.userToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO)));
             }
-//            userUseCase.addUser(UserDTOConverter.convertUserDTOToUser(userDTO));
         } catch (IllegalArgumentException | IOException e) {
             e.printStackTrace();
             return Response.status(422).build();

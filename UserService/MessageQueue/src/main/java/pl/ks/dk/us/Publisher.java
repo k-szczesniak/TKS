@@ -1,6 +1,9 @@
 package pl.ks.dk.us;
 
-import com.rabbitmq.client.*;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConfirmCallback;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.java.Log;
 
 import javax.annotation.PostConstruct;
@@ -21,8 +24,8 @@ public class Publisher {
     private static final String EXCHANGE_TYPE = "topic";
 
     private static final String CREATE_USER_KEY = "user.create";
-//    private static final String REMOVE_USER_KEY = "user.remove";
-//    private static final String UPDATE_USER_KEY = "user.update";
+    private static final String UPDATE_USER_KEY = "user.update";
+    private static final String REMOVE_USER_KEY = "user.remove";
 
     private ConnectionFactory connectionFactory;
     private Connection connection;
@@ -50,7 +53,7 @@ public class Publisher {
     }
 
     ConfirmCallback cleanOutstandingConfirms = (sequenceNumber, multiple) -> {
-        log.info("UserService: Message number: " + sequenceNumber + " success");
+        log.info("UserService: Message number: " + sequenceNumber + " successfully sent");
         if (multiple) {
             ConcurrentNavigableMap<Long, String> confirmed = outstandingConfirms.headMap(
                     sequenceNumber, true
@@ -70,24 +73,22 @@ public class Publisher {
         }
     }
 
-    public void createUser(String json) throws IOException{
+    public void createUser(String json) throws IOException {
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         long sequenceNumber = channel.getNextPublishSeqNo();
-        outstandingConfirms.put(sequenceNumber,json);
-        channel.basicPublish(EXCHANGE_NAME, CREATE_USER_KEY,null, json.getBytes(StandardCharsets.UTF_8));
+        outstandingConfirms.put(sequenceNumber, json);
+        channel.basicPublish(EXCHANGE_NAME, CREATE_USER_KEY, null, json.getBytes(StandardCharsets.UTF_8));
     }
 
-//    public void removeUser(String login) throws IOException {
-//        log.info("Hotel: Sending remove message");
-//        channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
-//        long sequenceNumber = channel.getNextPublishSeqNo();
-//        outstandingConfirms.put(sequenceNumber,login);
-//        channel.basicPublish(EXCHANGE_NAME, REMOVE_USER_KEY,null, login.getBytes(StandardCharsets.UTF_8));
+    public void updateUser(String json) throws IOException {
+        channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
+        channel.basicPublish(EXCHANGE_NAME, UPDATE_USER_KEY, null, json.getBytes(StandardCharsets.UTF_8));
+    }
 
-//    }
-//
-//    public void updateUser(String json) throws IOException {
-//        channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
-//        channel.basicPublish(EXCHANGE_NAME, UPDATE_USER_KEY, null, json.getBytes(StandardCharsets.UTF_8));
-//    }
+    public void removeUser(String login) throws IOException {
+        channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
+        long sequenceNumber = channel.getNextPublishSeqNo();
+        outstandingConfirms.put(sequenceNumber, login);
+        channel.basicPublish(EXCHANGE_NAME, REMOVE_USER_KEY, null, login.getBytes(StandardCharsets.UTF_8));
+    }
 }

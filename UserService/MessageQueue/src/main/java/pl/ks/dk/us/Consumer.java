@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.xml.rpc.ServiceException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -91,17 +92,18 @@ public class Consumer {
                                 new StringReader(new String(delivery.getBody(), StandardCharsets.UTF_8)));
                         JsonObject jsonObject = reader.readObject();
                         String login = jsonObject.getString("login");
-                        log.info("UserService: Exception when creating user, sending remove message with login: " + login);
+                        log.info("UserService: Exception when creating user, sending remove message with login: " +
+                                login);
 //                        publisher.removeUser(login);
                     }
                     break;
                 }
-//                case UPDATE_USER_KEY: {
-//                    updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-//                    break;
-//                }
+                case UPDATE_USER_KEY: {
+                    updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                    break;
+                }
 //                case REMOVE_USER_KEY: {
-//                    log.info("Hotel: Received remove message");
+//                    log.info("UserService: Received remove message");
 //                    removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
 //                }
                 default: {
@@ -110,32 +112,43 @@ public class Consumer {
             }
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
         };
-        channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {});
+        channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
+        });
     }
 
-    private void createUser(String message) throws IllegalArgumentException {
+    private void createUser(String message) {
         log.info("UserService: Attempting to create user");
-        JsonReader reader = Json.createReader(new StringReader(message));
-        JsonObject jsonObject = reader.readObject();
-        userUseCase.addUser(
-                new User(jsonObject.getString("login"), jsonObject.getString("name"), jsonObject.getString("surname"),
-                        jsonObject.getString("password"), jsonObject.getString("role")));
+        User user = prepareUser(message);
+        try {
+            userUseCase.addUser(user);
+            log.info("UserService: User " + user.getLogin() + " has been added");
+        } catch (ServiceException e) {
+            log.info("UserService: There was an error adding the user");
+        }
     }
 
-//    private void updateUser(String message) {
-//        JsonReader reader = Json.createReader(new StringReader(message));
-//        JsonObject jsonObject = reader.readObject();
-//        userUseCase.updateUser(
-//                jsonObject.getString("login"),
-//                jsonObject.getString("name"),
-//                jsonObject.getString("surname")
-//        );
-//    }
+    private void updateUser(String message) {
+        log.info("UserService: Attempting to update user");
+        User user = prepareUser(message);
+        try {
+            userUseCase.updateUserByLogin(user, user.getLogin());
+            log.info("UserService: User " + user.getLogin() + " has been updated");
+        } catch (ServiceException e) {
+            log.info("UserService: Attempting to update user");
+        }
+    }
 
 //    private void removeUser(String message) {
-//        log.info("Hotel: Removing user " + message);
-//        userService.removeUser(message);
+//        log.info("UserService: Removing user " + message);
+//        userUseCase.removeUser(message);
 //    }
+
+    private User prepareUser(String message) {
+        JsonReader reader = Json.createReader(new StringReader(message));
+        JsonObject jsonObject = reader.readObject();
+        return new User(jsonObject.getString("login"), jsonObject.getString("name"), jsonObject.getString("surname"),
+                jsonObject.getString("password"), jsonObject.getString("role"));
+    }
 
 
 }

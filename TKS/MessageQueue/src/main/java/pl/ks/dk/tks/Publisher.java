@@ -52,7 +52,7 @@ public class Publisher {
     }
 
     ConfirmCallback cleanOutstandingConfirms = (sequenceNumber, multiple) -> {
-        log.info("User Service: Message number: " + sequenceNumber + " success");
+        log.info("User Service: Message number: " + sequenceNumber + " successfully sent");
         if (multiple) {
             ConcurrentNavigableMap<Long, String> confirmed = outstandingConfirms.headMap(
                     sequenceNumber, true

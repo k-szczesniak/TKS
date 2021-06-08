@@ -75,6 +75,15 @@ public class UsersService implements UserUseCase {
     }
 
     @Override
+    public void updateUserByLogin(User user, String login) throws ServiceException {
+        try {
+            updateUserPort.updateUserByLogin(user, login);
+        } catch (AdapterException adapterException) {
+            throw new ServiceException(adapterException.getMessage(), adapterException);
+        }
+    }
+
+    @Override
     public boolean checkIfUserIsActive(String login) {
         return getUserByLogin(login).isActive();
     }

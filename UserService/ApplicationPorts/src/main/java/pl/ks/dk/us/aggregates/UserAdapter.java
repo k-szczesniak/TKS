@@ -61,6 +61,15 @@ public class UserAdapter implements AddUserPort, GetUserPort, UpdateUserPort {
     }
 
     @Override
+    public void updateUserByLogin(User user, String login) throws AdapterException {
+        try {
+            usersRepositoryEnt.updateElementByLogin(convertUserToUserEnt(user), login);
+        } catch (RepositoryExceptionEnt repositoryExceptionEnt) {
+            throw new AdapterException(repositoryExceptionEnt.getMessage(), repositoryExceptionEnt);
+        }
+    }
+
+    @Override
     public List<User> getAllUsers() {
         return usersRepositoryEnt.getUsersList().stream()
                 .map(UserAdapter::convertUserEntToUser)
