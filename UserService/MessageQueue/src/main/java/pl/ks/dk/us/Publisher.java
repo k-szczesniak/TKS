@@ -5,12 +5,15 @@ import com.rabbitmq.client.ConfirmCallback;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.java.Log;
+import pl.ks.dk.us.users.User;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -21,12 +24,15 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class Publisher {
 
     private static final String HOST_NAME = "localhost";
-    private static final String EXCHANGE_NAME = "exchange_topic";
+    private static final int PORT_NUMBER = 5672;
+    private static final String USERNAME = "guest";
+    private static final String PASSWORD = "guest";
+    private static final String EXCHANGE_NAME = "users_exchange";
     private static final String EXCHANGE_TYPE = "topic";
 
-    private static final String CREATE_USER_KEY = "user.create";
-    private static final String UPDATE_USER_KEY = "user.update";
-    private static final String REMOVE_USER_KEY = "user.remove";
+    private static final String CREATE_ROUTING_KEY = "user.create";
+    private static final String UPDATE_ROUTING_KEY = "user.update";
+    private static final String DELETE_ROUTING_KEY = "user.delete";
 
     private ConnectionFactory connectionFactory;
     private Connection connection;
@@ -38,22 +44,22 @@ public class Publisher {
         try {
             connectionFactory = new ConnectionFactory();
             connectionFactory.setHost(HOST_NAME);
-            connectionFactory.setPort(5672);
-            connectionFactory.setUsername("guest");
-            connectionFactory.setPassword("guest");
+            connectionFactory.setPort(PORT_NUMBER);
+            connectionFactory.setUsername(USERNAME);
+            connectionFactory.setPassword(PASSWORD);
             connection = connectionFactory.newConnection();
             channel = connection.createChannel();
             channel.confirmSelect();
-            channel.addConfirmListener(cleanOutstandingConfirms,
+            channel.addConfirmListener(confirmCallback,
                     (sequenceNumber, multiple) -> {
                         log.severe("UserService: Message number: " + sequenceNumber + " failed");
                     });
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warning("UserService: Init error: " + e.getMessage());
         }
     }
 
-    ConfirmCallback cleanOutstandingConfirms = (sequenceNumber, multiple) -> {
+    ConfirmCallback confirmCallback = (sequenceNumber, multiple) -> {
         log.info("UserService: Message number: " + sequenceNumber + " successfully sent");
         if (multiple) {
             ConcurrentNavigableMap<Long, String> confirmed = outstandingConfirms.headMap(
@@ -70,7 +76,7 @@ public class Publisher {
         try {
             connection.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warning("UserService: Connection close error");
         }
     }
 
@@ -79,20 +85,43 @@ public class Publisher {
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         long sequenceNumber = channel.getNextPublishSeqNo();
         outstandingConfirms.put(sequenceNumber, json);
-        channel.basicPublish(EXCHANGE_NAME, CREATE_USER_KEY, null, json.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish(EXCHANGE_NAME, CREATE_ROUTING_KEY, null, json.getBytes(StandardCharsets.UTF_8));
     }
 
     public void updateUser(String json) throws IOException {
         log.info("UserService: Sending update message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
-        channel.basicPublish(EXCHANGE_NAME, UPDATE_USER_KEY, null, json.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish(EXCHANGE_NAME, UPDATE_ROUTING_KEY, null, json.getBytes(StandardCharsets.UTF_8));
     }
 
-    public void removeUser(String login) throws IOException {
+    public void deleteUser(String login) throws IOException {
         log.info("UserService: Sending remove message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         long sequenceNumber = channel.getNextPublishSeqNo();
         outstandingConfirms.put(sequenceNumber, login);
-        channel.basicPublish(EXCHANGE_NAME, REMOVE_USER_KEY, null, login.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish(EXCHANGE_NAME, DELETE_ROUTING_KEY, null, login.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static class Serialization {
+
+        private static JsonObjectBuilder prepareUser(User source) {
+            return Json.createObjectBuilder()
+                    .add("login", source.getLogin())
+                    .add("name", source.getName())
+                    .add("surname", source.getSurname())
+                    .add("password", source.getPassword())
+                    .add("role", source.getRole());
+        }
+
+        public static String userToJsonString(User source) {
+            return prepareUser(source).build().toString();
+        }
+
+        public static String clientToJsonString(User source, int numberOfChildren, int ageOfTheYoungestChild) {
+            JsonObjectBuilder objectBuilder = prepareUser(source);
+            return objectBuilder.add("numberOfChildren", numberOfChildren)
+                    .add("ageOfTheYoungestChild", ageOfTheYoungestChild)
+                    .build().toString();
+        }
     }
 }

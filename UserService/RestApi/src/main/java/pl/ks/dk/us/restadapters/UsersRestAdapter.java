@@ -1,8 +1,9 @@
 package pl.ks.dk.us.restadapters;
 
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.json.JSONObject;
 import pl.ks.dk.us.Publisher;
-import pl.ks.dk.us.Serialization;
 import pl.ks.dk.us.converters.UserDTOConverter;
 import pl.ks.dk.us.dtomodel.interfaces.EntityToSignDTO;
 import pl.ks.dk.us.dtomodel.users.UserDTO;
@@ -38,6 +39,13 @@ public class UsersRestAdapter {
 
     @GET
     @Path("_self")
+    @Timed(name = "findSelf",
+            tags = {"method=users"},
+            absolute = true,
+            description = "Time to get personal information")
+    @Counted(name = "findSelfInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response findSelf(@Context SecurityContext securityContext) {
         try {
             return Response.status(200)
@@ -52,6 +60,13 @@ public class UsersRestAdapter {
 
     @GET
     @Path("{uuid}")
+    @Timed(name = "getClient",
+            tags = {"method=users"},
+            absolute = true,
+            description = "Time to get client")
+    @Counted(name = "getClientInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response getUser(@PathParam("uuid") String uuid) {
         try {
             EntityToSignDTO entityToSign = UserDTOConverter.convertUserToUserDTO(userUseCase.getUserByKey(uuid));
@@ -66,6 +81,13 @@ public class UsersRestAdapter {
     }
 
     @GET
+    @Timed(name = "getAllUsers",
+            tags = {"method=users"},
+            absolute = true,
+            description = "Time to get all users")
+    @Counted(name = "getAllUsersInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response getAllUsers() {
         try {
             return Response.status(200)
@@ -80,6 +102,13 @@ public class UsersRestAdapter {
 
     @PUT
     @Path("/user/{uuid}")
+    @Timed(name = "updateUser",
+            tags = {"method=users"},
+            absolute = true,
+            description = "Time to update user")
+    @Counted(name = "updateUserInvocations",
+            absolute = true,
+            description = "Number of invocations")
     @EntitySignatureValidatorFilterBinding
     public Response updateUser(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
                                UserDTO userDTO) {
@@ -89,11 +118,11 @@ public class UsersRestAdapter {
         try {
             validation(userDTO);
             if (userDTO.getRole().equals("Client")) {
-                publisher.updateUser(Serialization
+                publisher.updateUser(Publisher.Serialization
                         .clientToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO), userDTO.getNumberOfChildren(),
                                 userDTO.getAgeOfTheYoungestChild()));
             } else if (userDTO.getRole().equals("Admin") || userDTO.getRole().equals("SuperUser")) {
-                publisher.updateUser(Serialization.userToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO)));
+                publisher.updateUser(Publisher.Serialization.userToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,15 +133,22 @@ public class UsersRestAdapter {
 
     @POST
     @Path("/user")
+    @Timed(name = "createUser",
+            tags = {"method=users"},
+            absolute = true,
+            description = "Time to create user")
+    @Counted(name = "createUserInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response createUser(UserDTO userDTO) {
         try {
             validation(userDTO);
             if (userDTO.getRole().equals("Client")) {
-                publisher.createUser(Serialization
+                publisher.createUser(Publisher.Serialization
                         .clientToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO), userDTO.getNumberOfChildren(),
                                 userDTO.getAgeOfTheYoungestChild()));
             } else if (userDTO.getRole().equals("Admin") || userDTO.getRole().equals("SuperUser")) {
-                publisher.createUser(Serialization.userToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO)));
+                publisher.createUser(Publisher.Serialization.userToJsonString(UserDTOConverter.convertUserDTOToUser(userDTO)));
             }
         } catch (IllegalArgumentException | IOException e) {
             e.printStackTrace();

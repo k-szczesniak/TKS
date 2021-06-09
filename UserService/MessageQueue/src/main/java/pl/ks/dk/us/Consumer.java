@@ -29,12 +29,15 @@ public class Consumer {
     Publisher publisher;
 
     private static final String HOST_NAME = "localhost";
-    private static final String EXCHANGE_NAME = "exchange_topic";
+    private static final int PORT_NUMBER = 5672;
+    private static final String USERNAME = "guest";
+    private static final String PASSWORD = "guest";
+    private static final String EXCHANGE_NAME = "users_exchange";
     private static final String EXCHANGE_TYPE = "topic";
 
-    private static final String CREATE_USER_KEY = "user.create";
-    private static final String UPDATE_USER_KEY = "user.update";
-    private static final String REMOVE_USER_KEY = "user.remove";
+    private static final String CREATE_ROUTING_KEY = "user.create";
+    private static final String UPDATE_ROUTING_KEY = "user.update";
+    private static final String DELETE_ROUTING_KEY = "user.delete";
 
     private ConnectionFactory connectionFactory;
     private Connection connection;
@@ -46,18 +49,18 @@ public class Consumer {
         try {
             connectionFactory = new ConnectionFactory();
             connectionFactory.setHost(HOST_NAME);
-            connectionFactory.setPort(5672);
-            connectionFactory.setUsername("guest");
-            connectionFactory.setPassword("guest");
+            connectionFactory.setPort(PORT_NUMBER);
+            connectionFactory.setUsername(USERNAME);
+            connectionFactory.setPassword(PASSWORD);
             connection = connectionFactory.newConnection();
             channel = connection.createChannel();
             channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
             channel.basicQos(1);
             queueName = channel.queueDeclare().getQueue();
-            bindKeys();
+            bindQueueWithChannel();
             getMessage();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warning("UserService: Init error: " + e.getMessage());
         }
     }
 
@@ -66,38 +69,46 @@ public class Consumer {
         try {
             connection.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warning("UserService: Connection close error");
         }
     }
 
-    private void bindKeys() throws IOException {
-        channel.queueBind(queueName, EXCHANGE_NAME, CREATE_USER_KEY);
-        channel.queueBind(queueName, EXCHANGE_NAME, UPDATE_USER_KEY);
-        channel.queueBind(queueName, EXCHANGE_NAME, REMOVE_USER_KEY);
+    private void bindQueueWithChannel() throws IOException {
+        channel.queueBind(queueName, EXCHANGE_NAME, CREATE_ROUTING_KEY);
+        channel.queueBind(queueName, EXCHANGE_NAME, UPDATE_ROUTING_KEY);
+        channel.queueBind(queueName, EXCHANGE_NAME, DELETE_ROUTING_KEY);
     }
 
     private void getMessage() throws IOException {
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             switch (delivery.getEnvelope().getRoutingKey()) {
-                case CREATE_USER_KEY: {
+                case CREATE_ROUTING_KEY: {
                     try {
                         createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
                     } catch (Exception e) {
-                        String login = getUserLogin(delivery);
-                        log.info("UserService: Error creating user: " + login + ", sending remove message");
-                        publisher.removeUser(login);
+                        if (e.getMessage().contains("Login")) {
+                            log.info("UserService: " + e.getMessage());
+                        } else {
+                            String login = getUserLogin(delivery);
+                            log.info("UserService: Error creating user: " + login + ", sending remove message");
+                            publisher.deleteUser(login);
+                        }
                     }
                     break;
                 }
-                case UPDATE_USER_KEY: {
-                    updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                case UPDATE_ROUTING_KEY: {
+                    try {
+                        updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                    } catch (ServiceException e) {
+                        log.info("UserService: There was an error updating the user");
+                    }
                     break;
                 }
-                case REMOVE_USER_KEY: {
+                case DELETE_ROUTING_KEY: {
                     log.info("UserService: Received remove message");
                     try {
-                        removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (Exception e) {
+                        deleteUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                    } catch (ServiceException serviceException) {
                         log.info("UserService: There was an error deleting the user");
                     }
                 }
@@ -111,35 +122,24 @@ public class Consumer {
         });
     }
 
-    private void createUser(String message) throws MessageQueueException {
+    private void createUser(String message) throws ServiceException {
         log.info("UserService: Attempting to create user");
         User user = prepareUser(message);
-        try {
-            userUseCase.addUser(user);
-            log.info("UserService: User " + user.getLogin() + " has been added");
-        } catch (ServiceException e) {
-            throw new MessageQueueException("UserService: There was an error adding the user");
-        }
+        userUseCase.addUser(user);
+        log.info("UserService: User " + user.getLogin() + " has been added");
     }
 
-    private void updateUser(String message) {
+    private void updateUser(String message) throws ServiceException {
         log.info("UserService: Attempting to update user");
         User user = prepareUser(message);
-        try {
-            userUseCase.updateUserByLogin(user, user.getLogin());
-            log.info("UserService: User " + user.getLogin() + " has been updated");
-        } catch (ServiceException e) {
-            log.info("UserService: There was an error updating the user");
-        }
+        user.setUuid(getUserUuid(message));
+        userUseCase.updateUserByLogin(user, user.getLogin());
+        log.info("UserService: User " + user.getLogin() + " has been updated");
     }
 
-    private void removeUser(String message) throws MessageQueueException {
+    private void deleteUser(String message) throws ServiceException {
         log.info("UserService: Removing user " + message);
-        try {
-            userUseCase.deleteUser(message);
-        } catch (ServiceException e) {
-            throw new MessageQueueException("UserService: There was an error deleting the user");
-        }
+        userUseCase.deleteUser(message);
     }
 
     private User prepareUser(String message) {
@@ -147,6 +147,12 @@ public class Consumer {
         JsonObject jsonObject = reader.readObject();
         return new User(jsonObject.getString("login"), jsonObject.getString("name"), jsonObject.getString("surname"),
                 jsonObject.getString("password"), jsonObject.getString("role"));
+    }
+
+    private String getUserUuid(String message) {
+        JsonReader reader = Json.createReader(new StringReader(message));
+        JsonObject jsonObject = reader.readObject();
+        return userUseCase.getUserByLogin(jsonObject.getString("login")).getUuid();
     }
 
     private String getUserLogin(Delivery delivery) {

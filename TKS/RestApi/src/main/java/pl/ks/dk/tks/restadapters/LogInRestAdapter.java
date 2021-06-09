@@ -1,6 +1,8 @@
 package pl.ks.dk.tks.restadapters;
 
 import com.nimbusds.jwt.SignedJWT;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import pl.ks.dk.tks.Consumer;
 import pl.ks.dk.tks.security.JWTGeneratorVerifier;
 import pl.ks.dk.tks.security.JwtAuthenticationMechanism;
@@ -35,6 +37,13 @@ public class LogInRestAdapter {
     private UserUseCase userUseCase;
 
     @POST
+    @Timed(name = "logIn",
+            tags = {"method=login"},
+            absolute = true,
+            description = "Time to login")
+    @Counted(name = "logInInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response logIn(LoginData loginData) {
         Credential credential = new UsernamePasswordCredential(loginData.getLogin(),
                 new Password(loginData.getPassword()));
@@ -50,6 +59,13 @@ public class LogInRestAdapter {
 
     @GET
     @Path("/update")
+    @Timed(name = "updateToken",
+            tags = {"method=login"},
+            absolute = true,
+            description = "Time to update token")
+    @Counted(name = "updateTokenInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response updateToken(@Context HttpServletRequest httpServletRequest) {
         String authHeader = httpServletRequest.getHeader(JwtAuthenticationMechanism.AUTHORIZATION);
         String tokenToUpdate = authHeader.substring(JwtAuthenticationMechanism.BEARER.length());

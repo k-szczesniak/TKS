@@ -1,5 +1,7 @@
 package pl.ks.dk.tks.restadapters;
 
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import pl.ks.dk.tks.converters.BabysitterDTOConverter;
 import pl.ks.dk.tks.dtomodel.babysitters.BabysitterDTO;
 import pl.ks.dk.tks.dtomodel.babysitters.TeachingSitterDTO;
@@ -30,6 +32,13 @@ public class ResourcesRestAdapter {
 
     @GET
     @Path("{uuid}")
+    @Timed(name = "getBabysitter",
+            tags = {"method=babysitter"},
+            absolute = true,
+            description = "Time to get babysitter")
+    @Counted(name = "getBabysitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response getBabysitter(@PathParam("uuid") String uuid) {
         try {
             EntityToSignDTO entityToSign =
@@ -45,6 +54,13 @@ public class ResourcesRestAdapter {
     }
 
     @GET
+    @Timed(name = "getAllBabysitters",
+            tags = {"method=babysitter"},
+            absolute = true,
+            description = "Time to get all babysitters")
+    @Counted(name = "getAllBabysittersInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response getAllBabysitters() {
         try {
             return Response.status(200)
@@ -59,6 +75,13 @@ public class ResourcesRestAdapter {
 
     @PUT
     @Path("/standard/{uuid}")
+    @Timed(name = "updateBabysitter",
+            tags = {"method=babysitter"},
+            absolute = true,
+            description = "Time to update babysitter")
+    @Counted(name = "updateBabysitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     @EntitySignatureValidatorFilterBinding
     public Response updateBabysitter(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
                                      BabysitterDTO babysitterDTO) {
@@ -77,6 +100,13 @@ public class ResourcesRestAdapter {
 
     @PUT
     @Path("/teaching/{uuid}")
+    @Timed(name = "updateTeachingSitter",
+            tags = {"method=teachingsitter"},
+            absolute = true,
+            description = "Time to update teachingsitter")
+    @Counted(name = "updateTeachingSitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     @EntitySignatureValidatorFilterBinding
     public Response updateTeachingSitter(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
                                          TeachingSitterDTO teachingSitterDTO) {
@@ -95,6 +125,13 @@ public class ResourcesRestAdapter {
 
     @PUT
     @Path("/tiding/{uuid}")
+    @Timed(name = "updateTidingSitter",
+            tags = {"method=tidingsitter"},
+            absolute = true,
+            description = "Time to update tidingsitter")
+    @Counted(name = "updateTidingSitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     @EntitySignatureValidatorFilterBinding
     public Response updateTidingSitter(@PathParam("uuid") String uuid, @HeaderParam("If-Match") String header,
                                        TidingSitterDTO tidingSitterDTO) {
@@ -113,6 +150,13 @@ public class ResourcesRestAdapter {
 
     @POST
     @Path("/standard")
+    @Timed(name = "createBabysitter",
+            tags = {"method=babysitter"},
+            absolute = true,
+            description = "Time to create babysitter")
+    @Counted(name = "createBabysitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response createBabysitter(BabysitterDTO babysitterDTO) {
         try {
             validation(babysitterDTO);
@@ -126,6 +170,13 @@ public class ResourcesRestAdapter {
 
     @POST
     @Path("/teaching")
+    @Timed(name = "createTeachingSitter",
+            tags = {"method=teachingsitter"},
+            absolute = true,
+            description = "Time to create teachingsitter")
+    @Counted(name = "createTeachingSitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response createTeachingSitter(TeachingSitterDTO teachingSitterDTO) {
         try {
             validation(teachingSitterDTO);
@@ -139,6 +190,13 @@ public class ResourcesRestAdapter {
 
     @POST
     @Path("/tiding")
+    @Timed(name = "createTidingSitter",
+            tags = {"method=tidingsitter"},
+            absolute = true,
+            description = "Time to create tidingsitter")
+    @Counted(name = "createTidingSitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response createTidingSitter(TidingSitterDTO tidingSitterDTO) {
         try {
             validation(tidingSitterDTO);
@@ -152,6 +210,13 @@ public class ResourcesRestAdapter {
 
     @DELETE
     @Path("{uuid}")
+    @Timed(name = "deleteBabysitter",
+            tags = {"method=babysitter"},
+            absolute = true,
+            description = "Time to delete babysitter")
+    @Counted(name = "deleteBabysitterInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response deleteBabysitter(@PathParam("uuid") String uuid) {
         try {
             babysitterUseCase.deleteBabysitter(uuid);

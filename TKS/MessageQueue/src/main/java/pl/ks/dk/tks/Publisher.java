@@ -21,10 +21,13 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class Publisher {
 
     private static final String HOST_NAME = "localhost";
-    private static final String EXCHANGE_NAME = "exchange_topic";
+    private static final int PORT_NUMBER = 5672;
+    private static final String USERNAME = "guest";
+    private static final String PASSWORD = "guest";
+    private static final String EXCHANGE_NAME = "users_exchange";
     private static final String EXCHANGE_TYPE = "topic";
 
-    private static final String REMOVE_USER_KEY = "user.remove";
+    private static final String DELETE_ROUTING_KEY = "user.delete";
 
     private ConnectionFactory connectionFactory;
     private Connection connection;
@@ -36,22 +39,22 @@ public class Publisher {
         try {
             connectionFactory = new ConnectionFactory();
             connectionFactory.setHost(HOST_NAME);
-            connectionFactory.setPort(5672);
-            connectionFactory.setUsername("guest");
-            connectionFactory.setPassword("guest");
+            connectionFactory.setPort(PORT_NUMBER);
+            connectionFactory.setUsername(USERNAME);
+            connectionFactory.setPassword(PASSWORD);
             connection = connectionFactory.newConnection();
             channel = connection.createChannel();
             channel.confirmSelect();
-            channel.addConfirmListener(cleanOutstandingConfirms,
+            channel.addConfirmListener(confirmCallback,
                     (sequenceNumber, multiple) -> {
-                        log.severe("RentService: Message number: " + sequenceNumber + " failed");
+                        log.warning("RentService: Message number: " + sequenceNumber + " failed");
                     });
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warning("RentService: Init error: " + e.getMessage());
         }
     }
 
-    ConfirmCallback cleanOutstandingConfirms = (sequenceNumber, multiple) -> {
+    ConfirmCallback confirmCallback = (sequenceNumber, multiple) -> {
         log.info("RentService: Message number: " + sequenceNumber + " successfully sent");
         if (multiple) {
             ConcurrentNavigableMap<Long, String> confirmed = outstandingConfirms.headMap(
@@ -68,15 +71,15 @@ public class Publisher {
         try {
             connection.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warning("RentService: Connection close error");
         }
     }
 
-    public void removeUser(String login) throws IOException {
+    public void deleteUser(String login) throws IOException {
         log.info("RentService: Sending remove message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
         long sequenceNumber = channel.getNextPublishSeqNo();
         outstandingConfirms.put(sequenceNumber,login);
-        channel.basicPublish(EXCHANGE_NAME, REMOVE_USER_KEY,null, login.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish(EXCHANGE_NAME, DELETE_ROUTING_KEY,null, login.getBytes(StandardCharsets.UTF_8));
     }
 }

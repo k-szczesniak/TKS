@@ -1,5 +1,7 @@
 package pl.ks.dk.tks.restadapters;
 
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import pl.ks.dk.tks.converters.EmploymentDTOConverter;
 import pl.ks.dk.tks.domainmodel.users.Client;
 import pl.ks.dk.tks.userinterface.BabysitterUseCase;
@@ -28,6 +30,13 @@ public class EmploymentsRestAdapter {
     private EmploymentUseCase employmentUseCase;
 
     @GET
+    @Timed(name = "getAllEmployments",
+            tags = {"method=employment"},
+            absolute = true,
+            description = "Time to get all employments")
+    @Counted(name = "getAllEmploymentsInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response getAllEmployments(@Context SecurityContext securityContext) {
         return Response.status(200)
                 .entity(EmploymentDTOConverter.convertEmploymentListToEmploymentDTOList(
@@ -38,6 +47,13 @@ public class EmploymentsRestAdapter {
 
     @POST
     @Path("{uuid}")
+    @Timed(name = "employ",
+            tags = {"method=employment"},
+            absolute = true,
+            description = "Time to employ")
+    @Counted(name = "employInvocations",
+            absolute = true,
+            description = "Number of invocations")
     public Response employ(@Context SecurityContext securityContext, @PathParam("uuid") String uuid) {
         try {
             employmentUseCase.employ((Client) userUseCase.getUserByLogin(securityContext.getUserPrincipal().getName()),
