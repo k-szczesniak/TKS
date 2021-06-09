@@ -80,47 +80,48 @@ public class Consumer {
     }
 
     private void getMessage() throws IOException {
-        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            switch (delivery.getEnvelope().getRoutingKey()) {
-                case CREATE_ROUTING_KEY: {
-                    try {
-                        createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (Exception e) {
-                        if (e.getMessage().contains("Login")) {
-                            log.info("UserService: " + e.getMessage());
-                        } else {
-                            String login = getUserLogin(delivery);
-                            log.info("UserService: Error creating user: " + login + ", sending remove message");
-                            publisher.deleteUser(login);
-                        }
-                    }
-                    break;
-                }
-                case UPDATE_ROUTING_KEY: {
-                    try {
-                        updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (Exception e) {
-                        log.info("UserService: There was an error updating the user");
-                    }
-                    break;
-                }
-                case DELETE_ROUTING_KEY: {
-                    log.info("UserService: Received remove message");
-                    try {
-                        deleteUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (Exception e) {
-                        log.info("UserService: There was an error deleting the user");
-                    }
-                }
-                default: {
-                    break;
-                }
-            }
-            channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-        };
-        channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
+        channel.basicConsume(queueName, false, deliverCallback, cancelCallback -> {
         });
     }
+
+    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+        switch (delivery.getEnvelope().getRoutingKey()) {
+            case CREATE_ROUTING_KEY: {
+                try {
+                    createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    if (e.getMessage().contains("Login")) {
+                        log.info("UserService: " + e.getMessage());
+                    } else {
+                        String login = getUserLogin(delivery);
+                        log.info("UserService: Error creating user: " + login + ", sending remove message");
+                        publisher.deleteUser(login);
+                    }
+                }
+                break;
+            }
+            case UPDATE_ROUTING_KEY: {
+                try {
+                    updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    log.info("UserService: There was an error updating the user");
+                }
+                break;
+            }
+            case DELETE_ROUTING_KEY: {
+                log.info("UserService: Received remove message");
+                try {
+                    deleteUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    log.info("UserService: There was an error deleting the user");
+                }
+            }
+            default: {
+                break;
+            }
+        }
+        channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+    };
 
     private void createUser(String message) throws ServiceException {
         log.info("UserService: Attempting to create user");

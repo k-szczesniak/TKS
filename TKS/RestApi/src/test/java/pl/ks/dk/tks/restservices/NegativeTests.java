@@ -38,7 +38,7 @@ public class NegativeTests {
             .generateJWTString(new CredentialValidationResult("jUrban", new HashSet<>(
                     Arrays.asList("Client"))));
 
-    static final Logger LOGGER = LoggerFactory.getLogger(BabysittersCRUDTest.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(NegativeTests.class);
     private String stringURL;
 
     public NegativeTests() {

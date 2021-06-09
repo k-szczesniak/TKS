@@ -35,7 +35,7 @@ public class UsersCRUTest {
     private final String token = JWTGeneratorVerifier.generateJWTString(new CredentialValidationResult("aAdamski", new HashSet<>(
             Arrays.asList("Admin"))));
 
-    static final Logger LOGGER = LoggerFactory.getLogger(BabysittersCRUDTest.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(UsersCRUTest.class);
     private String stringURL;
 
     public UsersCRUTest() {

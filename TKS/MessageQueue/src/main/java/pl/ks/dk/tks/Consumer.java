@@ -83,46 +83,47 @@ public class Consumer {
     }
 
     private void getMessage() throws IOException {
-        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            switch (delivery.getEnvelope().getRoutingKey()) {
-                case CREATE_ROUTING_KEY: {
-                    try {
-                        createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (Exception e) {
-                        if (e.getMessage().contains("Login")) {
-                            log.info("RentService: " + e.getMessage());
-                        } else {
-                            String login = getUserLogin(delivery);
-                            log.info("RentService: Error creating user: " + login + ", sending remove message");
-                            publisher.deleteUser(login);
-                        }
-                    }
-                    break;
-                }
-                case UPDATE_ROUTING_KEY: {
-                    try {
-                        updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (Exception e) {
-                        log.info("RentService: There was an error updating the user");
-                    }
-                    break;
-                }
-                case DELETE_ROUTING_KEY: {
-                    try {
-                        removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (Exception e) {
-                        log.info("RentService: There was an error deleting the user");
-                    }
-                }
-                default: {
-                    break;
-                }
-            }
-            channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-        };
         channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
         });
     }
+
+    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+        switch (delivery.getEnvelope().getRoutingKey()) {
+            case CREATE_ROUTING_KEY: {
+                try {
+                    createUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    if (e.getMessage().contains("Login")) {
+                        log.info("RentService: " + e.getMessage());
+                    } else {
+                        String login = getUserLogin(delivery);
+                        log.info("RentService: Error creating user: " + login + ", sending remove message");
+                        publisher.deleteUser(login);
+                    }
+                }
+                break;
+            }
+            case UPDATE_ROUTING_KEY: {
+                try {
+                    updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    log.info("RentService: There was an error updating the user");
+                }
+                break;
+            }
+            case DELETE_ROUTING_KEY: {
+                try {
+                    removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    log.info("RentService: There was an error deleting the user");
+                }
+            }
+            default: {
+                break;
+            }
+        }
+        channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+    };
 
     private void createUser(String message) throws ServiceException {
         log.info("RentService: Attempting to create user");

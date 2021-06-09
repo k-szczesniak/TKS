@@ -41,7 +41,7 @@ public class OptionalTests {
             .generateJWTString(new CredentialValidationResult("jUrban", new HashSet<>(
                     Arrays.asList("Client"))));
 
-    static final Logger LOGGER = LoggerFactory.getLogger(BabysittersCRUDTest.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(OptionalTests.class);
     private String stringURL;
 
     public OptionalTests() {

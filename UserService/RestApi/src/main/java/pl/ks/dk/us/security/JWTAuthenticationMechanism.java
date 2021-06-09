@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -24,33 +25,35 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
                                                 HttpServletResponse httpServletResponse,
                                                 HttpMessageContext httpMessageContext) {
 
-        if (!httpServletRequest.getRequestURL().toString().endsWith("/auth")) {
-            String authHeader = httpServletRequest.getHeader(AUTHORIZATION);
+        if ((httpServletRequest.getRequestURL().toString().endsWith("/auth"))
+                || (httpServletRequest.getRequestURL().toString().endsWith("/java"))
+                || (httpServletRequest.getRequestURL().toString().endsWith("API"))) {
+            return httpMessageContext.doNothing();
+        }
 
-            if (authHeader == null || !authHeader.startsWith(BEARER)) {
-                return httpMessageContext.responseUnauthorized();
-            }
+        String authHeader = httpServletRequest.getHeader(AUTHORIZATION);
 
-            String tokenToValidate = authHeader.substring(BEARER.length());
-            if (JWTGeneratorVerifier.validateJWT(tokenToValidate)) {
-                try {
-                    SignedJWT jwtToken = SignedJWT.parse(tokenToValidate);
-                    String login = jwtToken.getJWTClaimsSet().getSubject();
-                    String role = jwtToken.getJWTClaimsSet().getStringClaim("role");
-                    Date expirationTime = (Date) (jwtToken.getJWTClaimsSet().getClaim("exp"));
-
-                    if (new Date().after(expirationTime)) {
-                        return httpMessageContext.responseUnauthorized();
-                    }
-                    return httpMessageContext
-                            .notifyContainerAboutLogin(login, new HashSet<>(Arrays.asList(role.split(","))));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    return httpMessageContext.responseUnauthorized();
-                }
-            }
+        if (authHeader == null || !authHeader.startsWith(BEARER)) {
             return httpMessageContext.responseUnauthorized();
         }
-        return httpMessageContext.doNothing();
+
+        String tokenToValidate = authHeader.substring(BEARER.length()).trim();
+        if (JWTGeneratorVerifier.validateJWT(tokenToValidate)) {
+            try {
+                SignedJWT jwtToken = SignedJWT.parse(tokenToValidate);
+                String login = jwtToken.getJWTClaimsSet().getSubject();
+                String role = jwtToken.getJWTClaimsSet().getStringClaim("role");
+                Date expirationTime = (Date) (jwtToken.getJWTClaimsSet().getClaim("exp"));
+
+                if (new Date().after(expirationTime)) {
+                    return httpMessageContext.responseUnauthorized();
+                }
+                return httpMessageContext.notifyContainerAboutLogin(login, new HashSet<>(Collections.singletonList(role)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return httpMessageContext.responseUnauthorized();
+            }
+        }
+        return null;
     }
 }

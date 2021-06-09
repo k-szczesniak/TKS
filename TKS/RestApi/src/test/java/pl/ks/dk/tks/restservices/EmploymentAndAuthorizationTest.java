@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Testcontainers
 public class EmploymentAndAuthorizationTest {
 
-    static final Logger LOGGER = LoggerFactory.getLogger(BabysittersCRUDTest.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(EmploymentAndAuthorizationTest.class);
     private String stringURL;
 
     public EmploymentAndAuthorizationTest() {

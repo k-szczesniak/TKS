@@ -45,16 +45,13 @@ public class Publisher {
             connection = connectionFactory.newConnection();
             channel = connection.createChannel();
             channel.confirmSelect();
-            channel.addConfirmListener(confirmCallback,
-                    (sequenceNumber, multiple) -> {
-                        log.warning("RentService: Message number: " + sequenceNumber + " failed");
-                    });
+            channel.addConfirmListener(cleanOutstandingConfirms, handleNack);
         } catch (Exception e) {
             log.warning("RentService: Init error: " + e.getMessage());
         }
     }
 
-    ConfirmCallback confirmCallback = (sequenceNumber, multiple) -> {
+    ConfirmCallback cleanOutstandingConfirms = (sequenceNumber, multiple) -> {
         log.info("RentService: Message number: " + sequenceNumber + " successfully sent");
         if (multiple) {
             ConcurrentNavigableMap<Long, String> confirmed = outstandingConfirms.headMap(
@@ -64,6 +61,11 @@ public class Publisher {
         } else {
             outstandingConfirms.remove(sequenceNumber);
         }
+    };
+
+    ConfirmCallback handleNack = (sequenceNumber, multiple) -> {
+        log.warning("RentService: Message number: " + sequenceNumber + " failed");
+        cleanOutstandingConfirms.handle(sequenceNumber, multiple);
     };
 
     @PreDestroy

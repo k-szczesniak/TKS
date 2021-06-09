@@ -50,16 +50,13 @@ public class Publisher {
             connection = connectionFactory.newConnection();
             channel = connection.createChannel();
             channel.confirmSelect();
-            channel.addConfirmListener(confirmCallback,
-                    (sequenceNumber, multiple) -> {
-                        log.severe("UserService: Message number: " + sequenceNumber + " failed");
-                    });
+            channel.addConfirmListener(cleanOutstandingConfirms, handleNack);
         } catch (Exception e) {
             log.warning("UserService: Init error: " + e.getMessage());
         }
     }
 
-    ConfirmCallback confirmCallback = (sequenceNumber, multiple) -> {
+    ConfirmCallback cleanOutstandingConfirms = (sequenceNumber, multiple) -> {
         log.info("UserService: Message number: " + sequenceNumber + " successfully sent");
         if (multiple) {
             ConcurrentNavigableMap<Long, String> confirmed = outstandingConfirms.headMap(
@@ -69,6 +66,11 @@ public class Publisher {
         } else {
             outstandingConfirms.remove(sequenceNumber);
         }
+    };
+
+    ConfirmCallback handleNack = (sequenceNumber, multiple) -> {
+        log.warning("UserService: Message number: " + sequenceNumber + " failed");
+        cleanOutstandingConfirms.handle(sequenceNumber, multiple);
     };
 
     @PreDestroy
@@ -91,6 +93,8 @@ public class Publisher {
     public void updateUser(String json) throws IOException {
         log.info("UserService: Sending update message");
         channel.exchangeDeclare(EXCHANGE_NAME, EXCHANGE_TYPE);
+        long sequenceNumber = channel.getNextPublishSeqNo();
+        outstandingConfirms.put(sequenceNumber, json);
         channel.basicPublish(EXCHANGE_NAME, UPDATE_ROUTING_KEY, null, json.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -103,7 +107,6 @@ public class Publisher {
     }
 
     public static class Serialization {
-
         private static JsonObjectBuilder prepareUser(User source) {
             return Json.createObjectBuilder()
                     .add("login", source.getLogin())

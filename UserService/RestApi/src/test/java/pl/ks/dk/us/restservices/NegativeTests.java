@@ -5,18 +5,29 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.ks.dk.us.security.JWTGeneratorVerifier;
 
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Testcontainers
 public class NegativeTests {
 
     private final String adminToken = JWTGeneratorVerifier
@@ -26,6 +37,28 @@ public class NegativeTests {
     private final String userToken = JWTGeneratorVerifier
             .generateJWTString(new CredentialValidationResult("jUrban", new HashSet<>(
                     Arrays.asList("Client"))));
+
+    static final Logger LOGGER = LoggerFactory.getLogger(NegativeTests.class);
+    private String stringURL;
+
+    public NegativeTests() {
+        Formatter formatter = new Formatter();
+        stringURL = formatter.format("https://localhost:%d/UserService", restServices.getMappedPort(8181)).toString();
+        System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+    }
+
+    @Container
+    private static final GenericContainer restServices = new GenericContainer<>(
+            new ImageFromDockerfile()
+                    .withDockerfileFromBuilder(builder -> builder
+                            .from("payara/server-full:5.2021.2-jdk11")
+                            .copy("REST.war", "/opt/payara/deployments")
+                            .build())
+                    .withFileFromPath("REST.war", Path.of("target", "REST.war"))
+    )
+            .withExposedPorts(8080, 4848)
+            .waitingFor(Wait.forHttp("/UserService/rest/java").forPort(8080).forStatusCode(200))
+            .withLogConsumer(new Slf4jLogConsumer(LOGGER));
 
     @Test
     public void usersValidationCheck() throws URISyntaxException {
@@ -41,7 +74,7 @@ public class NegativeTests {
         requestPost.contentType("application/json");
         requestPost.body(JSON);
 
-        Response response = requestPost.post(new URI("https://localhost:8181/UserService/rest/users/user"));
+        Response response = requestPost.post(new URI(stringURL + "/rest/users/user"));
         assertEquals(422, response.statusCode());
     }
 
@@ -57,7 +90,7 @@ public class NegativeTests {
                 "    }";
         requestPost.body(JSON);
 
-        Response responseFromAuth = requestPost.post(new URI("https://localhost:8181/UserService/rest/auth"));
+        Response responseFromAuth = requestPost.post(new URI(stringURL + "/rest/auth"));
         assertEquals(401, responseFromAuth.statusCode());
     }
 
@@ -73,81 +106,22 @@ public class NegativeTests {
                 "    }";
         requestPost.body(JSON);
 
-        Response responseFromAuth = requestPost.post(new URI("https://localhost:8181/UserService/rest/auth"));
+        Response responseFromAuth = requestPost.post(new URI(stringURL + "/rest/auth"));
         assertEquals(401, responseFromAuth.statusCode());
-    }
-
-    @Test
-    public void authorizationFailedAccountActivity() throws URISyntaxException {
-        RequestSpecification authRequestClient = RestAssured.given();
-        authRequestClient.relaxedHTTPSValidation();
-        authRequestClient.contentType("application/json");
-        String Client = "{\n" +
-                "        \"login\": \"tHajto\",\n" +
-                "        \"password\": \"hajto\"\n" +
-                "    }";
-        authRequestClient.body(Client);
-        Response responseFromAuthClient = authRequestClient.post(new URI("https://localhost:8181/UserService/rest/auth"));
-        assertEquals(202, responseFromAuthClient.statusCode());
-
-
-        String uuid = getUuid(3);
-        RequestSpecification requestGet = getBasicAdminRequest();
-        Response getResponse = requestGet.get(new URI("https://localhost:8181/UserService/rest/users/" + uuid));
-        assertEquals(200, getResponse.statusCode());
-
-        String ETag = getResponse.header("ETag");
-        RequestSpecification requestPut = getBasicAdminRequest();
-        requestPut.contentType("application/json");
-        requestPut.header("If-Match", ETag);
-        String JSON = "{\n" +
-                "        \"role\": \"Client\",\n" +
-                "        \"password\": \"hajto123\",\n" +
-                "        \"name\": \"Tomasz\",\n" +
-                "        \"surname\": \"Hajto\",\n" +
-                "        \"active\": \"false\",\n" +
-                "        \"login\": \"" + "tHajto" + "\",\n" +
-                "        \"uuid\": \"" + uuid + "\"\n" +
-                "    }";
-        requestPut.body(JSON);
-        Response responseFromPut = requestPut.put("https://localhost:8181/UserService/rest/users/user/" + uuid);
-        assertEquals(200, responseFromPut.statusCode());
-
-
-        RequestSpecification authRequestClient2 = RestAssured.given();
-        authRequestClient2.relaxedHTTPSValidation();
-        authRequestClient2.contentType("application/json");
-        String Client2 = "{\n" +
-                "        \"login\": \"tHajto\",\n" +
-                "        \"password\": \"hajto123\"\n" +
-                "    }";
-        authRequestClient2.body(Client2);
-        Response responseFromAuthClient2 = authRequestClient2.post(new URI("https://localhost:8181/UserService/rest/auth"));
-        assertEquals(401, responseFromAuthClient2.statusCode());
-    }
-
-    @Test
-    public void httpsTest() {
-        RequestSpecification request = RestAssured.given();
-        request.header(new Header("Authorization", "Bearer " + userToken));
-        request.redirects().follow(false);
-
-        Response response = request.get("http://localhost:8080/UserService/rest/users");
-        assertEquals(302, response.statusCode());
     }
 
     @Test
     public void JWTTest() throws URISyntaxException {
         RequestSpecification request = RestAssured.given();
         request.relaxedHTTPSValidation();
-        Response response = request.get(new URI("https://localhost:8181/UserService/rest/users"));
+        Response response = request.get(new URI(stringURL + "/rest/users"));
         assertEquals(401, response.statusCode());
     }
 
     @Test
     public void roleTest() throws URISyntaxException {
         RequestSpecification adminRequest = getBasicAdminRequest();
-        Response adminResponse = adminRequest.get(new URI("https://localhost:8181/UserService/rest/users"));
+        Response adminResponse = adminRequest.get(new URI(stringURL + "/rest/users"));
         assertEquals(200, adminResponse.statusCode());
     }
 
@@ -161,7 +135,7 @@ public class NegativeTests {
     private String getUuid(int number) throws URISyntaxException {
         RequestSpecification request = getBasicAdminRequest();
         request.header(new Header("Authorization", "Bearer " + adminToken));
-        Response getAllResponse = request.get(new URI("https://localhost:8181/UserService/rest/users"));
+        Response getAllResponse = request.get(new URI(stringURL + "/rest/users"));
         String responseString = getAllResponse.asString();
         Pattern pattern = Pattern.compile("(?<=\"uuid\":\")\\d{8}");
         Matcher m = pattern.matcher(responseString);
