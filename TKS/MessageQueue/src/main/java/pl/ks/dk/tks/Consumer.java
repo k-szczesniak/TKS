@@ -102,7 +102,7 @@ public class Consumer {
                 case UPDATE_ROUTING_KEY: {
                     try {
                         updateUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (ServiceException e) {
+                    } catch (Exception e) {
                         log.info("RentService: There was an error updating the user");
                     }
                     break;
@@ -110,7 +110,7 @@ public class Consumer {
                 case DELETE_ROUTING_KEY: {
                     try {
                         removeUser(new String(delivery.getBody(), StandardCharsets.UTF_8));
-                    } catch (ServiceException e) {
+                    } catch (Exception e) {
                         log.info("RentService: There was an error deleting the user");
                     }
                 }
